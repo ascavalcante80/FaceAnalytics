@@ -3,31 +3,32 @@
  */
 package facebook;
 
-import java.util.Date;
+import java.util.Calendar;
+import java.sql.Date;
 
 /**
  * @author alexandre
  *
  */
-public class Post {
+public class Post extends FacebookElement{
 
-	private String post_id;
 	private String message;
 	private Date data_created_On;
+	private String profile_id;
 	
-	public Post(String post_id, String message, Date data_created_On) {
-		super();
-		this.post_id = post_id;
+	public Post(String id, String message, Date data_created_On, String profile_id) {
+		super(id);
 		this.message = message;
 		this.data_created_On = data_created_On;
+		this.profile_id = profile_id;
 	}
 
-	public String getPost_id() {
-		return post_id;
+	public String getProfile_id() {
+		return profile_id;
 	}
 
-	public void setPost_id(String post_id) {
-		this.post_id = post_id;
+	public void setProfile_id(String profile_id) {
+		this.profile_id = profile_id;
 	}
 
 	public String getMessage() {

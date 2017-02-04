@@ -7,31 +7,31 @@ package facebook;
  * @author alexandre
  *
  */
-public class Profile {
+public class Profile extends FacebookElement {
 
-	private String profile_id;
-	private String name;
-	
-	public Profile(String profile_id, String name) {
-		super();
-		this.profile_id = profile_id;
-		this.name = name;
+	private String first_name;
+	private String last_name;
+
+	public Profile(String id, String first_name, String last_name) {
+		super(id);
+		this.first_name = first_name;
+		this.last_name = last_name;
 	}
 
-	public String getProfile_id() {
-		return profile_id;
+	public String getFirst_name() {
+		return first_name;
 	}
 
-	public void setProfile_id(String profile_id) {
-		this.profile_id = profile_id;
+	public void setFirst_name(String first_name) {
+		this.first_name = first_name;
 	}
 
-	public String getName() {
-		return name;
+	public String getLast_name() {
+		return last_name;
 	}
 
-	public void setName(String name) {
-		this.name = name;
+	public void setLast_name(String last_name) {
+		this.last_name = last_name;
 	}
 	
 	
