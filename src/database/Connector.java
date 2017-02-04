@@ -4,10 +4,10 @@ import java.util.Calendar;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.sql.*;
-import facebook.Post;
-import facebook.Profile;
-import facebook.Reactions;
-import facebook.User;
+import facebook.PostElement;
+import facebook.ProfileElement;
+import facebook.ReactionsElement;
+import facebook.UserElement;
 import facebook.App;
 
 
@@ -41,12 +41,12 @@ public class Connector {
 		}    	
 	}
 
-	public Boolean insertPost(Post post, int idapp){
+	public Boolean insertPost(PostElement post, int idapp){
 
 		Connection con = null;
 
 		// the mysql insert statement
-		String query = " INSERT INTO posts (idpost, message, created_on, profile_idprofile, app_idapp) values (?, ?, ?, ?, ?)";
+		String query = " INSERT INTO posts (idpost, message, created_on, profile_idprofile, app_idapp, shares) values (?, ?, ?, ?, ?, ?)";
 
 		// create the mysql insert preparedstatement
 		java.sql.PreparedStatement preparedStmt;
@@ -58,6 +58,7 @@ public class Connector {
 			preparedStmt.setDate  (3, post.getData_created_On());
 			preparedStmt.setString(4, post.getProfile_id());
 			preparedStmt.setInt(5, idapp);
+			preparedStmt.setInt(6, post.getShares());
 
 			// execute the preparedstatement
 			preparedStmt.execute();
@@ -72,7 +73,7 @@ public class Connector {
 
 	}
 
-	public Boolean insertProfile(Profile profile, int idapp){
+	public Boolean insertProfile(ProfileElement profile, int idapp){
 
 		Connection con = null;
 		String query = null;
@@ -105,7 +106,7 @@ public class Connector {
 
 	}
 
-	public Boolean insertUser(User user, int idapp){
+	public Boolean insertUser(UserElement user, int idapp){
 
 		Connection con = null;
 		String query = null;
@@ -169,7 +170,7 @@ public class Connector {
 		}
 	}
 		
-	public Boolean insertReactions(Reactions reaction){
+	public Boolean insertReactions(ReactionsElement reaction){
 		
 		Connection con = null;
 		String query = null;
@@ -254,12 +255,13 @@ public class Connector {
 					
 	}
 	
- 	public Post getPostbyId(String id){
+ 	public PostElement getPostbyId(String id){
 
 		Connection conn = null;
 		String message = null;
 		Date dateCreated = null;
 		String idprofile = null;
+		int shares = 0;
 
 		try
 		{
@@ -284,10 +286,11 @@ public class Connector {
 				message = rs.getString("message");
 				dateCreated = rs.getDate("created_on");
 				idprofile = rs.getString("profile_idprofile");
+				shares = rs.getInt("shares");
 
 			}
 			st.close();
-			return new Post(id, message, dateCreated, idprofile);
+			return new PostElement(id, message, dateCreated, idprofile,shares);
 		}
 		catch (Exception e)
 		{
@@ -298,7 +301,7 @@ public class Connector {
 
 	}
 
-	public User getUserbyId(String id){
+	public UserElement getUserbyId(String id){
 
 		Connection conn = null;
 		String first_name = null;
@@ -328,7 +331,7 @@ public class Connector {
 				last_name = rs.getString("last_name");
 			}
 			st.close();
-			return new User(id, first_name, last_name);
+			return new UserElement(id, first_name, last_name);
 		}
 		catch (Exception e)
 		{
@@ -339,7 +342,7 @@ public class Connector {
 
 	}
 
-	public Profile getProfilebyId(String id){
+	public ProfileElement getProfilebyId(String id){
 		
 		Connection conn = null;
 		String first_name = null;
@@ -369,7 +372,7 @@ public class Connector {
 				last_name = rs.getString("last_name");
 			}
 			st.close();
-			return new Profile(id, first_name, last_name);
+			return new ProfileElement(id, first_name, last_name);
 		}
 		catch (Exception e)
 		{
@@ -390,7 +393,7 @@ public class Connector {
 		App app = new App("tese0", "tes1","test2", new String[]{"a","b","c"}, new String[]{"a","b","c"});
 		c.insertApp(app);
 
-		Reactions reaction = new Reactions("1","1","1",1, "fooooda");
+		ReactionsElement reaction = new ReactionsElement("1","1","1",1, "fooooda");
 		c.insertReactions(reaction);
 
 		System.out.println("o");

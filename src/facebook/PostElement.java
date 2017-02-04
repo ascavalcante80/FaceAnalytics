@@ -10,17 +10,27 @@ import java.sql.Date;
  * @author alexandre
  *
  */
-public class Post extends FacebookElement{
+public class PostElement extends FacebookElement{
 
 	private String message;
 	private Date data_created_On;
 	private String profile_id;
+	private int shares;
 	
-	public Post(String id, String message, Date data_created_On, String profile_id) {
+	public int getShares() {
+		return shares;
+	}
+
+	public void setShares(int shares) {
+		this.shares = shares;
+	}
+
+	public PostElement(String id, String message, Date data_created_On, String profile_id, int shares) {
 		super(id);
 		this.message = message;
 		this.data_created_On = data_created_On;
 		this.profile_id = profile_id;
+		this.shares = shares;
 	}
 
 	public String getProfile_id() {

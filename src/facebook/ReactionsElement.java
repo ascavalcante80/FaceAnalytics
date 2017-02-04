@@ -1,6 +1,6 @@
 package facebook;
 
-public class Reactions {
+public class ReactionsElement {
 	
 	private String idpost;
 	private String iduser;
@@ -8,7 +8,7 @@ public class Reactions {
 	int idapp;
 	String reaction;
 	
-	public Reactions(String idpost, String iduser, String idprofile, int idapp, String reaction) {
+	public ReactionsElement(String idpost, String iduser, String idprofile, int idapp, String reaction) {
 		super();
 		this.idpost = idpost;
 		this.iduser = iduser;
