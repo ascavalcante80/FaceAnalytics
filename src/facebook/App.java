@@ -26,8 +26,7 @@ public class App {
 		this.permission = permission;
 		this.profiles = profiles;
 	}
-	
-	
+		
 	public String getApp_name() {
 		return app_name;
 	}

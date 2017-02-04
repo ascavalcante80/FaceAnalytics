@@ -1,20 +1,14 @@
 package database;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.Calendar;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
 import java.sql.*;
-
 import facebook.Post;
 import facebook.Profile;
+import facebook.Reactions;
 import facebook.User;
 import facebook.App;
-
 
 
 public class Connector {
@@ -47,12 +41,12 @@ public class Connector {
 		}    	
 	}
 
-	public Boolean insertPost(Post post){
+	public Boolean insertPost(Post post, int idapp){
 
 		Connection con = null;
 
 		// the mysql insert statement
-		String query = " INSERT INTO posts (idpost, message, created_on, profile_idprofile) values (?, ?, ?, ?)";
+		String query = " INSERT INTO posts (idpost, message, created_on, profile_idprofile, app_idapp) values (?, ?, ?, ?, ?)";
 
 		// create the mysql insert preparedstatement
 		java.sql.PreparedStatement preparedStmt;
@@ -63,6 +57,7 @@ public class Connector {
 			preparedStmt.setString (2, post.getMessage());
 			preparedStmt.setDate  (3, post.getData_created_On());
 			preparedStmt.setString(4, post.getProfile_id());
+			preparedStmt.setInt(5, idapp);
 
 			// execute the preparedstatement
 			preparedStmt.execute();
@@ -77,14 +72,14 @@ public class Connector {
 
 	}
 
-	public Boolean insertProfile(Profile profile){
+	public Boolean insertProfile(Profile profile, int idapp){
 
 		Connection con = null;
 		String query = null;
 
 
 		// the mysql insert statement
-		query = " INSERT INTO profile (idpost, first_name, last_name)"
+		query = " INSERT INTO profile (idprofile, first_name, last_name, app_idapp)"
 				+ " values (?, ?, ?, ?)";
 
 		// create the mysql insert preparedstatement
@@ -95,6 +90,7 @@ public class Connector {
 			preparedStmt.setString (1, profile.getId());
 			preparedStmt.setString (2, profile.getFirst_name());
 			preparedStmt.setString (3, profile.getLast_name());
+			preparedStmt.setInt(4, idapp);
 
 			// execute the preparedstatement
 			preparedStmt.execute();
@@ -109,13 +105,13 @@ public class Connector {
 
 	}
 
-	public Boolean insertUser(User user){
+	public Boolean insertUser(User user, int idapp){
 
 		Connection con = null;
 		String query = null;
 
 		// the mysql insert statement
-		query = " INSERT INTO users (iduser, first_name, last_name)"
+		query = " INSERT INTO users (iduser, first_name, last_name, app_idapp)"
 				+ " values (?, ?, ?, ?)";
 
 		// create the mysql insert preparedstatement
@@ -126,6 +122,7 @@ public class Connector {
 			preparedStmt.setString (1, user.getId());
 			preparedStmt.setString (2, user.getFirst_name());
 			preparedStmt.setString (3, user.getLast_name());
+			preparedStmt.setInt(4, idapp);
 
 			// execute the preparedstatement
 			preparedStmt.execute();
@@ -171,6 +168,39 @@ public class Connector {
 			return 0;
 		}
 	}
+		
+	public Boolean insertReactions(Reactions reaction){
+		
+		Connection con = null;
+		String query = null;
+
+		// the mysql insert statement
+		query = " INSERT INTO reactions (posts_idpost, posts_profile_idprofile, users_iduser, reaction, app_idapp)"
+				+ " values (?, ?, ?, ?,?)";
+
+		// create the mysql insert preparedstatement
+		java.sql.PreparedStatement preparedStmt;
+		try {
+			con = get_connection();
+			preparedStmt = con.prepareStatement(query);
+			preparedStmt.setString (1, reaction.getIdpost());
+			preparedStmt.setString(2, reaction.getIdprofile());
+			preparedStmt.setString(3, reaction.getIduser());
+			preparedStmt.setString(4, reaction.getReaction());
+			preparedStmt.setInt(5, reaction.getIdapp());
+
+			// execute the preparedstatement
+			preparedStmt.execute();
+			con.close();
+			return true;
+
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return false;
+		}
+	}
+	
 	
 	
 	public App getAppbyId(int id){
@@ -223,7 +253,6 @@ public class Connector {
 		}
 					
 	}
-	
 	
  	public Post getPostbyId(String id){
 
@@ -358,6 +387,11 @@ public class Connector {
 		// create a sql date object so we can use it in our INSERT statement
 		Calendar calendar = Calendar.getInstance();
 		java.sql.Date startDate = new java.sql.Date(calendar.getTime().getTime());
+		App app = new App("tese0", "tes1","test2", new String[]{"a","b","c"}, new String[]{"a","b","c"});
+		c.insertApp(app);
+
+		Reactions reaction = new Reactions("1","1","1",1, "fooooda");
+		c.insertReactions(reaction);
 
 		System.out.println("o");
 	}
