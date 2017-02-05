@@ -9,6 +9,7 @@ import facebook.ProfileElement;
 import facebook.ReactionsElement;
 import facebook.UserElement;
 import facebook.App;
+import facebook.CommentsElement;
 
 
 public class Connector {
@@ -73,6 +74,39 @@ public class Connector {
 
 	}
 
+	public Boolean insertComment(CommentsElement comment, int idapp){
+
+		Connection con = null;
+
+		// the mysql insert statement
+		String query = " INSERT INTO comments (idpost, comment, created_on, posts_idpost, posts_add_idapp, users_iduser, likes) values (?, ?, ?, ?, ?, ?, ?)";
+
+		// create the mysql insert preparedstatement
+		java.sql.PreparedStatement preparedStmt;
+		try {
+			con = get_connection();
+			preparedStmt = con.prepareStatement(query);
+			preparedStmt.setString (1, comment.getId());
+			preparedStmt.setString (2, comment.getComment());
+			preparedStmt.setDate  (3, comment.getData_created_On());
+			preparedStmt.setString(4, comment.getPost_id());
+			preparedStmt.setInt(5, idapp);
+			preparedStmt.setString(6, comment.getUser_id());
+			preparedStmt.setInt(7, comment.getLikes());
+
+			// execute the preparedstatement
+			preparedStmt.execute();
+			con.close();
+			return true;
+
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return false;
+		}
+
+	}
+	
 	public Boolean insertProfile(ProfileElement profile, int idapp){
 
 		Connection con = null;
@@ -202,8 +236,7 @@ public class Connector {
 		}
 	}
 	
-	
-	
+		
 	public App getAppbyId(int id){
 		
 		App app = null;
@@ -298,9 +331,58 @@ public class Connector {
 			System.err.println(e.getMessage());
 			return null;
 		}
+	}
+ 	
+	public CommentsElement getCommentbyId(String id){
+
+		Connection conn = null;
+		String comment = null;
+		Date dateCreated = null;
+		String id_post = null;
+		int app_id ;
+		String id_user = null;
+		int likes = 0;
+
+		try
+		{
+			// create our mysql database connection
+			conn = get_connection();
+
+			// our SQL SELECT query. 
+			// if you only need a few columns, specify them by name instead of using "*"
+			String query = "SELECT * FROM comments where idcomments='"+ id +"'";
+
+			// create the java statement
+			Statement st = conn.createStatement();
+
+
+			// execute the query, and get a java resultset
+			ResultSet rs = st.executeQuery(query);
+
+			// iterate through the java resultset
+			while (rs.next())
+			{
+
+				comment = rs.getString("comment");
+				dateCreated = rs.getDate("created_on");
+				id_post = rs.getString("posts_idpost");
+				app_id = rs.getInt("posts_app_idapp");
+				id_user = rs.getString("users_iduser");
+				likes = rs.getInt("likes");
+
+			}
+			st.close();
+			return new CommentsElement(id, comment, id_user, id_post, dateCreated, likes);
+		}
+		catch (Exception e)
+		{
+			System.err.println("Got an exception! ");
+			System.err.println(e.getMessage());
+			return null;
+		}
 
 	}
-
+ 	
 	public UserElement getUserbyId(String id){
 
 		Connection conn = null;

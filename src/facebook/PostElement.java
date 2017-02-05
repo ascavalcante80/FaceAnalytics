@@ -10,6 +10,7 @@ import java.sql.Date;
  * @author alexandre
  *
  */
+
 public class PostElement extends FacebookElement{
 
 	private String message;
@@ -55,7 +56,5 @@ public class PostElement extends FacebookElement{
 
 	public void setData_created_On(Date data_created_On) {
 		this.data_created_On = data_created_On;
-	}
-	
-	
+	}	
 }

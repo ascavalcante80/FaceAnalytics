@@ -2,7 +2,11 @@ package crawler;
 
 import java.io.IOException;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
+
+import javax.net.ssl.HandshakeCompletedListener;
+
 import facebook4j.Facebook;
 import facebook4j.FacebookException;
 import facebook4j.FacebookFactory;
@@ -10,13 +14,33 @@ import facebook4j.Post;
 import facebook4j.Reading;
 import facebook4j.ResponseList;
 import facebook4j.auth.AccessToken;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.Reader;
+import java.net.URL;
+import java.nio.charset.Charset;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardOpenOption;
 
-public class FacebookCrawler {
+import org.json.JSONException;
+import org.json.JSONObject;
+
+public class FacebookCrawler implements Runnable {
 
 	private Facebook facebook;
+	Thread threadAnalyserPost;
+	private String post_id;
+	private int time_monitoring;
+	private int duration_moritonig;
+	private String access_token;
 
 	public FacebookCrawler(String access_token, String app_id, String app_secret, String permissions) throws InterruptedException, FacebookException, IOException{
-
+		
+		this.access_token = access_token;
 		facebook = new FacebookFactory().getInstance();
 		AccessToken ac = new AccessToken(access_token);
 		facebook.setOAuthAppId(app_id,app_secret);
@@ -24,39 +48,87 @@ public class FacebookCrawler {
 		facebook.setOAuthPermissions(permissions);
 	}
 
-	
-	
-	
-	public void getPost(){
-		
-		try {
-			ResponseList<Post> feeds = facebook.getFeed("1535230416709539");
-			
-			for (Post post : feeds) {
-				
-				System.out.println(post.getMessage() + 				post.getCreatedTime().toString());
-			}
-			
-			
-		} catch (FacebookException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}		
+
+	private String readAll(Reader rd) throws IOException {
+		StringBuilder sb = new StringBuilder();
+		int cp;
+		while ((cp = rd.read()) != -1) {
+			sb.append((char) cp);
+		}
+		return sb.toString();
 	}
-	
-	
-	
+
+
+	private JSONObject readJsonFromUrl(String url) throws IOException, JSONException {
+		InputStream is = new URL(url).openStream();
+		try {
+			BufferedReader rd = new BufferedReader(new InputStreamReader(is, Charset.forName("UTF-8")));
+			String jsonText = readAll(rd);
+			JSONObject json = new JSONObject(jsonText);
+			return json;
+		} finally {
+			is.close();
+		}
+	}
+
+
+	public String getSharesCount(String postId) throws IOException, JSONException {
+		JSONObject json = readJsonFromUrl("https://graph.facebook.com/"+ postId +"?fields=shares");
+		JSONObject jsonShares = json.getJSONObject("shares");
+		return jsonShares.get("count").toString();
+	}
+
+
+	public LinkedHashMap <String, Integer> getAllReactions(String post_id) throws IOException, JSONException{
+
+		LinkedHashMap <String, Integer> reactions = new LinkedHashMap();
+
+		JSONObject json = readJsonFromUrl("https://graph.facebook.com/v2.8/?ids=" + post_id + "&fields=reactions.type(LOVE).limit(0).summary(total_count).as(reactions_love)%2Creactions.type(WOW).limit(0).summary(total_count).as(reactions_wow)%2Creactions.type(HAHA).limit(0).summary(total_count).as(reactions_haha)%2C%20reactions.type(LIKE).limit(0).summary(total_count).as(reactions_like)%2Creactions.type(SAD).limit(0).summary(total_count).as(reactions_sad)%2Creactions.type(ANGRY).limit(0).summary(total_count).as(reactions_angry)&access_token=" + access_token);
+		int loves  = json.getJSONObject(post_id).getJSONObject("reactions_love").getJSONObject("summary").getInt("total_count");
+		int wow  = json.getJSONObject(post_id).getJSONObject("reactions_wow").getJSONObject("summary").getInt("total_count");
+		int haha  = json.getJSONObject(post_id).getJSONObject("reactions_haha").getJSONObject("summary").getInt("total_count");
+		int likes  = json.getJSONObject(post_id).getJSONObject("reactions_like").getJSONObject("summary").getInt("total_count");
+		int sad  = json.getJSONObject(post_id).getJSONObject("reactions_sad").getJSONObject("summary").getInt("total_count");
+		int angry  = json.getJSONObject(post_id).getJSONObject("reactions_angry").getJSONObject("summary").getInt("total_count");
+
+		reactions.put("loves", new Integer(loves));
+		reactions.put("wow", new Integer(wow));
+		reactions.put("haha", new Integer(haha));
+		reactions.put("likes", new Integer(likes));
+		reactions.put("sad", new Integer(sad));
+		reactions.put("angry", new Integer(loves));
+
+		return reactions;
+
+	}
+
+
+	public void monitorPost(String post_id, int time_monitoring, int duration_monitoring)throws FacebookException, InterruptedException, IOException {
+
+		this.post_id = post_id;
+		this.time_monitoring = time_monitoring;
+		this.duration_moritonig = duration_monitoring; // in hours
+
+		String threadname = "Thread Monitor Page";
+		System.out.println("Starting ");
+		if (threadAnalyserPost == null)
+		{
+			threadAnalyserPost = new Thread (this, threadname);
+			threadAnalyserPost.start ();
+		}			
+	}
+
 
 	public LinkedHashMap <String, String> getAllPosts(String profile_id, int wait_time, int result_limit){
 
 		// create list to keep posts crawled
 		LinkedHashMap<String, String> posts_list = new LinkedHashMap<>();
-		
+
 		// convert time to milliseconds
 		wait_time = wait_time * 1000;
 
 		try {
-			
+
 			System.out.println("Crawling posts page: " + profile_id);
 
 			ResponseList<Post> posts = null;
@@ -114,6 +186,55 @@ public class FacebookCrawler {
 		}
 
 		return posts_list;
+	}
+
+
+	@Override
+	public void run() {
+
+		time_monitoring = time_monitoring * 1000;
+		System.out.println("Crawling posts page: " + post_id);
+		long start_time = new Date().getTime();
+		long end_time = start_time + (duration_moritonig * 3600);
+		long time_now =0;
+
+		Path path = Paths.get(post_id + "_reactions_monitoring.txt");
+
+		try {
+			Files.write(path, ("loves,wow,haha,likes,sad,angry" + "\n").getBytes("UTF-8"), StandardOpenOption.CREATE_NEW);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+		do{
+
+			try {
+
+				LinkedHashMap <String, Integer> reactions = getAllReactions(post_id);
+				String line = "";
+				for (String key: reactions.keySet()) {
+					line += reactions.get(key)+ ",";
+				}
+				line = line.substring(0, line.length() -1); // eliminate trailing comma
+				Files.write(path, (line + "\n").getBytes("UTF-8"), StandardOpenOption.APPEND);			
+
+
+			} catch (IOException | JSONException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
+			
+			try {
+				Thread.sleep(time_monitoring);
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+
+		}while(time_now < end_time);
+
+
 	}
 
 }
