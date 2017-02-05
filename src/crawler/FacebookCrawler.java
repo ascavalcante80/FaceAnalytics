@@ -88,12 +88,15 @@ public class FacebookCrawler implements Runnable {
 		return jsonShares.get("count").toString();
 	}
 
-	public String getAllComments(String post_id) throws IOException, JSONException {
-		JSONObject json = readJsonFromUrl("https://graph.facebook.com/"+ post_id + "?fields=comments");
-		JSONArray json_comments = json.getJSONObject("comments").getJSONArray("data");
-		String after = null;
-		LinkedHashMap <String, CommentsElement> list_comments = new LinkedHashMap();
-	
+	public LinkedHashMap <String, CommentsElement> getAllComments(String post_id, int result_limit, int time_sleep) throws IOException, JSONException {
+
+
+		String query = "https://graph.facebook.com/v2.8/"+post_id+"/comments?fields=like_count,created_time,from,message,id&limit="+result_limit+"&access_token="+access_token;
+		JSONObject json = readJsonFromUrl(query);
+		JSONArray json_comments = json.getJSONArray("data");
+		String next_url = null;
+		LinkedHashMap <String, CommentsElement> list_comments = new LinkedHashMap<String, CommentsElement>();
+
 		do{
 
 			for (int i = 0; i < json_comments.length(); i++) {
@@ -105,20 +108,22 @@ public class FacebookCrawler implements Runnable {
 				int likes = json_temp_comment.getInt("like_count");
 				String user_id = json_temp_comment.getJSONObject("from").getString("id");
 				String name_user = json_temp_comment.getJSONObject("from").getString("name");
-				list_comments.put(id, new CommentsElement(id, comment, new UserElement(user_id, name_user), post_id, date_created_On, likes));
+				list_comments.put(id, new CommentsElement(id, comment, new UserElement(user_id, name_user), post_id, date_created_On, 0));
 			}
 			try{
-				after = json.getJSONObject("paging").getJSONObject("cursors").getString("after");
+				Thread.sleep(time_sleep*1000);
+				next_url = json.getJSONObject("paging").getString("next");
+				json = readJsonFromUrl(next_url);
+				json_comments = json.getJSONArray("data");
+
 			} catch (Exception e ){
 				e.printStackTrace();
-				after = null;
+				next_url = null;
 			}
-			
-		} while(after != null);
 
-		String paging_after = json.getJSONObject("paging").getJSONObject("cursors").getString("after");
+		} while(next_url != null);
 
-		return "";
+		return list_comments;
 	}
 
 	public LinkedHashMap <String, Integer> getAllReactions(String post_id) throws IOException, JSONException{

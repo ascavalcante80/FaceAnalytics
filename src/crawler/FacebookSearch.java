@@ -11,11 +11,11 @@ import facebook4j.Reading;
 import facebook4j.ResponseList;
 import facebook4j.auth.AccessToken;
 
-public class FacebookSearcher {
+public class FacebookSearch {
 
 	private Facebook facebook;
 
-	public FacebookSearcher(String access_token, String app_id, String app_secret, String permissions) throws InterruptedException, FacebookException, IOException{
+	public FacebookSearch(String access_token, String app_id, String app_secret, String permissions) throws InterruptedException, FacebookException, IOException{
 
 
 		facebook = new FacebookFactory().getInstance();
@@ -25,6 +25,7 @@ public class FacebookSearcher {
 		facebook.setOAuthPermissions(permissions);
 	}
 
+	
 	public LinkedHashMap<String,String> searchProfileDysplayingLastPosts(String page_name, int result_limit){
 		
 		LinkedHashMap<String, String> last_posts= new LinkedHashMap();
