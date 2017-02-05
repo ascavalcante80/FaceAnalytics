@@ -26,6 +26,7 @@ public class Connector {
 
 	}
 
+
 	private Connection get_connection(){
 
 		Connection con = null;
@@ -42,6 +43,7 @@ public class Connector {
 		}    	
 	}
 
+
 	public Boolean insertPost(PostElement post, int idapp){
 
 		Connection con = null;
@@ -56,7 +58,7 @@ public class Connector {
 			preparedStmt = con.prepareStatement(query);
 			preparedStmt.setString (1, post.getId());
 			preparedStmt.setString (2, post.getMessage());
-			preparedStmt.setDate  (3, post.getData_created_On());
+			preparedStmt.setTimestamp(3, post.getData_created_On());			
 			preparedStmt.setString(4, post.getProfile_id());
 			preparedStmt.setInt(5, idapp);
 			preparedStmt.setInt(6, post.getShares());
@@ -74,6 +76,7 @@ public class Connector {
 
 	}
 
+
 	public Boolean insertComment(CommentsElement comment, int idapp){
 
 		Connection con = null;
@@ -88,10 +91,10 @@ public class Connector {
 			preparedStmt = con.prepareStatement(query);
 			preparedStmt.setString (1, comment.getId());
 			preparedStmt.setString (2, comment.getComment());
-			preparedStmt.setDate  (3, comment.getData_created_On());
+			preparedStmt.setTimestamp  (3, comment.getData_created_On());
 			preparedStmt.setString(4, comment.getPost_id());
 			preparedStmt.setInt(5, idapp);
-			preparedStmt.setString(6, comment.getUser_id());
+			preparedStmt.setString(6, comment.getUser().getId());
 			preparedStmt.setInt(7, comment.getLikes());
 
 			// execute the preparedstatement
@@ -106,7 +109,8 @@ public class Connector {
 		}
 
 	}
-	
+
+
 	public Boolean insertProfile(ProfileElement profile, int idapp){
 
 		Connection con = null;
@@ -114,8 +118,8 @@ public class Connector {
 
 
 		// the mysql insert statement
-		query = " INSERT INTO profile (idprofile, first_name, last_name, app_idapp)"
-				+ " values (?, ?, ?, ?)";
+		query = " INSERT INTO profile (idprofile, name, app_idapp)"
+				+ " values (?, ?, ?)";
 
 		// create the mysql insert preparedstatement
 		java.sql.PreparedStatement preparedStmt;
@@ -123,9 +127,8 @@ public class Connector {
 			con = get_connection();
 			preparedStmt = con.prepareStatement(query);
 			preparedStmt.setString (1, profile.getId());
-			preparedStmt.setString (2, profile.getFirst_name());
-			preparedStmt.setString (3, profile.getLast_name());
-			preparedStmt.setInt(4, idapp);
+			preparedStmt.setString (2, profile.getName());
+			preparedStmt.setInt(3, idapp);
 
 			// execute the preparedstatement
 			preparedStmt.execute();
@@ -139,6 +142,7 @@ public class Connector {
 		}
 
 	}
+
 
 	public Boolean insertUser(UserElement user, int idapp){
 
@@ -146,8 +150,8 @@ public class Connector {
 		String query = null;
 
 		// the mysql insert statement
-		query = " INSERT INTO users (iduser, first_name, last_name, app_idapp)"
-				+ " values (?, ?, ?, ?)";
+		query = " INSERT INTO users (iduser, name, app_idapp)"
+				+ " values (?, ?, ?)";
 
 		// create the mysql insert preparedstatement
 		java.sql.PreparedStatement preparedStmt;
@@ -155,9 +159,8 @@ public class Connector {
 			con = get_connection();
 			preparedStmt = con.prepareStatement(query);
 			preparedStmt.setString (1, user.getId());
-			preparedStmt.setString (2, user.getFirst_name());
-			preparedStmt.setString (3, user.getLast_name());
-			preparedStmt.setInt(4, idapp);
+			preparedStmt.setString (2, user.getName());
+			preparedStmt.setInt(3, idapp);
 
 			// execute the preparedstatement
 			preparedStmt.execute();
@@ -172,8 +175,9 @@ public class Connector {
 
 	}
 
+
 	public int insertApp(App app){
-	
+
 		Connection con = null;
 		String query = null;
 
@@ -203,9 +207,10 @@ public class Connector {
 			return 0;
 		}
 	}
-		
+
+
 	public Boolean insertReactions(ReactionsElement reaction){
-		
+
 		Connection con = null;
 		String query = null;
 
@@ -235,12 +240,12 @@ public class Connector {
 			return false;
 		}
 	}
-	
-		
+
+
 	public App getAppbyId(int id){
-		
+
 		App app = null;
-				
+
 		Connection conn = null;
 		int idapp = 0;
 		String app_name = null;
@@ -248,7 +253,7 @@ public class Connector {
 		String app_secret = null;
 		String permissions = null;
 		String profiles = null;
-		
+
 		try
 		{
 			// create our mysql database connection
@@ -285,14 +290,15 @@ public class Connector {
 			System.err.println(e.getMessage());
 			return null;
 		}
-					
+
 	}
-	
- 	public PostElement getPostbyId(String id){
+
+
+	public PostElement getPostbyId(String id){
 
 		Connection conn = null;
 		String message = null;
-		Date dateCreated = null;
+		Timestamp dateCreated = null;
 		String idprofile = null;
 		int shares = 0;
 
@@ -317,7 +323,7 @@ public class Connector {
 			{
 
 				message = rs.getString("message");
-				dateCreated = rs.getDate("created_on");
+				dateCreated = rs.getTimestamp("created_on");
 				idprofile = rs.getString("profile_idprofile");
 				shares = rs.getInt("shares");
 
@@ -332,15 +338,17 @@ public class Connector {
 			return null;
 		}
 	}
- 	
+
+
 	public CommentsElement getCommentbyId(String id){
 
 		Connection conn = null;
 		String comment = null;
-		Date dateCreated = null;
-		String id_post = null;
+		Timestamp data_created_On = null;
+		String post_id = null;
 		int app_id ;
 		String id_user = null;
+		String user_name = null;
 		int likes = 0;
 
 		try
@@ -350,7 +358,7 @@ public class Connector {
 
 			// our SQL SELECT query. 
 			// if you only need a few columns, specify them by name instead of using "*"
-			String query = "SELECT * FROM comments where idcomments='"+ id +"'";
+			String query = "SELECT * FROM FaceAnalytics.comments inner join FaceAnalytics.users on FaceAnalytics.users.iduser=comments.users_iduser where idcomment='"+ id +"'";
 
 			// create the java statement
 			Statement st = conn.createStatement();
@@ -364,15 +372,17 @@ public class Connector {
 			{
 
 				comment = rs.getString("comment");
-				dateCreated = rs.getDate("created_on");
-				id_post = rs.getString("posts_idpost");
+				data_created_On = rs.getTimestamp("created_on");
+				post_id = rs.getString("posts_idpost");
 				app_id = rs.getInt("posts_app_idapp");
 				id_user = rs.getString("users_iduser");
+				user_name = rs.getString("name");				
 				likes = rs.getInt("likes");
 
 			}
 			st.close();
-			return new CommentsElement(id, comment, id_user, id_post, dateCreated, likes);
+
+			return new CommentsElement(id_user, comment, new UserElement(id_user, user_name), post_id, data_created_On, likes);
 		}
 		catch (Exception e)
 		{
@@ -382,12 +392,12 @@ public class Connector {
 		}
 
 	}
- 	
+
+
 	public UserElement getUserbyId(String id){
 
 		Connection conn = null;
-		String first_name = null;
-		String last_name = null;
+		String name = null;
 
 		try
 		{
@@ -409,11 +419,11 @@ public class Connector {
 			while (rs.next())
 			{
 
-				first_name = rs.getString("first_name");
-				last_name = rs.getString("last_name");
+				name = rs.getString("name");
+
 			}
 			st.close();
-			return new UserElement(id, first_name, last_name);
+			return new UserElement(id, name);
 		}
 		catch (Exception e)
 		{
@@ -424,11 +434,11 @@ public class Connector {
 
 	}
 
+
 	public ProfileElement getProfilebyId(String id){
-		
+
 		Connection conn = null;
-		String first_name = null;
-		String last_name = null;
+		String name = null;
 
 		try
 		{
@@ -450,11 +460,11 @@ public class Connector {
 			while (rs.next())
 			{
 
-				first_name = rs.getString("first_name");
-				last_name = rs.getString("last_name");
+				name = rs.getString("name");
+
 			}
 			st.close();
-			return new ProfileElement(id, first_name, last_name);
+			return new ProfileElement(id, name);
 		}
 		catch (Exception e)
 		{
@@ -462,9 +472,10 @@ public class Connector {
 			System.err.println(e.getMessage());
 			return null;
 		}
-	
+
 	}
-			
+
+
 	public static void main(String [] args){
 
 		Connector c = new Connector("jdbc:mysql://localhost:3306/FaceAnalytics?autoReconnect=true&useSSL=false", "root", "20060907jl");

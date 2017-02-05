@@ -5,6 +5,7 @@ package facebook;
 
 import java.util.Calendar;
 import java.sql.Date;
+import java.sql.Timestamp;
 
 /**
  * @author alexandre
@@ -14,7 +15,7 @@ import java.sql.Date;
 public class PostElement extends FacebookElement{
 
 	private String message;
-	private Date data_created_On;
+	private Timestamp data_created_On;
 	private String profile_id;
 	private int shares;
 	
@@ -26,7 +27,7 @@ public class PostElement extends FacebookElement{
 		this.shares = shares;
 	}
 
-	public PostElement(String id, String message, Date data_created_On, String profile_id, int shares) {
+	public PostElement(String id, String message, Timestamp data_created_On, String profile_id, int shares) {
 		super(id);
 		this.message = message;
 		this.data_created_On = data_created_On;
@@ -50,11 +51,11 @@ public class PostElement extends FacebookElement{
 		this.message = message;
 	}
 
-	public Date getData_created_On() {
+	public Timestamp getData_created_On() {
 		return data_created_On;
 	}
 
-	public void setData_created_On(Date data_created_On) {
+	public void setData_created_On(Timestamp data_created_On) {
 		this.data_created_On = data_created_On;
 	}	
 }

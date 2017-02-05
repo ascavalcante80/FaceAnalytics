@@ -1,6 +1,7 @@
 package crawler;
 
 import java.io.IOException;
+
 import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -14,6 +15,8 @@ import facebook4j.Post;
 import facebook4j.Reading;
 import facebook4j.ResponseList;
 import facebook4j.auth.AccessToken;
+import util.Converter;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -25,9 +28,16 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
+import java.sql.SQLClientInfoException;
+import java.sql.Timestamp;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.junit.After;
+
+import facebook.CommentsElement;
+import facebook.UserElement;
 
 public class FacebookCrawler implements Runnable {
 
@@ -39,7 +49,7 @@ public class FacebookCrawler implements Runnable {
 	private String access_token;
 
 	public FacebookCrawler(String access_token, String app_id, String app_secret, String permissions) throws InterruptedException, FacebookException, IOException{
-		
+
 		this.access_token = access_token;
 		facebook = new FacebookFactory().getInstance();
 		AccessToken ac = new AccessToken(access_token);
@@ -78,6 +88,38 @@ public class FacebookCrawler implements Runnable {
 		return jsonShares.get("count").toString();
 	}
 
+	public String getAllComments(String post_id) throws IOException, JSONException {
+		JSONObject json = readJsonFromUrl("https://graph.facebook.com/"+ post_id + "?fields=comments");
+		JSONArray json_comments = json.getJSONObject("comments").getJSONArray("data");
+		String after = null;
+		LinkedHashMap <String, CommentsElement> list_comments = new LinkedHashMap();
+	
+		do{
+
+			for (int i = 0; i < json_comments.length(); i++) {
+				JSONObject json_temp_comment= json_comments.getJSONObject(i);
+				String comment= json_temp_comment.getString("message");
+				String id = json_temp_comment.getString("id");
+
+				Timestamp date_created_On = Converter.convertDate(json_temp_comment.getString("created_time"));
+				int likes = json_temp_comment.getInt("like_count");
+				String user_id = json_temp_comment.getJSONObject("from").getString("id");
+				String name_user = json_temp_comment.getJSONObject("from").getString("name");
+				list_comments.put(id, new CommentsElement(id, comment, new UserElement(user_id, name_user), post_id, date_created_On, likes));
+			}
+			try{
+				after = json.getJSONObject("paging").getJSONObject("cursors").getString("after");
+			} catch (Exception e ){
+				e.printStackTrace();
+				after = null;
+			}
+			
+		} while(after != null);
+
+		String paging_after = json.getJSONObject("paging").getJSONObject("cursors").getString("after");
+
+		return "";
+	}
 
 	public LinkedHashMap <String, Integer> getAllReactions(String post_id) throws IOException, JSONException{
 
@@ -224,7 +266,7 @@ public class FacebookCrawler implements Runnable {
 				// TODO Auto-generated catch block
 				e1.printStackTrace();
 			}
-			
+
 			try {
 				Thread.sleep(time_monitoring);
 			} catch (InterruptedException e) {
@@ -232,8 +274,9 @@ public class FacebookCrawler implements Runnable {
 				e.printStackTrace();
 			}
 
-		}while(time_now < end_time);
+			time_now = new Date().getTime();
 
+		}while(time_now < end_time);
 
 	}
 
