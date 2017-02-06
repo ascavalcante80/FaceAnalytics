@@ -1,10 +1,11 @@
 package crawler;
 
 import java.io.IOException;
-
+import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
+import java.util.concurrent.TimeUnit;
 
 import javax.net.ssl.HandshakeCompletedListener;
 
@@ -30,6 +31,7 @@ import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
 import java.sql.SQLClientInfoException;
 import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -59,7 +61,7 @@ public class FacebookCrawler implements Runnable {
 	}
 
 
-	private String readAll(Reader rd) throws IOException {
+	private static String readAll(Reader rd) throws IOException {
 		StringBuilder sb = new StringBuilder();
 		int cp;
 		while ((cp = rd.read()) != -1) {
@@ -69,7 +71,7 @@ public class FacebookCrawler implements Runnable {
 	}
 
 
-	private JSONObject readJsonFromUrl(String url) throws IOException, JSONException {
+	private static JSONObject readJsonFromUrl(String url) throws IOException, JSONException {
 		InputStream is = new URL(url).openStream();
 		try {
 			BufferedReader rd = new BufferedReader(new InputStreamReader(is, Charset.forName("UTF-8")));
@@ -82,12 +84,20 @@ public class FacebookCrawler implements Runnable {
 	}
 
 
-	public String getSharesCount(String postId) throws IOException, JSONException {
-		JSONObject json = readJsonFromUrl("https://graph.facebook.com/"+ postId +"?fields=shares");
-		JSONObject jsonShares = json.getJSONObject("shares");
-		return jsonShares.get("count").toString();
+	public static String getSharesCount(String postId)  {
+		JSONObject json;
+		try {
+			json = readJsonFromUrl("https://graph.facebook.com/"+ postId +"?fields=shares");
+			JSONObject jsonShares = json.getJSONObject("shares");
+			return jsonShares.get("count").toString();
+		} catch (IOException | JSONException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return "0";
+		}
 	}
 
+	
 	public LinkedHashMap <String, CommentsElement> getAllComments(String post_id, int result_limit, int time_sleep) throws IOException, JSONException {
 
 
@@ -126,6 +136,7 @@ public class FacebookCrawler implements Runnable {
 		return list_comments;
 	}
 
+	
 	public LinkedHashMap <String, Integer> getAllReactions(String post_id) throws IOException, JSONException{
 
 		LinkedHashMap <String, Integer> reactions = new LinkedHashMap();
@@ -153,10 +164,10 @@ public class FacebookCrawler implements Runnable {
 	public void monitorPost(String post_id, int time_monitoring, int duration_monitoring)throws FacebookException, InterruptedException, IOException {
 
 		this.post_id = post_id;
-		this.time_monitoring = time_monitoring;
+		this.time_monitoring = time_monitoring; // in minutes
 		this.duration_moritonig = duration_monitoring; // in hours
 
-		String threadname = "Thread Monitor Page";
+		String threadname = "Thread Monitor Post Reactions";
 		System.out.println("Starting ");
 		if (threadAnalyserPost == null)
 		{
@@ -238,33 +249,38 @@ public class FacebookCrawler implements Runnable {
 
 	@Override
 	public void run() {
-
-		time_monitoring = time_monitoring * 1000;
+		
+		time_monitoring = time_monitoring * 1000 * 60;
 		System.out.println("Crawling posts page: " + post_id);
 		long start_time = new Date().getTime();
-		long end_time = start_time + (duration_moritonig * 3600);
+		long end_time = start_time + TimeUnit.HOURS.toMillis(duration_moritonig);
 		long time_now =0;
 
 		Path path = Paths.get(post_id + "_reactions_monitoring.txt");
 
 		try {
-			Files.write(path, ("loves,wow,haha,likes,sad,angry" + "\n").getBytes("UTF-8"), StandardOpenOption.CREATE_NEW);
+			Files.write(path, ("time,loves,wow,haha,likes,sad,angry,shares" + "\n").getBytes("UTF-8"), StandardOpenOption.CREATE_NEW);
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 
 		do{
+			System.out.println(new Timestamp(System.currentTimeMillis()).toString() + " - Monitoring Reactions from post " + post_id);
 
 			try {
 
 				LinkedHashMap <String, Integer> reactions = getAllReactions(post_id);
-				String line = "";
+								
+				//build string to write the file
+				String line = new Timestamp(System.currentTimeMillis()).toString() + ",";
 				for (String key: reactions.keySet()) {
 					line += reactions.get(key)+ ",";
 				}
-				line = line.substring(0, line.length() -1); // eliminate trailing comma
-				Files.write(path, (line + "\n").getBytes("UTF-8"), StandardOpenOption.APPEND);			
+				
+				String shares = getSharesCount(post_id);
+				
+				Files.write(path, (line + shares + "\n").getBytes("UTF-8"), StandardOpenOption.APPEND);			
 
 
 			} catch (IOException | JSONException e1) {
@@ -278,7 +294,8 @@ public class FacebookCrawler implements Runnable {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-
+			
+			// get time
 			time_now = new Date().getTime();
 
 		}while(time_now < end_time);

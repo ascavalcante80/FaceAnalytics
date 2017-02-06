@@ -1,23 +1,16 @@
 package facebook;
 
 public class App {
-	private int idapp;
+	private String idapp;
 	private String app_name;
 	private String access_token;
 	private String app_secret;
 	private String [] permission;
 	private String [] profiles;
 	
-	public App(String app_name, String access_token, String app_secret, String [] permission, String [] profiles) {
-		
-		this.app_name = app_name;
-		this.access_token = access_token;		
-		this.app_secret = app_secret;
-		this.permission = permission;
-		this.profiles = profiles;
-	}
 
-	public App(int idapp, String app_name, String access_token, String app_secret, String [] permission, String [] profiles) {
+
+	public App(String idapp, String app_name, String access_token, String app_secret, String [] permission, String [] profiles) {
 		
 		this.idapp = idapp;
 		this.app_name = app_name;
@@ -27,6 +20,14 @@ public class App {
 		this.profiles = profiles;
 	}
 		
+	public String getIdapp() {
+		return idapp;
+	}
+
+	public void setIdapp(String idapp) {
+		this.idapp = idapp;
+	}
+	
 	public String getApp_name() {
 		return app_name;
 	}

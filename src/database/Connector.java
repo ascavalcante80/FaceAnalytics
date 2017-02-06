@@ -44,7 +44,7 @@ public class Connector {
 	}
 
 
-	public Boolean insertPost(PostElement post, int idapp){
+	public Boolean insertPost(PostElement post, String idapp){
 
 		Connection con = null;
 
@@ -60,7 +60,7 @@ public class Connector {
 			preparedStmt.setString (2, post.getMessage());
 			preparedStmt.setTimestamp(3, post.getData_created_On());			
 			preparedStmt.setString(4, post.getProfile_id());
-			preparedStmt.setInt(5, idapp);
+			preparedStmt.setString(5, idapp);
 			preparedStmt.setInt(6, post.getShares());
 
 			// execute the preparedstatement
@@ -69,8 +69,7 @@ public class Connector {
 			return true;
 
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+
 			return false;
 		}
 
@@ -111,7 +110,7 @@ public class Connector {
 	}
 
 
-	public Boolean insertProfile(ProfileElement profile, int idapp){
+	public Boolean insertProfile(ProfileElement profile, String idapp){
 
 		Connection con = null;
 		String query = null;
@@ -128,7 +127,7 @@ public class Connector {
 			preparedStmt = con.prepareStatement(query);
 			preparedStmt.setString (1, profile.getId());
 			preparedStmt.setString (2, profile.getName());
-			preparedStmt.setInt(3, idapp);
+			preparedStmt.setString(3, idapp);
 
 			// execute the preparedstatement
 			preparedStmt.execute();
@@ -176,35 +175,37 @@ public class Connector {
 	}
 
 
-	public int insertApp(App app){
+	public Boolean insertApp(App app){
 
 		Connection con = null;
 		String query = null;
 
 		// the mysql insert statement
-		query = " INSERT INTO app (app_name, access_token, app_secret, permissions, profiles)"
-				+ " values (?, ?, ?, ?,?)";
+		query = " INSERT INTO app (idapp, name, access_token, app_secret, permissions, profiles)"
+				+ " values (?, ?, ?, ?, ?,?)";
 
 		// create the mysql insert preparedstatement
 		java.sql.PreparedStatement preparedStmt;
 		try {
 			con = get_connection();
 			preparedStmt = con.prepareStatement(query);
-			preparedStmt.setString (1, app.getApp_name());
-			preparedStmt.setString(2, app.getAccess_token());
-			preparedStmt.setString(3, app.getApp_secret());
-			preparedStmt.setString(4, app.getPermission().toString());
-			preparedStmt.setString(5, app.getProfiles().toString());
+
+			preparedStmt.setString (1, app.getIdapp());
+			preparedStmt.setString (2, app.getApp_name());
+			preparedStmt.setString(3, app.getAccess_token());
+			preparedStmt.setString(4, app.getApp_secret());
+			preparedStmt.setString(5, String.join(",", app.getPermission()));
+			preparedStmt.setString(6, String.join(",", app.getProfiles()));
 
 			// execute the preparedstatement
 			preparedStmt.execute();
 			con.close();
-			return 1;
+			return true;
 
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-			return 0;
+			return false;
 		}
 	}
 
@@ -247,7 +248,7 @@ public class Connector {
 		App app = null;
 
 		Connection conn = null;
-		int idapp = 0;
+		String idapp = null;
 		String app_name = null;
 		String access_token = null;
 		String app_secret = null;
@@ -273,8 +274,8 @@ public class Connector {
 			// iterate through the java resultset
 			while (rs.next())
 			{
-				idapp = rs.getInt("idapp");
-				app_name = rs.getString("app_name");
+				idapp = rs.getString("idapp");
+				app_name = rs.getString("name");
 				access_token = rs.getString("access_token");
 				app_secret = rs.getString("app_secret");
 				permissions = rs.getString("permissions");
@@ -473,23 +474,6 @@ public class Connector {
 			return null;
 		}
 
-	}
-
-
-	public static void main(String [] args){
-
-		Connector c = new Connector("jdbc:mysql://localhost:3306/FaceAnalytics?autoReconnect=true&useSSL=false", "root", "20060907jl");
-
-		// create a sql date object so we can use it in our INSERT statement
-		Calendar calendar = Calendar.getInstance();
-		java.sql.Date startDate = new java.sql.Date(calendar.getTime().getTime());
-		App app = new App("tese0", "tes1","test2", new String[]{"a","b","c"}, new String[]{"a","b","c"});
-		c.insertApp(app);
-
-		ReactionsElement reaction = new ReactionsElement("1","1","1",1, "fooooda");
-		c.insertReactions(reaction);
-
-		System.out.println("o");
 	}
 
 }
