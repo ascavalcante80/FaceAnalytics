@@ -19,13 +19,6 @@ public class PostElement extends FacebookElement{
 	private String profile_id;
 	private int shares;
 	
-	public int getShares() {
-		return shares;
-	}
-
-	public void setShares(int shares) {
-		this.shares = shares;
-	}
 
 	public PostElement(String id, String message, Timestamp data_created_On, String profile_id, int shares) {
 		super(id);
@@ -34,7 +27,13 @@ public class PostElement extends FacebookElement{
 		this.profile_id = profile_id;
 		this.shares = shares;
 	}
+	public int getShares() {
+		return shares;
+	}
 
+	public void setShares(int shares) {
+		this.shares = shares;
+	}
 	public String getProfile_id() {
 		return profile_id;
 	}

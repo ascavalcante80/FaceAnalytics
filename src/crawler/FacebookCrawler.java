@@ -46,9 +46,9 @@ public class FacebookCrawler implements Runnable {
 	private Facebook facebook;
 	Thread threadAnalyserPost;
 	private String post_id;
-	private int time_monitoring;
+	private int check_time;
 	private int duration_moritonig;
-	private String access_token;
+	private static String access_token;
 
 	public FacebookCrawler(String access_token, String app_id, String app_secret, String permissions) throws InterruptedException, FacebookException, IOException{
 
@@ -84,10 +84,10 @@ public class FacebookCrawler implements Runnable {
 	}
 
 
-	public static String getSharesCount(String postId)  {
+	public String getSharesCount(String postId)  {
 		JSONObject json;
 		try {
-			json = readJsonFromUrl("https://graph.facebook.com/"+ postId +"?fields=shares");
+			json = readJsonFromUrl("https://graph.facebook.com/"+ postId +"?fields=shares&access_token=" + access_token);
 			JSONObject jsonShares = json.getJSONObject("shares");
 			return jsonShares.get("count").toString();
 		} catch (IOException | JSONException e) {
@@ -161,10 +161,10 @@ public class FacebookCrawler implements Runnable {
 	}
 
 
-	public void monitorPost(String post_id, int time_monitoring, int duration_monitoring)throws FacebookException, InterruptedException, IOException {
+	public void monitorPost(String post_id, int check_time, int duration_monitoring)throws FacebookException, InterruptedException, IOException {
 
 		this.post_id = post_id;
-		this.time_monitoring = time_monitoring; // in minutes
+		this.check_time = check_time; // in minutes
 		this.duration_moritonig = duration_monitoring; // in hours
 
 		String threadname = "Thread Monitor Post Reactions";
@@ -250,11 +250,16 @@ public class FacebookCrawler implements Runnable {
 	@Override
 	public void run() {
 		
-		time_monitoring = time_monitoring * 1000 * 60;
+		check_time = check_time * 1000 * 60;
 		System.out.println("Crawling posts page: " + post_id);
 		long start_time = new Date().getTime();
-		long end_time = start_time + TimeUnit.HOURS.toMillis(duration_moritonig);
-		long time_now =0;
+                long end_time;
+                if(duration_moritonig== 0){
+                    end_time = 999999999999999999L;
+                } else {
+                    end_time = start_time + TimeUnit.HOURS.toMillis(duration_moritonig);
+                }
+                long time_now =0;
 
 		Path path = Paths.get(post_id + "_reactions_monitoring.txt");
 
@@ -289,7 +294,7 @@ public class FacebookCrawler implements Runnable {
 			}
 
 			try {
-				Thread.sleep(time_monitoring);
+				Thread.sleep(check_time);
 			} catch (InterruptedException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();

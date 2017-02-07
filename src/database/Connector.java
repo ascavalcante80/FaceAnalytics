@@ -10,6 +10,7 @@ import facebook.ReactionsElement;
 import facebook.UserElement;
 import facebook.App;
 import facebook.CommentsElement;
+import java.util.LinkedHashMap;
 
 
 public class Connector {
@@ -17,7 +18,8 @@ public class Connector {
 	private String url;
 	private String user;
 	private String password;
-
+        private String idapp = null;
+        
 	public Connector(String url, String user, String password) {
 
 		this.url = url;
@@ -27,6 +29,16 @@ public class Connector {
 	}
 
 
+        public String getIdapp(){
+            return idapp;
+        }
+        
+        
+        public void setIdapp(String idapp){
+            this.idapp = idapp;
+        }
+        
+        
 	private Connection get_connection(){
 
 		Connection con = null;
@@ -243,6 +255,227 @@ public class Connector {
 	}
 
 
+        public LinkedHashMap<String, App> selectAllApps(){
+                LinkedHashMap<String, App> app_list = new LinkedHashMap<>();
+		Connection conn = null;
+		String idapp = null;
+		String app_name = null;
+		String access_token = null;
+		String app_secret = null;
+		String permissions = null;
+		String profiles = null;
+
+		try
+		{
+			// create our mysql database connection
+			conn = get_connection();
+
+			// our SQL SELECT query. 
+			// if you only need a few columns, specify them by name instead of using "*"
+			String query = "SELECT * FROM app;";
+
+			// create the java statement
+			Statement st = conn.createStatement();
+
+
+			// execute the query, and get a java resultset
+			ResultSet rs = st.executeQuery(query);
+
+			// iterate through the java resultset
+			while (rs.next())
+			{
+				idapp = rs.getString("idapp");
+				app_name = rs.getString("name");
+				access_token = rs.getString("access_token");
+				app_secret = rs.getString("app_secret");
+				permissions = rs.getString("permissions");
+				profiles = rs.getString("profiles");
+
+                                app_list.put(idapp, new App(idapp, app_name, access_token, app_secret, permissions.split(","), profiles.split(",")));
+			}
+			st.close();
+		}
+		catch (Exception e)
+		{
+                    e.printStackTrace();
+			System.err.println("Got an exception! ");
+			System.err.println(e.getMessage());
+			return null;
+		}
+                return app_list;
+        }       
+        
+        
+        public LinkedHashMap<String, PostElement> selectPostsWhere(String field, String value){
+            LinkedHashMap <String, PostElement> result = new LinkedHashMap();
+            	Connection conn = null;
+		
+		try
+		{
+			// create our mysql database connection
+			conn = get_connection();
+
+                        // prepare query
+			String query = "SELECT * FROM FaceAnalytics.posts WHERE posts." + field +"=\""+value+"\";";
+
+			// create the java statement
+			Statement st = conn.createStatement();
+
+			// execute the query, and get a java resultset
+			ResultSet rs = st.executeQuery(query);
+
+			// iterate through the java resultset
+			while (rs.next())
+			{
+				String id_post = rs.getString("idpost");
+				String message = rs.getString("message");
+				Timestamp created_on = new Timestamp(rs.getDate("created_on").getTime());
+				String id_profile = rs.getString("profile_idprofile");
+				int shares = rs.getInt("shares");
+
+                                result.put(id_post, new PostElement(id_post, message, created_on, id_profile, shares));
+			}
+			st.close();
+		}
+		catch (Exception e)
+		{
+                    e.printStackTrace();
+			System.err.println("Got an exception! ");
+			System.err.println(e.getMessage());
+			return null;
+		}
+            
+            return result;
+        }
+        
+        
+        public LinkedHashMap <String, App> selectAppWhere(String field, String value){
+                LinkedHashMap <String, App> result = new LinkedHashMap();
+            	Connection conn = null;
+		
+		try
+		{
+			// create our mysql database connection
+			conn = get_connection();
+
+                        // prepare query
+			String query = "SELECT * FROM FaceAnalytics.app WHERE app." + field +"=\""+value+"\" and app.idapp=\"" + idapp +"\";;";
+
+			// create the java statement
+			Statement st = conn.createStatement();
+
+			// execute the query, and get a java resultset
+			ResultSet rs = st.executeQuery(query);
+
+			// iterate through the java resultset
+			while (rs.next())
+			{
+				String idapp = rs.getString("idapp");
+				String name = rs.getString("name");
+                                String access_token = rs.getString("access_token");
+                                String app_secret = rs.getString("app_secret");
+                                String permissions = rs.getString("permissions");
+                                String profiles = rs.getString("profiles");
+
+                                result.put(idapp, new App(idapp, name, access_token, app_secret, permissions.split(","), profiles.split(",")));
+                                
+			}
+			st.close();
+		}
+		catch (Exception e)
+		{
+                    e.printStackTrace();
+			System.err.println("Got an exception! ");
+			System.err.println(e.getMessage());
+			return null;
+		}
+            
+            return result;
+        
+        }
+        
+        
+        public LinkedHashMap<String, ProfileElement> selectProfileWhere(String field, String value){
+                LinkedHashMap <String, ProfileElement> result = new LinkedHashMap();
+            	Connection conn = null;
+		
+		try
+		{
+			// create our mysql database connection
+			conn = get_connection();
+
+                        // prepare query
+			String query = "SELECT * FROM FaceAnalytics.profile WHERE profile." + field +"=\""+value+"\" and profile.app_idapp=\"" + idapp +"\";";
+
+			// create the java statement
+			Statement st = conn.createStatement();
+
+			// execute the query, and get a java resultset
+			ResultSet rs = st.executeQuery(query);
+
+			// iterate through the java resultset
+			while (rs.next())
+			{
+				String id_profile = rs.getString("idprofile");
+				String name = rs.getString("name");
+
+                                result.put(id_profile, new ProfileElement(id_profile, name));
+                                
+			}
+			st.close();
+		}
+		catch (Exception e)
+		{
+                    e.printStackTrace();
+			System.err.println("Got an exception! ");
+			System.err.println(e.getMessage());
+			return null;
+		}
+            
+            return result;
+        }
+        
+        public LinkedHashMap<String,String> getPagesPreview(String idapp){
+                        
+		Connection conn = null;
+                LinkedHashMap<String,String> result = new LinkedHashMap<>();
+		try
+		{
+			// create our mysql database connection
+			conn = get_connection();
+
+			// our SQL SELECT query. 
+			// if you only need a few columns, specify them by name instead of using "*"
+			String query = "SELECT profile.idprofile, profile.name, message, created_on FROM FaceAnalytics.profile inner join FaceAnalytics.posts on FaceAnalytics.posts.profile_idprofile=FaceAnalytics.profile.idprofile where posts.app_idapp=\""+idapp+"\" limit 10";
+
+			// create the java statement
+			Statement st = conn.createStatement();
+
+			// execute the query, and get a java resultset
+			ResultSet rs = st.executeQuery(query);
+
+			// iterate through the java resultset
+			while (rs.next())
+			{
+				String idprofile = rs.getString("idprofile");
+                                String name = rs.getString("name");
+                                String message = rs.getString("message");
+                                String date = rs.getDate("created_on").toString();
+                                result.put(idprofile, name + "<sep>" + message + "<sep>" + date);
+                                
+			}
+			st.close();
+                        return result;
+		}
+		catch (Exception e)
+		{
+			System.err.println("Got an exception! ");
+			System.err.println(e.getMessage());
+			return null;
+		}        
+        }
+        
+        
 	public App getAppbyId(int id){
 
 		App app = null;
@@ -266,7 +499,6 @@ public class Connector {
 
 			// create the java statement
 			Statement st = conn.createStatement();
-
 
 			// execute the query, and get a java resultset
 			ResultSet rs = st.executeQuery(query);
@@ -476,4 +708,7 @@ public class Connector {
 
 	}
 
+
+        
+        
 }

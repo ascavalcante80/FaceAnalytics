@@ -31,10 +31,10 @@ public class CrawlerPageTools implements Runnable {
 	private String app_id;
 	private String app_secret;
 	private String permissions;
-	private int time_monitoring;
+	private int check_time;
 	private int duration_monitoring;
 
-	public CrawlerPageTools(String page_id, String access_token, String app_id, String permissions, String app_secret, Connector conn, int sleep_time, int time_monitoring, int duration_monitoring) {
+	public CrawlerPageTools(String page_id, String access_token, String app_id, String permissions, String app_secret, Connector conn, int sleep_time, int check_time, int duration_monitoring) {
 		super();
 		this.page_id = page_id;
 
@@ -49,7 +49,7 @@ public class CrawlerPageTools implements Runnable {
 		this.app_id = app_id;
 		this.app_secret = app_secret;
 		this.permissions = permissions;
-		this.time_monitoring = time_monitoring;
+		this.check_time = check_time;
 		this.duration_monitoring = duration_monitoring;
 
 	}
@@ -87,15 +87,16 @@ public class CrawlerPageTools implements Runnable {
 				Post post_temp = facebook.getFeed(page_id, new Reading().limit(1)).get(0);
 
 				Timestamp data_created_On = new Timestamp(post_temp.getCreatedTime().getTime());
+                                
 
-				int shares = Integer.parseInt(FacebookCrawler.getSharesCount(post_temp.getId()));
+				int shares = Integer.parseInt(new FacebookCrawler(access_token, app_id, app_secret, permissions).getSharesCount(post_temp.getId()));
 
 				PostElement last_post = new PostElement(post_temp.getId(), post_temp.getMessage(), data_created_On, page_id, shares);
 
 				if (conn.insertPost(last_post, app_id)){
 					// Post wasn't in the database, start do monitor
 					FacebookCrawler fb_crawler = new FacebookCrawler(access_token, app_id, app_secret, permissions);
-					fb_crawler.monitorPost(last_post.getId(), time_monitoring, duration_monitoring);
+					fb_crawler.monitorPost(last_post.getId(), check_time, duration_monitoring);
 
 					System.out.println("--> Starting Monitoring " + new Timestamp(System.currentTimeMillis()).toString());
 				}

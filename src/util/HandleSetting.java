@@ -13,18 +13,18 @@ import java.nio.file.StandardOpenOption;
 public class HandleSetting {
 
 
-	public static Boolean writeSettingsFile(String path, String url, String user, String port, String password){
+	public static Boolean writeSettingsFile(String path, String hostname, String user_name, String port, String password){
 
-		FaceSettings fs = new FaceSettings(url, user, port, password);
+		FaceSettings fs = new FaceSettings(hostname, user_name, port, password);
 
 		try {
-			FileOutputStream fileOut =
-					new FileOutputStream(path);
+			FileOutputStream fileOut = new FileOutputStream(path);
 			ObjectOutputStream out = new ObjectOutputStream(fileOut);
 			out.writeObject(fs);
 			out.close();
 			fileOut.close();
 		}catch(IOException i) {
+                    i.printStackTrace();
 
 			return false;
 		}

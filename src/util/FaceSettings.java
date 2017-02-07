@@ -1,27 +1,29 @@
 package util;
 
-public class FaceSettings {
+import java.io.Serializable;
 
-	private String url;
+public class FaceSettings implements Serializable{
+
+	private String hostname;
 	private String user;
 	private String port;
 	private String password;
 	
 	
 	
-	public FaceSettings(String url, String user, String port, String password) {
+	public FaceSettings(String hostname, String user, String port, String password) {
 		super();
-		this.url = url;
+		this.hostname = hostname;
 		this.user = user;
 		this.port = port;
 		this.password = password;
 	}
 	
-	public String getUrl() {
-		return url;
+	public String getHostname() {
+		return hostname;
 	}
-	public void setUrl(String url) {
-		this.url = url;
+	public void setHostname(String hostname) {
+		this.hostname = hostname;
 	}
 	public String getUser() {
 		return user;
