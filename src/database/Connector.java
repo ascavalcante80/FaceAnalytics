@@ -18,8 +18,8 @@ public class Connector {
 	private String url;
 	private String user;
 	private String password;
-        private String idapp = null;
-        
+	private String idapp = null;
+
 	public Connector(String url, String user, String password) {
 
 		this.url = url;
@@ -29,16 +29,16 @@ public class Connector {
 	}
 
 
-        public String getIdapp(){
-            return idapp;
-        }
-        
-        
-        public void setIdapp(String idapp){
-            this.idapp = idapp;
-        }
-        
-        
+	public String getIdapp(){
+		return idapp;
+	}
+
+
+	public void setIdapp(String idapp){
+		this.idapp = idapp;
+	}
+
+
 	private Connection get_connection(){
 
 		Connection con = null;
@@ -81,7 +81,7 @@ public class Connector {
 			return true;
 
 		} catch (SQLException e) {
-
+			
 			return false;
 		}
 
@@ -177,8 +177,8 @@ public class Connector {
 			preparedStmt.execute();
 			con.close();
 			return true;
-                                       
-                        
+
+
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -256,8 +256,8 @@ public class Connector {
 	}
 
 
-        public LinkedHashMap<String, App> selectAllApps(){
-                LinkedHashMap<String, App> app_list = new LinkedHashMap<>();
+	public LinkedHashMap<String, App> selectAllApps(){
+		LinkedHashMap<String, App> app_list = new LinkedHashMap<>();
 		Connection conn = null;
 		String idapp = null;
 		String app_name = null;
@@ -292,31 +292,31 @@ public class Connector {
 				permissions = rs.getString("permissions");
 				profiles = rs.getString("profiles");
 
-                                app_list.put(idapp, new App(idapp, app_name, access_token, app_secret, permissions.split(","), profiles.split(",")));
+				app_list.put(idapp, new App(idapp, app_name, access_token, app_secret, permissions.split(","), profiles.split(",")));
 			}
 			st.close();
 		}
 		catch (Exception e)
 		{
-                    e.printStackTrace();
+			e.printStackTrace();
 			System.err.println("Got an exception! ");
 			System.err.println(e.getMessage());
 			return null;
 		}
-                return app_list;
-        }       
-        
-        
-        public LinkedHashMap<String, PostElement> selectPostsWhere(String field, String value){
-            LinkedHashMap <String, PostElement> result = new LinkedHashMap();
-            	Connection conn = null;
-		
+		return app_list;
+	}       
+
+
+	public LinkedHashMap<String, PostElement> selectPostsWhere(String field, String value){
+		LinkedHashMap <String, PostElement> result = new LinkedHashMap();
+		Connection conn = null;
+
 		try
 		{
 			// create our mysql database connection
 			conn = get_connection();
 
-                        // prepare query
+			// prepare query
 			String query = "SELECT * FROM FaceAnalytics.posts WHERE posts." + field +"=\""+value+"\";";
 
 			// create the java statement
@@ -334,33 +334,79 @@ public class Connector {
 				String id_profile = rs.getString("profile_idprofile");
 				int shares = rs.getInt("shares");
 
-                                result.put(id_post, new PostElement(id_post, message, created_on, id_profile, shares));
+				result.put(id_post, new PostElement(id_post, message, created_on, id_profile, shares));
 			}
 			st.close();
 		}
 		catch (Exception e)
 		{
-                    e.printStackTrace();
+			e.printStackTrace();
 			System.err.println("Got an exception! ");
 			System.err.println(e.getMessage());
 			return null;
 		}
-            
-            return result;
-        }
-        
-        
-        public LinkedHashMap <String, App> selectAppWhere(String field, String value){
-                LinkedHashMap <String, App> result = new LinkedHashMap();
-            	Connection conn = null;
-		
+
+		return result;
+	}
+
+	public LinkedHashMap <String, CommentsElement> selectCommentsWhere(String field, String value){
+
+		LinkedHashMap <String, CommentsElement> result = new LinkedHashMap();
+		Connection conn = null;
+
 		try
 		{
 			// create our mysql database connection
 			conn = get_connection();
 
-                        // prepare query
-			String query = "SELECT * FROM FaceAnalytics.app WHERE app." + field +"=\""+value+"\" and app.idapp=\"" + idapp +"\";;";
+			// prepare query
+			String query = "SELECT * FROM FaceAnalytics.comments WHERE comments." + field +"=\"" + value + "\" and app_idapp=\"" + idapp +"\";;";
+
+			// create the java statement
+			Statement st = conn.createStatement();
+
+			// execute the query, and get a java resultset
+			ResultSet rs = st.executeQuery(query);
+
+			// iterate through the java resultset
+			while (rs.next())
+			{
+				String idcomment = rs.getString("idcomment");
+				String comment = rs.getString("comment");
+				Timestamp created_on = new Timestamp(rs.getDate("created_on").getTime());
+				String id_post = rs.getString("posts_idpost");
+				String id_user = rs.getString("users_iduser");
+				int likes = rs.getInt("likes");
+				
+				result.put(idcomment, new CommentsElement(idcomment, comment, new UserElement(id_user,""), id_post,created_on, likes));
+			}
+			st.close();
+			conn.close();
+		}
+		catch (Exception e)
+		{
+			e.printStackTrace();
+			System.err.println("Got an exception! ");
+			System.err.println(e.getMessage());
+			return null;
+		}
+
+		return result;
+
+
+	}
+
+	public LinkedHashMap <String, App> selectAppWhere(String field, String value){
+		LinkedHashMap <String, App> result = new LinkedHashMap();
+		Connection conn = null;
+
+		try
+		{
+			// create our mysql database connection
+			conn = get_connection();
+
+			// prepare query
+			String query = "SELECT * FROM FaceAnalytics.app WHERE app." + field +"=\""+value+"\" and app.idapp=\"" + idapp +"\";";
 
 			// create the java statement
 			Statement st = conn.createStatement();
@@ -373,39 +419,39 @@ public class Connector {
 			{
 				String idapp = rs.getString("idapp");
 				String name = rs.getString("name");
-                                String access_token = rs.getString("access_token");
-                                String app_secret = rs.getString("app_secret");
-                                String permissions = rs.getString("permissions");
-                                String profiles = rs.getString("profiles");
+				String access_token = rs.getString("access_token");
+				String app_secret = rs.getString("app_secret");
+				String permissions = rs.getString("permissions");
+				String profiles = rs.getString("profiles");
 
-                                result.put(idapp, new App(idapp, name, access_token, app_secret, permissions.split(","), profiles.split(",")));
-                                
+				result.put(idapp, new App(idapp, name, access_token, app_secret, permissions.split(","), profiles.split(",")));
+
 			}
 			st.close();
 		}
 		catch (Exception e)
 		{
-                    e.printStackTrace();
+			e.printStackTrace();
 			System.err.println("Got an exception! ");
 			System.err.println(e.getMessage());
 			return null;
 		}
-            
-            return result;
-        
-        }
-        
-        
-        public LinkedHashMap<String, ProfileElement> selectProfileWhere(String field, String value){
-                LinkedHashMap <String, ProfileElement> result = new LinkedHashMap();
-            	Connection conn = null;
-		
+
+		return result;
+
+	}
+
+
+	public LinkedHashMap<String, ProfileElement> selectProfileWhere(String field, String value){
+		LinkedHashMap <String, ProfileElement> result = new LinkedHashMap();
+		Connection conn = null;
+
 		try
 		{
 			// create our mysql database connection
 			conn = get_connection();
 
-                        // prepare query
+			// prepare query
 			String query = "SELECT * FROM FaceAnalytics.profile WHERE profile." + field +"=\""+value+"\" and profile.app_idapp=\"" + idapp +"\";";
 
 			// create the java statement
@@ -420,26 +466,26 @@ public class Connector {
 				String id_profile = rs.getString("idprofile");
 				String name = rs.getString("name");
 
-                                result.put(id_profile, new ProfileElement(id_profile, name));
-                                
+				result.put(id_profile, new ProfileElement(id_profile, name));
+
 			}
 			st.close();
 		}
 		catch (Exception e)
 		{
-                    e.printStackTrace();
+			e.printStackTrace();
 			System.err.println("Got an exception! ");
 			System.err.println(e.getMessage());
 			return null;
 		}
-            
-            return result;
-        }
-        
-        public LinkedHashMap<String,String> getPagesPreview(String idapp){
-                        
+
+		return result;
+	}
+
+	public LinkedHashMap<String,String> getPagesPreview(String idapp){
+
 		Connection conn = null;
-                LinkedHashMap<String,String> result = new LinkedHashMap<>();
+		LinkedHashMap<String,String> result = new LinkedHashMap<>();
 		try
 		{
 			// create our mysql database connection
@@ -459,14 +505,14 @@ public class Connector {
 			while (rs.next())
 			{
 				String idprofile = rs.getString("idprofile");
-                                String name = rs.getString("name");
-                                String message = rs.getString("message");
-                                String date = rs.getDate("created_on").toString();
-                                result.put(idprofile, name + "<sep>" + message + "<sep>" + date);
-                                
+				String name = rs.getString("name");
+				String message = rs.getString("message");
+				String date = rs.getDate("created_on").toString();
+				result.put(idprofile, name + "<sep>" + message + "<sep>" + date);
+
 			}
 			st.close();
-                        return result;
+			return result;
 		}
 		catch (Exception e)
 		{
@@ -474,9 +520,9 @@ public class Connector {
 			System.err.println(e.getMessage());
 			return null;
 		}        
-        }
-        
-        
+	}
+
+
 	public App getAppbyId(int id){
 
 		App app = null;
@@ -710,6 +756,6 @@ public class Connector {
 	}
 
 
-        
-        
+
+
 }

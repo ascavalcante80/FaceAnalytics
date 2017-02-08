@@ -153,6 +153,10 @@ public class MainJFrame extends javax.swing.JFrame {
         jButton5 = new javax.swing.JButton();
         jLabelReactionsError = new javax.swing.JLabel();
         jLabel3 = new javax.swing.JLabel();
+        jLabel23 = new javax.swing.JLabel();
+        jLabel24 = new javax.swing.JLabel();
+        jCheckBox13 = new javax.swing.JCheckBox();
+        jCheckBox14 = new javax.swing.JCheckBox();
         jPanelCreateApp = new javax.swing.JPanel();
         jLabel11 = new javax.swing.JLabel();
         jButtonConnect = new javax.swing.JButton();
@@ -697,7 +701,7 @@ public class MainJFrame extends javax.swing.JFrame {
 
         jCheckBox11.setText("Timestamp");
 
-        jCheckBox12.setText("Post's Id");
+        jCheckBox12.setText("Id");
 
         jCheckBox15.setText("Timestamp");
 
@@ -705,7 +709,7 @@ public class MainJFrame extends javax.swing.JFrame {
 
         jCheckBox17.setText("User's name");
 
-        jCheckBox18.setText("Comments Id");
+        jCheckBox18.setText("Id");
 
         jLabel1.setFont(new java.awt.Font("DejaVu Sans", 1, 12)); // NOI18N
         jLabel1.setText("Select Fields");
@@ -754,41 +758,18 @@ public class MainJFrame extends javax.swing.JFrame {
 
         jLabel3.setText(".txt");
 
+        jLabel23.setText("Comments");
+
+        jLabel24.setText("Posts");
+
+        jCheckBox13.setText("Shares");
+
+        jCheckBox14.setText("Profile's Id");
+
         javax.swing.GroupLayout jPanelExportProfileLayout = new javax.swing.GroupLayout(jPanelExportProfile);
         jPanelExportProfile.setLayout(jPanelExportProfileLayout);
         jPanelExportProfileLayout.setHorizontalGroup(
             jPanelExportProfileLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanelExportProfileLayout.createSequentialGroup()
-                .addGap(64, 64, 64)
-                .addComponent(jCheckBox3)
-                .addGap(18, 18, 18)
-                .addComponent(jCheckBox4)
-                .addGap(18, 18, 18)
-                .addComponent(jCheckBox5)
-                .addGap(18, 18, 18)
-                .addComponent(jCheckBox6)
-                .addGap(18, 18, 18)
-                .addComponent(jCheckBox7)
-                .addGap(18, 18, 18)
-                .addComponent(jCheckBox8)
-                .addGap(0, 0, 0)
-                .addComponent(jCheckBox9)
-                .addGap(18, 18, 18)
-                .addComponent(jCheckBox10)
-                .addGap(0, 0, Short.MAX_VALUE))
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanelExportProfileLayout.createSequentialGroup()
-                .addContainerGap(15, Short.MAX_VALUE)
-                .addGroup(jPanelExportProfileLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanelExportProfileLayout.createSequentialGroup()
-                        .addGroup(jPanelExportProfileLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jRadioButton2)
-                            .addComponent(jSeparator3, javax.swing.GroupLayout.PREFERRED_SIZE, 820, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(18, 18, 18))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanelExportProfileLayout.createSequentialGroup()
-                        .addComponent(jLabel5)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jLabelAppId2, javax.swing.GroupLayout.PREFERRED_SIZE, 207, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addContainerGap())))
             .addGroup(jPanelExportProfileLayout.createSequentialGroup()
                 .addGroup(jPanelExportProfileLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanelExportProfileLayout.createSequentialGroup()
@@ -836,44 +817,78 @@ public class MainJFrame extends javax.swing.JFrame {
                                                 .addComponent(jButton5, javax.swing.GroupLayout.PREFERRED_SIZE, 124, javax.swing.GroupLayout.PREFERRED_SIZE)))
                                         .addGap(0, 0, Short.MAX_VALUE))))))
                     .addGroup(jPanelExportProfileLayout.createSequentialGroup()
+                        .addGap(29, 29, 29)
                         .addGroup(jPanelExportProfileLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jRadioButton7)
                             .addGroup(jPanelExportProfileLayout.createSequentialGroup()
-                                .addGap(29, 29, 29)
-                                .addGroup(jPanelExportProfileLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(jRadioButton7)
-                                    .addGroup(jPanelExportProfileLayout.createSequentialGroup()
-                                        .addComponent(jRadioButton6)
-                                        .addGap(50, 50, 50)
-                                        .addComponent(jLabel10)
-                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                        .addComponent(jComboBoxFrom, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                        .addGap(162, 162, 162)
-                                        .addComponent(jLabel15)
-                                        .addGap(18, 18, 18)
-                                        .addComponent(jComboBoxUntil, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                            .addGroup(jPanelExportProfileLayout.createSequentialGroup()
-                                .addGap(84, 84, 84)
-                                .addGroup(jPanelExportProfileLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(jRadioButton4)
-                                    .addComponent(jRadioButton3)
-                                    .addComponent(jRadioButton5))
-                                .addGap(106, 106, 106)
-                                .addGroup(jPanelExportProfileLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addGroup(jPanelExportProfileLayout.createSequentialGroup()
-                                        .addGap(109, 109, 109)
-                                        .addComponent(jLabel1))
-                                    .addGroup(jPanelExportProfileLayout.createSequentialGroup()
-                                        .addGroup(jPanelExportProfileLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                            .addComponent(jCheckBox12)
-                                            .addComponent(jCheckBox11))
-                                        .addGap(72, 72, 72)
-                                        .addGroup(jPanelExportProfileLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                            .addComponent(jCheckBox15)
-                                            .addComponent(jCheckBox17)
-                                            .addComponent(jCheckBox18)
-                                            .addComponent(jCheckBox16))))))
-                        .addGap(0, 0, Short.MAX_VALUE)))
+                                .addComponent(jRadioButton6)
+                                .addGap(50, 50, 50)
+                                .addComponent(jLabel10)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(jComboBoxFrom, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(162, 162, 162)
+                                .addComponent(jLabel15)
+                                .addGap(18, 18, 18)
+                                .addComponent(jComboBoxUntil, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addGap(0, 0, Short.MAX_VALUE))
+                    .addGroup(jPanelExportProfileLayout.createSequentialGroup()
+                        .addGap(84, 84, 84)
+                        .addGroup(jPanelExportProfileLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jRadioButton4)
+                            .addComponent(jRadioButton3)
+                            .addComponent(jRadioButton5))
+                        .addGap(69, 69, 69)
+                        .addGroup(jPanelExportProfileLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jCheckBox14)
+                            .addComponent(jCheckBox11)
+                            .addComponent(jCheckBox12)
+                            .addComponent(jCheckBox13))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addGroup(jPanelExportProfileLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jCheckBox15)
+                            .addComponent(jCheckBox17)
+                            .addComponent(jCheckBox18)
+                            .addComponent(jCheckBox16)
+                            .addComponent(jLabel23))
+                        .addGap(207, 207, 207)))
                 .addContainerGap())
+            .addGroup(jPanelExportProfileLayout.createSequentialGroup()
+                .addGap(64, 64, 64)
+                .addComponent(jCheckBox3)
+                .addGap(18, 18, 18)
+                .addComponent(jCheckBox4)
+                .addGap(18, 18, 18)
+                .addComponent(jCheckBox5)
+                .addGap(18, 18, 18)
+                .addComponent(jCheckBox6)
+                .addGap(18, 18, 18)
+                .addComponent(jCheckBox7)
+                .addGap(18, 18, 18)
+                .addComponent(jCheckBox8)
+                .addGap(0, 0, 0)
+                .addComponent(jCheckBox9)
+                .addGap(18, 18, 18)
+                .addComponent(jCheckBox10)
+                .addGap(0, 0, Short.MAX_VALUE))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanelExportProfileLayout.createSequentialGroup()
+                .addContainerGap(15, Short.MAX_VALUE)
+                .addGroup(jPanelExportProfileLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jSeparator3, javax.swing.GroupLayout.PREFERRED_SIZE, 820, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(jPanelExportProfileLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanelExportProfileLayout.createSequentialGroup()
+                            .addComponent(jRadioButton2)
+                            .addGap(115, 115, 115)
+                            .addComponent(jLabel24)
+                            .addGap(482, 482, 482))
+                        .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanelExportProfileLayout.createSequentialGroup()
+                            .addComponent(jLabel5)
+                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                            .addComponent(jLabelAppId2, javax.swing.GroupLayout.PREFERRED_SIZE, 207, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addContainerGap()))))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanelExportProfileLayout.createSequentialGroup()
+                .addGap(0, 0, Short.MAX_VALUE)
+                .addComponent(jLabel1)
+                .addGap(349, 349, 349))
         );
         jPanelExportProfileLayout.setVerticalGroup(
             jPanelExportProfileLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -900,18 +915,35 @@ public class MainJFrame extends javax.swing.JFrame {
                     .addComponent(jCheckBox8)
                     .addComponent(jCheckBox9)
                     .addComponent(jCheckBox10))
-                .addGap(18, 18, 18)
-                .addComponent(jSeparator3, javax.swing.GroupLayout.PREFERRED_SIZE, 10, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jSeparator3, javax.swing.GroupLayout.PREFERRED_SIZE, 10, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jLabel1)
+                .addGap(7, 7, 7)
                 .addGroup(jPanelExportProfileLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanelExportProfileLayout.createSequentialGroup()
-                        .addComponent(jRadioButton2)
-                        .addGap(18, 18, 18)
-                        .addComponent(jRadioButton3)
-                        .addGap(18, 18, 18)
-                        .addComponent(jRadioButton4)
-                        .addGap(18, 18, 18)
-                        .addComponent(jRadioButton5)
+                        .addGroup(jPanelExportProfileLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(jPanelExportProfileLayout.createSequentialGroup()
+                                .addComponent(jRadioButton2)
+                                .addGap(8, 8, 8))
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanelExportProfileLayout.createSequentialGroup()
+                                .addComponent(jLabel23)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)))
+                        .addGroup(jPanelExportProfileLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addGroup(jPanelExportProfileLayout.createSequentialGroup()
+                                .addComponent(jRadioButton3)
+                                .addGap(18, 18, 18)
+                                .addComponent(jRadioButton4)
+                                .addGap(20, 20, 20)
+                                .addComponent(jRadioButton5))
+                            .addGroup(jPanelExportProfileLayout.createSequentialGroup()
+                                .addComponent(jCheckBox18)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(jCheckBox15)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(jCheckBox16)
+                                .addGap(12, 12, 12)
+                                .addComponent(jCheckBox17)))
                         .addGap(31, 31, 31)
                         .addComponent(jSeparator4, javax.swing.GroupLayout.PREFERRED_SIZE, 10, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -945,20 +977,17 @@ public class MainJFrame extends javax.swing.JFrame {
                                 .addComponent(jButtonMonitorProfile3, javax.swing.GroupLayout.PREFERRED_SIZE, 59, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addGap(2, 2, 2))))
                     .addGroup(jPanelExportProfileLayout.createSequentialGroup()
-                        .addComponent(jLabel1)
-                        .addGap(18, 18, 18)
-                        .addGroup(jPanelExportProfileLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(jCheckBox12)
-                            .addComponent(jCheckBox18))
+                        .addGap(6, 6, 6)
+                        .addComponent(jLabel24)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addGroup(jPanelExportProfileLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jCheckBox11)
-                            .addComponent(jCheckBox15))
+                        .addComponent(jCheckBox12)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(jCheckBox16)
-                        .addGap(12, 12, 12)
-                        .addComponent(jCheckBox17)))
-                .addContainerGap(13, Short.MAX_VALUE))
+                        .addComponent(jCheckBox11)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(jCheckBox13)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jCheckBox14)))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         jMainPanel.add(jPanelExportProfile, "card_export");
@@ -2022,6 +2051,8 @@ public class MainJFrame extends javax.swing.JFrame {
     private javax.swing.JCheckBox jCheckBox10;
     private javax.swing.JCheckBox jCheckBox11;
     private javax.swing.JCheckBox jCheckBox12;
+    private javax.swing.JCheckBox jCheckBox13;
+    private javax.swing.JCheckBox jCheckBox14;
     private javax.swing.JCheckBox jCheckBox15;
     private javax.swing.JCheckBox jCheckBox16;
     private javax.swing.JCheckBox jCheckBox17;
@@ -2058,6 +2089,8 @@ public class MainJFrame extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel20;
     private javax.swing.JLabel jLabel21;
     private javax.swing.JLabel jLabel22;
+    private javax.swing.JLabel jLabel23;
+    private javax.swing.JLabel jLabel24;
     private javax.swing.JLabel jLabel27;
     private javax.swing.JLabel jLabel28;
     private javax.swing.JLabel jLabel29;
