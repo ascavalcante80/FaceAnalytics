@@ -1,5 +1,7 @@
 package crawler;
 
+import database.Connector;
+import facebook.App;
 import java.io.IOException;
 import java.util.Calendar;
 import java.util.Date;
@@ -39,7 +41,11 @@ import org.json.JSONObject;
 import org.junit.After;
 
 import facebook.CommentsElement;
+import facebook.PostElement;
 import facebook.UserElement;
+import facebook4j.Page;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class FacebookCrawler implements Runnable {
 
@@ -49,15 +55,17 @@ public class FacebookCrawler implements Runnable {
 	private int check_time;
 	private int duration_moritonig;
 	private static String access_token;
+        private App app;
+        
+	public FacebookCrawler(App app) throws InterruptedException, FacebookException, IOException{
 
-	public FacebookCrawler(String access_token, String app_id, String app_secret, String permissions) throws InterruptedException, FacebookException, IOException{
-
-		this.access_token = access_token;
+                this.app = app;
+		this.access_token = app.getAccess_token();
 		facebook = new FacebookFactory().getInstance();
 		AccessToken ac = new AccessToken(access_token);
-		facebook.setOAuthAppId(app_id,app_secret);
+		facebook.setOAuthAppId(app.getIdapp(), app.getApp_secret());
 		facebook.setOAuthAccessToken(ac);
-		facebook.setOAuthPermissions(permissions);
+		facebook.setOAuthPermissions(String.join(",",app.getPermission()));
 	}
 
 
@@ -97,45 +105,176 @@ public class FacebookCrawler implements Runnable {
 		}
 	}
 
-	
-	public LinkedHashMap <String, CommentsElement> getAllComments(String post_id, int result_limit, int time_sleep) throws IOException, JSONException {
+        public LinkedHashMap<String,String> searchProfileDysplayingLastPosts(String page_name, int result_limit){
+		
+		LinkedHashMap<String, String> last_posts= new LinkedHashMap();
+		try {
+			ResponseList<Page> list_pages = facebook.searchPages(page_name,new Reading().limit(result_limit));
+			String message;
+			
+			for (Page page : list_pages) {
+				String page_id = page.getId();
+				ResponseList<Post> feed = facebook.getFeed(page.getId());
 
+				if (feed.size()> 0){
+					Post post = feed.get(0);
+					// Get (string) message.
+					message = post.getMessage();					
+										
+				} else {
+					message = "- this page is not public";
+				}
+				
+				String profile_name = page.getName();
+				last_posts.put(page_id, page_id + "<sep>" +profile_name + "<sep>" + message );
+				
+			}				
+			return last_posts;
 
-		String query = "https://graph.facebook.com/v2.8/"+post_id+"/comments?fields=like_count,created_time,from,message,id&limit="+result_limit+"&access_token="+access_token;
-		JSONObject json = readJsonFromUrl(query);
-		JSONArray json_comments = json.getJSONArray("data");
-		String next_url = null;
-		LinkedHashMap <String, CommentsElement> list_comments = new LinkedHashMap<String, CommentsElement>();
+		} catch (FacebookException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return null;
+		}
 
-		do{
-
-			for (int i = 0; i < json_comments.length(); i++) {
-				JSONObject json_temp_comment= json_comments.getJSONObject(i);
-				String comment= json_temp_comment.getString("message");
-				String id = json_temp_comment.getString("id");
-
-				Timestamp date_created_On = Converter.convertDate(json_temp_comment.getString("created_time"));
-				int likes = json_temp_comment.getInt("like_count");
-				String user_id = json_temp_comment.getJSONObject("from").getString("id");
-				String name_user = json_temp_comment.getJSONObject("from").getString("name");
-				list_comments.put(id, new CommentsElement(id, comment, new UserElement(user_id, name_user), post_id, date_created_On, 0));
-			}
-			try{
-				Thread.sleep(time_sleep*1000);
-				next_url = json.getJSONObject("paging").getString("next");
-				json = readJsonFromUrl(next_url);
-				json_comments = json.getJSONArray("data");
-
-			} catch (Exception e ){
-				e.printStackTrace();
-				next_url = null;
-			}
-
-		} while(next_url != null);
-
-		return list_comments;
 	}
 
+	
+        
+        
+        public String searchProfileByIdDysplayingLastPosts(String id_profile, int result_limit){
+		
+		LinkedHashMap<String, String> last_posts= new LinkedHashMap();
+
+
+                String message, result = null;
+                Page page;
+                ResponseList<Post> feed = null;
+                
+                try {
+                    
+                    page = facebook.getPage(id_profile);
+                    feed = facebook.getFeed(id_profile);
+                } catch (FacebookException ex) {
+                    Logger.getLogger(FacebookCrawler.class.getName()).log(Level.SEVERE, null, ex);
+                    return "";
+                }
+
+                if (feed.size()> 0){
+                        Post post = feed.get(0);
+                        // Get (string) message.
+                        message = post.getMessage();					
+
+                } else {
+                        message = "- this page is not public";
+                }
+
+                String profile_name = page.getName();
+                result = id_profile + "<sep>" +profile_name + "<sep>" + message;
+                return result;
+
+
+	}
+
+	
+	public LinkedHashMap <String, CommentsElement> getAllComments(String post_id, int result_limit, int time_sleep) {
+
+
+            try {
+                String query = "https://graph.facebook.com/v2.8/"+post_id+"/comments?fields=like_count,created_time,from,message,id&limit="+result_limit+"&access_token="+access_token;
+                JSONObject json = readJsonFromUrl(query);
+                JSONArray json_comments = json.getJSONArray("data");
+                String next_url = null;
+                LinkedHashMap <String, CommentsElement> list_comments = new LinkedHashMap<String, CommentsElement>();
+                
+                do{
+                    
+                    for (int i = 0; i < json_comments.length(); i++) {
+                        JSONObject json_temp_comment= json_comments.getJSONObject(i);
+                        String comment= json_temp_comment.getString("message");
+                        String id = json_temp_comment.getString("id");
+                        
+                        Timestamp date_created_On = Converter.convertDate(json_temp_comment.getString("created_time"));
+                        int likes = json_temp_comment.getInt("like_count");
+                        String user_id = json_temp_comment.getJSONObject("from").getString("id");
+                        String name_user = json_temp_comment.getJSONObject("from").getString("name");
+                        list_comments.put(id, new CommentsElement(id, comment, new UserElement(user_id, name_user), post_id, date_created_On, 0));
+                    }
+                    try{
+                        Thread.sleep(time_sleep*1000);
+                        next_url = json.getJSONObject("paging").getString("next");
+                        json = readJsonFromUrl(next_url);
+                        json_comments = json.getJSONArray("data");
+                        
+                    } catch (Exception e ){
+                        e.printStackTrace();
+                        next_url = null;
+                    }
+                    
+                } while(next_url != null);
+                
+                return list_comments;
+            } catch (JSONException ex) {
+                Logger.getLogger(FacebookCrawler.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (IOException ex) {
+                Logger.getLogger(FacebookCrawler.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            return null;
+	}
+
+
+        public void getAndSaveAllComments(String post_id, int result_limit, int time_sleep, Connector conn) {
+
+ 
+            try {
+                String query = "https://graph.facebook.com/v2.8/"+post_id+"/comments?fields=like_count,created_time,from,message,id&limit="+result_limit+"&access_token="+access_token;
+                JSONObject json = readJsonFromUrl(query);
+                JSONArray json_comments = json.getJSONArray("data");
+                String next_url = null;
+                LinkedHashMap <String, CommentsElement> list_comments = new LinkedHashMap<String, CommentsElement>();
+                
+                do{
+                    
+                    for (int i = 0; i < json_comments.length(); i++) {
+                        JSONObject json_temp_comment= json_comments.getJSONObject(i);
+                        String comment= json_temp_comment.getString("message");
+                        String id = json_temp_comment.getString("id");
+                        
+                        Timestamp date_created_On = Converter.convertDate(json_temp_comment.getString("created_time"));
+                        int likes = json_temp_comment.getInt("like_count");
+                        String user_id = json_temp_comment.getJSONObject("from").getString("id");
+                        String name_user = json_temp_comment.getJSONObject("from").getString("name");
+                        
+                        // the User must be inserted before the comment for the DB integrity
+                        conn.insertUser(new UserElement(user_id, name_user), app.getIdapp());
+                        
+                        // insert comment in the DB
+                        conn.insertComment(new CommentsElement(id, comment, new UserElement(user_id, name_user), post_id, date_created_On, likes), app.getIdapp());
+                        System.out.println("Comment: "+ id +" saved in the DB");
+                    }
+                    try{
+                        Thread.sleep(time_sleep*1000);
+                        System.out.println("Taking a nap");
+                        next_url = json.getJSONObject("paging").getString("next");
+                        json = readJsonFromUrl(next_url);
+                        json_comments = json.getJSONArray("data");
+                        
+                    } catch (Exception e ){
+                        e.printStackTrace();
+                        next_url = null;
+                    }
+                    
+                } while(next_url != null);
+                
+
+            } catch (JSONException ex) {
+                Logger.getLogger(FacebookCrawler.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (IOException ex) {
+                Logger.getLogger(FacebookCrawler.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            System.out.println("Crawling comments done");
+	}
+        
 	
 	public LinkedHashMap <String, Integer> getAllReactions(String post_id) throws IOException, JSONException{
 
@@ -176,7 +315,7 @@ public class FacebookCrawler implements Runnable {
 		}			
 	}
 
-
+                
 	public LinkedHashMap <String, String> getAllPosts(String profile_id, int wait_time, int result_limit){
 
 		// create list to keep posts crawled
@@ -246,6 +385,80 @@ public class FacebookCrawler implements Runnable {
 		return posts_list;
 	}
 
+        
+        public void getAndSaveAllPosts(String profile_id, int wait_time, int result_limit, Connector conn){
+
+		// create list to keep posts crawled
+		LinkedHashMap<String, String> posts_list = new LinkedHashMap<>();
+                
+		// convert time to milliseconds
+		wait_time = wait_time * 1000;
+
+		try {
+
+			System.out.println("Crawling posts page: " + profile_id);
+
+			ResponseList<Post> posts = null;
+			String dateLimit = null;
+
+			// stay in the loop until get a posts list empty
+			Boolean empty = false;
+			do {
+
+				if (dateLimit == null) {
+					posts = this.facebook.getFeed(profile_id, new Reading().limit(result_limit));
+					dateLimit = posts.get(posts.size() - 1).getCreatedTime().toString();
+
+				} else {
+					posts = this.facebook.getPosts(profile_id, new Reading().limit(result_limit).until(dateLimit));
+					if (!posts.isEmpty()) {
+						posts.remove(0);
+					}
+				}
+
+				// if posts is empty, quite the loop
+				if (!posts.isEmpty()) {
+
+					for (Post post : posts) {
+
+						System.out.println("Posts id:" + post.getId() + " created on " + post.getCreatedTime().toString() + " - done");
+
+						// save posts in list
+						if (!posts_list.containsKey(post.getId())) {
+							posts_list.put(post.getId(), post.getMessage()+ "<sep>" + post.getCreatedTime().toString());
+                                                                                                                
+                                                        int shares = Integer.parseInt(getSharesCount(post.getId()));
+                                                        Timestamp created_on = new Timestamp(post.getCreatedTime().getTime());
+                                                        conn.insertPost(new PostElement(post.getId(),post.getMessage(), created_on, profile_id,shares), app.getIdapp());
+                                                        System.out.println("Post: " + post.getId() + " saved in the DB");
+                                                        
+						} else {
+							System.out.println("Crawling done!");
+							empty = true;
+						}
+					}
+					System.out.println("Going to sleep for " + wait_time / 1000 + " seconds - " + new Date().toString());
+					Thread.sleep(wait_time);
+				} else {
+
+					empty = true;
+				}
+
+				// change date limit
+				if (posts.size() > 1) {
+					dateLimit = posts.get(posts.size() - 1).getCreatedTime().toString();
+				} else if (!posts.isEmpty()) {
+					dateLimit = posts.get(0).getCreatedTime().toString();
+				}
+
+			} while (!empty);
+
+		} catch (FacebookException | InterruptedException e) {
+			e.printStackTrace();
+		}
+            System.out.println("--Crawling done! - " + new Date().toString());
+	}
+               
 
 	@Override
 	public void run() {

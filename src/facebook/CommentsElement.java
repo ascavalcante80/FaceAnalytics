@@ -11,8 +11,7 @@ public class CommentsElement extends FacebookElement{
 	private Timestamp data_created_On;
 	private int likes;
 
-	public CommentsElement(String id, String comment, UserElement user, String post_id, Timestamp data_created_On,
-			int likes) {
+	public CommentsElement(String id, String comment, UserElement user, String post_id, Timestamp data_created_On, int likes) {
 		super(id);
 		this.comment = comment;
 		this.user = user;

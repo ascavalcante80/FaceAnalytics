@@ -88,12 +88,12 @@ public class Connector {
 	}
 
 
-	public Boolean insertComment(CommentsElement comment, int idapp){
+	public Boolean insertComment(CommentsElement comment, String idapp){
 
 		Connection con = null;
 
 		// the mysql insert statement
-		String query = " INSERT INTO comments (idpost, comment, created_on, posts_idpost, posts_add_idapp, users_iduser, likes) values (?, ?, ?, ?, ?, ?, ?)";
+		String query = " INSERT INTO comments (idcomment, comment, created_on, posts_idpost, app_idapp, users_iduser, likes) values (?, ?, ?, ?, ?, ?, ?)";
 
 		// create the mysql insert preparedstatement
 		java.sql.PreparedStatement preparedStmt;
@@ -104,7 +104,7 @@ public class Connector {
 			preparedStmt.setString (2, comment.getComment());
 			preparedStmt.setTimestamp  (3, comment.getData_created_On());
 			preparedStmt.setString(4, comment.getPost_id());
-			preparedStmt.setInt(5, idapp);
+			preparedStmt.setString(5, idapp);
 			preparedStmt.setString(6, comment.getUser().getId());
 			preparedStmt.setInt(7, comment.getLikes());
 
@@ -155,7 +155,7 @@ public class Connector {
 	}
 
 
-	public Boolean insertUser(UserElement user, int idapp){
+	public Boolean insertUser(UserElement user, String idapp){
 
 		Connection con = null;
 		String query = null;
@@ -171,13 +171,14 @@ public class Connector {
 			preparedStmt = con.prepareStatement(query);
 			preparedStmt.setString (1, user.getId());
 			preparedStmt.setString (2, user.getName());
-			preparedStmt.setInt(3, idapp);
+			preparedStmt.setString(3, idapp);
 
 			// execute the preparedstatement
 			preparedStmt.execute();
 			con.close();
 			return true;
-
+                                       
+                        
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

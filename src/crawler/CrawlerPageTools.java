@@ -10,6 +10,7 @@ import org.json.JSONException;
 import com.mysql.jdbc.exceptions.MySQLIntegrityConstraintViolationException;
 
 import database.Connector;
+import facebook.App;
 import facebook.PostElement;
 import facebook4j.Facebook;
 import facebook4j.FacebookException;
@@ -21,35 +22,29 @@ import facebook4j.Reading;
 import facebook4j.ResponseList;
 
 public class CrawlerPageTools implements Runnable {
-
+        
+        private App app;
 	private String page_id;
 	private Facebook facebook;
 	Thread threadAnalyserPage;
 	private Connector conn;
 	private int sleep_time;
-	private String access_token;
-	private String app_id;
-	private String app_secret;
-	private String permissions;
 	private int check_time;
 	private int duration_monitoring;
 
-	public CrawlerPageTools(String page_id, String access_token, String app_id, String permissions, String app_secret, Connector conn, int sleep_time, int check_time, int duration_monitoring) {
+	public CrawlerPageTools(String page_id, App app, Connector conn, int sleep_time, int check_time, int duration_monitoring) {
 		super();
 		this.page_id = page_id;
 
 		facebook = new FacebookFactory().getInstance();
-		AccessToken ac = new AccessToken(access_token);
-		facebook.setOAuthAppId(app_id,app_secret);
+                this.app = app;
+		AccessToken ac = new AccessToken(app.getAccess_token());
+		facebook.setOAuthAppId(app.getIdapp(),app.getApp_secret());
 		facebook.setOAuthAccessToken(ac);
-		facebook.setOAuthPermissions(permissions);
+		facebook.setOAuthPermissions(String.join(",", app.getPermission()));
 		this.conn = conn;
 		this.sleep_time = sleep_time * 1000 * 60;
-		this.access_token = access_token;
-		this.app_id = app_id;
-		this.app_secret = app_secret;
-		this.permissions = permissions;
-		this.check_time = check_time;
+                this.check_time = check_time;
 		this.duration_monitoring = duration_monitoring;
 
 	}
@@ -89,13 +84,13 @@ public class CrawlerPageTools implements Runnable {
 				Timestamp data_created_On = new Timestamp(post_temp.getCreatedTime().getTime());
                                 
 
-				int shares = Integer.parseInt(new FacebookCrawler(access_token, app_id, app_secret, permissions).getSharesCount(post_temp.getId()));
+				int shares = Integer.parseInt(new FacebookCrawler(app).getSharesCount(post_temp.getId()));
 
 				PostElement last_post = new PostElement(post_temp.getId(), post_temp.getMessage(), data_created_On, page_id, shares);
 
-				if (conn.insertPost(last_post, app_id)){
+				if (conn.insertPost(last_post, app.getIdapp())){
 					// Post wasn't in the database, start do monitor
-					FacebookCrawler fb_crawler = new FacebookCrawler(access_token, app_id, app_secret, permissions);
+					FacebookCrawler fb_crawler = new FacebookCrawler(app);
 					fb_crawler.monitorPost(last_post.getId(), check_time, duration_monitoring);
 
 					System.out.println("--> Starting Monitoring " + new Timestamp(System.currentTimeMillis()).toString());
