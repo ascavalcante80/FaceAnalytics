@@ -8,6 +8,7 @@ package gui;
 import crawler.CrawlerPageTools;
 import crawler.FacebookCrawler;
 import database.Connector;
+import export.ExportTools;
 import facebook.App;
 import facebook.PostElement;
 import facebook.ProfileElement;
@@ -15,16 +16,18 @@ import facebook4j.FacebookException;
 import java.awt.CardLayout;
 import java.io.File;
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.nio.file.StandardOpenOption;
+import java.util.ArrayList;
 import java.util.LinkedHashMap;
-import java.util.Map;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JFileChooser;
 import javax.swing.table.DefaultTableModel;
-import org.json.JSONException;
 import util.*;
 
 /**
@@ -32,18 +35,18 @@ import util.*;
  * @author alexandre
  */
 public class MainJFrame extends javax.swing.JFrame {
-    
-    
+
+
     static Connector conn = null;
-    
+
     static CardLayout cl = null;
     String idprofile = null;
     String profile_name = null;
-    ProfileElement profile = null;    
+    ProfileElement profile = null;
     App app = null;
     FacebookCrawler fb_crawler = null;
     CrawlerPageTools crawlerPage = null;
-    
+
     /**
      * Creates new form MainJFrame
      */
@@ -111,39 +114,38 @@ public class MainJFrame extends javax.swing.JFrame {
         jButton4 = new javax.swing.JButton();
         jPanelExportProfile = new javax.swing.JPanel();
         jLabel31 = new javax.swing.JLabel();
-        jButtonMonitorProfile3 = new javax.swing.JButton();
+        jButtonExport = new javax.swing.JButton();
         jButton24 = new javax.swing.JButton();
         jButton25 = new javax.swing.JButton();
         jLabelProfileName2 = new javax.swing.JLabel();
         jButtonMonitorProfile6 = new javax.swing.JButton();
-        jRadioButton1 = new javax.swing.JRadioButton();
-        jRadioButton2 = new javax.swing.JRadioButton();
-        jCheckBox3 = new javax.swing.JCheckBox();
-        jCheckBox4 = new javax.swing.JCheckBox();
-        jCheckBox5 = new javax.swing.JCheckBox();
-        jCheckBox6 = new javax.swing.JCheckBox();
-        jCheckBox7 = new javax.swing.JCheckBox();
-        jCheckBox8 = new javax.swing.JCheckBox();
-        jCheckBox9 = new javax.swing.JCheckBox();
-        jCheckBox10 = new javax.swing.JCheckBox();
-        jRadioButton3 = new javax.swing.JRadioButton();
-        jRadioButton4 = new javax.swing.JRadioButton();
-        jRadioButton5 = new javax.swing.JRadioButton();
-        jCheckBox11 = new javax.swing.JCheckBox();
-        jCheckBox12 = new javax.swing.JCheckBox();
-        jCheckBox15 = new javax.swing.JCheckBox();
-        jCheckBox16 = new javax.swing.JCheckBox();
-        jCheckBox17 = new javax.swing.JCheckBox();
-        jCheckBox18 = new javax.swing.JCheckBox();
+        jRadioButtonCSV = new javax.swing.JRadioButton();
+        jRadioButtonTxt = new javax.swing.JRadioButton();
+        jCheckBoxReactionsLikes = new javax.swing.JCheckBox();
+        jCheckBoxReactionsLoves = new javax.swing.JCheckBox();
+        jCheckBoxReactionsAngry = new javax.swing.JCheckBox();
+        jCheckBoxReactionsSad = new javax.swing.JCheckBox();
+        jCheckBoxReactionsHaha = new javax.swing.JCheckBox();
+        jCheckBoxReactionsWow = new javax.swing.JCheckBox();
+        jCheckBoxReactionsShares = new javax.swing.JCheckBox();
+        jCheckBoxReactionsTime = new javax.swing.JCheckBox();
+        jRadioButtonPosts = new javax.swing.JRadioButton();
+        jRadioButtonComments = new javax.swing.JRadioButton();
+        jRadioButtonBoth = new javax.swing.JRadioButton();
+        jCheckBoxPostTime = new javax.swing.JCheckBox();
+        jCheckBoxPostId = new javax.swing.JCheckBox();
+        jCheckBoxCommentTime = new javax.swing.JCheckBox();
+        jCheckBoxCommentUserId = new javax.swing.JCheckBox();
+        jCheckBoxCommentUserName = new javax.swing.JCheckBox();
+        jCheckBoxCommentId = new javax.swing.JCheckBox();
         jSeparator3 = new javax.swing.JSeparator();
         jLabel1 = new javax.swing.JLabel();
         jToggleButtonChooseFile = new javax.swing.JToggleButton();
-        jTextFieldFilePath = new javax.swing.JTextField();
-        jLabel32 = new javax.swing.JLabel();
+        jTextFieldFileName = new javax.swing.JTextField();
         jSeparator4 = new javax.swing.JSeparator();
         jLabel9 = new javax.swing.JLabel();
-        jRadioButton6 = new javax.swing.JRadioButton();
-        jRadioButton7 = new javax.swing.JRadioButton();
+        jRadioButtonPeriodLmtd = new javax.swing.JRadioButton();
+        jRadioButtonPeriodAll = new javax.swing.JRadioButton();
         jLabel10 = new javax.swing.JLabel();
         jComboBoxFrom = new javax.swing.JComboBox<>();
         jLabel15 = new javax.swing.JLabel();
@@ -155,8 +157,12 @@ public class MainJFrame extends javax.swing.JFrame {
         jLabel3 = new javax.swing.JLabel();
         jLabel23 = new javax.swing.JLabel();
         jLabel24 = new javax.swing.JLabel();
-        jCheckBox13 = new javax.swing.JCheckBox();
-        jCheckBox14 = new javax.swing.JCheckBox();
+        jCheckBoxPostShares = new javax.swing.JCheckBox();
+        jCheckBoxPostIdProfile = new javax.swing.JCheckBox();
+        jCheckBoxPostReactions = new javax.swing.JCheckBox();
+        jLabelFilePath = new javax.swing.JLabel();
+        jLabelNameFileEmpty = new javax.swing.JLabel();
+        jProgressBarExport = new javax.swing.JProgressBar();
         jPanelCreateApp = new javax.swing.JPanel();
         jLabel11 = new javax.swing.JLabel();
         jButtonConnect = new javax.swing.JButton();
@@ -423,21 +429,24 @@ public class MainJFrame extends javax.swing.JFrame {
             }
         });
 
-        jLabel16.setText("Duration");
+        jLabel16.setText("Monitor for");
 
-        jLabel38.setText("Check every");
+        jLabel38.setText("Check for new posts every");
 
         jComboBoxDuration.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Infinity", "24", "23", "22", "21", "20", "19", "18", "17", "16", "15", "14", "13", "12", "11", "10", "9", "8", "7", "6", "5", "4", "3", "2", "1" }));
+        jComboBoxDuration.setSelectedIndex(1);
 
         jLabel39.setText("hours");
 
         jComboBoxCheckTime.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "60", "50", "40", "30", "20", "15", "10", "9", "8", "7", "6", "5", "4", "3", "1" }));
+        jComboBoxCheckTime.setSelectedIndex(11);
 
         jLabel40.setText("minutes");
 
-        jLabel41.setText("Sleep time");
+        jLabel41.setText("Count the reactions every");
 
         jComboBoxSleepTime.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "10", "9", "8", "7", "6", "5", "4", "3", "2", "1" }));
+        jComboBoxSleepTime.setSelectedIndex(5);
 
         jLabel42.setText("minutes");
 
@@ -527,30 +536,29 @@ public class MainJFrame extends javax.swing.JFrame {
                                     .addComponent(jLabelProfileName, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
                         .addContainerGap())))
             .addGroup(jPanelCrawlProfileLayout.createSequentialGroup()
-                .addGroup(jPanelCrawlProfileLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanelCrawlProfileLayout.createSequentialGroup()
-                        .addGap(350, 350, 350)
-                        .addComponent(jLabel35))
-                    .addGroup(jPanelCrawlProfileLayout.createSequentialGroup()
-                        .addGap(87, 87, 87)
-                        .addComponent(jLabel16)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jComboBoxDuration, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jLabel39)
-                        .addGap(49, 49, 49)
-                        .addComponent(jLabel38)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jComboBoxCheckTime, javax.swing.GroupLayout.PREFERRED_SIZE, 52, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jLabel40)
-                        .addGap(44, 44, 44)
-                        .addComponent(jLabel41)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jComboBoxSleepTime, javax.swing.GroupLayout.PREFERRED_SIZE, 52, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jLabel42)))
-                .addGap(0, 0, Short.MAX_VALUE))
+                .addGap(350, 350, 350)
+                .addComponent(jLabel35)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+            .addGroup(jPanelCrawlProfileLayout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jLabel38)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jComboBoxCheckTime, javax.swing.GroupLayout.PREFERRED_SIZE, 52, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jLabel40)
+                .addGap(50, 50, 50)
+                .addComponent(jLabel41)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jComboBoxSleepTime, javax.swing.GroupLayout.PREFERRED_SIZE, 52, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jLabel42)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(jLabel16)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jComboBoxDuration, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jLabel39)
+                .addContainerGap())
             .addGroup(jPanelCrawlProfileLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                 .addGroup(jPanelCrawlProfileLayout.createSequentialGroup()
                     .addContainerGap()
@@ -576,19 +584,22 @@ public class MainJFrame extends javax.swing.JFrame {
                 .addGroup(jPanelCrawlProfileLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jLabelIdProfile)
                     .addComponent(jLabel29))
-                .addGap(3, 3, 3)
+                .addGap(4, 4, 4)
                 .addComponent(jLabel35)
-                .addGap(18, 18, 18)
-                .addGroup(jPanelCrawlProfileLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel38)
-                    .addComponent(jComboBoxDuration, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel16)
-                    .addComponent(jLabel39)
-                    .addComponent(jComboBoxCheckTime, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel40)
-                    .addComponent(jComboBoxSleepTime, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel41)
-                    .addComponent(jLabel42))
+                .addGap(22, 22, 22)
+                .addGroup(jPanelCrawlProfileLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanelCrawlProfileLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(jComboBoxSleepTime, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(jLabel41)
+                        .addComponent(jLabel42))
+                    .addGroup(jPanelCrawlProfileLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(jComboBoxDuration, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(jLabel16)
+                        .addComponent(jLabel39))
+                    .addGroup(jPanelCrawlProfileLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(jLabel38)
+                        .addComponent(jComboBoxCheckTime, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(jLabel40)))
                 .addGap(18, 18, 18)
                 .addComponent(jScrollPane6, javax.swing.GroupLayout.PREFERRED_SIZE, 78, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -609,7 +620,7 @@ public class MainJFrame extends javax.swing.JFrame {
                             .addComponent(jButton4, javax.swing.GroupLayout.PREFERRED_SIZE, 49, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(jProgressBar1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(0, 7, Short.MAX_VALUE))
+                        .addGap(0, 3, Short.MAX_VALUE))
                     .addComponent(jScrollPane3))
                 .addGap(18, 18, 18)
                 .addGroup(jPanelCrawlProfileLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
@@ -621,7 +632,7 @@ public class MainJFrame extends javax.swing.JFrame {
                 .addGap(6, 6, 6))
             .addGroup(jPanelCrawlProfileLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                 .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanelCrawlProfileLayout.createSequentialGroup()
-                    .addContainerGap(444, Short.MAX_VALUE)
+                    .addContainerGap(445, Short.MAX_VALUE)
                     .addComponent(jSeparator2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGap(86, 86, 86)))
         );
@@ -632,10 +643,10 @@ public class MainJFrame extends javax.swing.JFrame {
 
         jLabel31.setText("Profile");
 
-        jButtonMonitorProfile3.setText("Export");
-        jButtonMonitorProfile3.addActionListener(new java.awt.event.ActionListener() {
+        jButtonExport.setText("Export");
+        jButtonExport.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButtonMonitorProfile3ActionPerformed(evt);
+                jButtonExportActionPerformed(evt);
             }
         });
 
@@ -662,54 +673,62 @@ public class MainJFrame extends javax.swing.JFrame {
             }
         });
 
-        buttonGroupFileType.add(jRadioButton1);
-        jRadioButton1.setText("Export Reactions to CSV file");
-        jRadioButton1.setOpaque(true);
+        buttonGroupFileType.add(jRadioButtonCSV);
+        jRadioButtonCSV.setText("Export Reactions count progress to CSV file");
+        jRadioButtonCSV.setOpaque(true);
 
-        buttonGroupFileType.add(jRadioButton2);
-        jRadioButton2.setText("Export text content to .txt file");
+        buttonGroupFileType.add(jRadioButtonTxt);
+        jRadioButtonTxt.setSelected(true);
+        jRadioButtonTxt.setText("Export text content to .txt file");
 
-        jCheckBox3.setText("Likes");
+        jCheckBoxReactionsLikes.setText("Likes");
 
-        jCheckBox4.setText("Love");
+        jCheckBoxReactionsLoves.setText("Love");
 
-        jCheckBox5.setText("Angry");
-        jCheckBox5.addActionListener(new java.awt.event.ActionListener() {
+        jCheckBoxReactionsAngry.setText("Angry");
+        jCheckBoxReactionsAngry.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jCheckBox5ActionPerformed(evt);
+                jCheckBoxReactionsAngryActionPerformed(evt);
             }
         });
 
-        jCheckBox6.setText("Sad");
+        jCheckBoxReactionsSad.setText("Sad");
 
-        jCheckBox7.setText("Haha");
+        jCheckBoxReactionsHaha.setText("Haha");
 
-        jCheckBox8.setText("Wow");
+        jCheckBoxReactionsWow.setText("Wow");
 
-        jCheckBox9.setText("Shares");
+        jCheckBoxReactionsShares.setText("Shares");
 
-        jCheckBox10.setText("Timestamp");
+        jCheckBoxReactionsTime.setText("Timestamp");
 
-        buttonGroupExportOpt.add(jRadioButton3);
-        jRadioButton3.setText("Only posts");
+        buttonGroupExportOpt.add(jRadioButtonPosts);
+        jRadioButtonPosts.setSelected(true);
+        jRadioButtonPosts.setText("Only posts");
 
-        buttonGroupExportOpt.add(jRadioButton4);
-        jRadioButton4.setText("Only Comments");
+        buttonGroupExportOpt.add(jRadioButtonComments);
+        jRadioButtonComments.setText("Only Comments");
 
-        buttonGroupExportOpt.add(jRadioButton5);
-        jRadioButton5.setText("Posts and Comments");
+        buttonGroupExportOpt.add(jRadioButtonBoth);
+        jRadioButtonBoth.setText("Posts and Comments");
 
-        jCheckBox11.setText("Timestamp");
+        jCheckBoxPostTime.setSelected(true);
+        jCheckBoxPostTime.setText("Timestamp");
 
-        jCheckBox12.setText("Id");
+        jCheckBoxPostId.setSelected(true);
+        jCheckBoxPostId.setText("Id");
 
-        jCheckBox15.setText("Timestamp");
+        jCheckBoxCommentTime.setSelected(true);
+        jCheckBoxCommentTime.setText("Timestamp");
 
-        jCheckBox16.setText("User's Id");
+        jCheckBoxCommentUserId.setSelected(true);
+        jCheckBoxCommentUserId.setText("User's Id");
 
-        jCheckBox17.setText("User's name");
+        jCheckBoxCommentUserName.setSelected(true);
+        jCheckBoxCommentUserName.setText("User's name");
 
-        jCheckBox18.setText("Id");
+        jCheckBoxCommentId.setSelected(true);
+        jCheckBoxCommentId.setText("Id");
 
         jLabel1.setFont(new java.awt.Font("DejaVu Sans", 1, 12)); // NOI18N
         jLabel1.setText("Select Fields");
@@ -721,16 +740,15 @@ public class MainJFrame extends javax.swing.JFrame {
             }
         });
 
-        jLabel32.setText("File Name");
-
         jLabel9.setFont(new java.awt.Font("DejaVu Sans", 1, 12)); // NOI18N
         jLabel9.setText("Choose Period");
 
-        buttonGroupPeriod.add(jRadioButton6);
-        jRadioButton6.setText("Limited");
+        buttonGroupPeriod.add(jRadioButtonPeriodLmtd);
+        jRadioButtonPeriodLmtd.setText("Limited");
 
-        buttonGroupPeriod.add(jRadioButton7);
-        jRadioButton7.setText("All");
+        buttonGroupPeriod.add(jRadioButtonPeriodAll);
+        jRadioButtonPeriodAll.setSelected(true);
+        jRadioButtonPeriodAll.setText("All");
 
         jLabel10.setText("From");
 
@@ -756,139 +774,160 @@ public class MainJFrame extends javax.swing.JFrame {
         jLabelReactionsError.setForeground(new java.awt.Color(255, 0, 0));
         jLabelReactionsError.setText("This profile doesn't have any reactions file yet!");
 
-        jLabel3.setText(".txt");
+        jLabel3.setText("(.txt|.csv)");
 
         jLabel23.setText("Comments");
 
         jLabel24.setText("Posts");
 
-        jCheckBox13.setText("Shares");
+        jCheckBoxPostShares.setSelected(true);
+        jCheckBoxPostShares.setText("Shares");
 
-        jCheckBox14.setText("Profile's Id");
+        jCheckBoxPostIdProfile.setSelected(true);
+        jCheckBoxPostIdProfile.setText("Profile's Id");
+
+        jCheckBoxPostReactions.setSelected(true);
+        jCheckBoxPostReactions.setText("Reactions count");
+
+        jLabelFilePath.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
+        jLabelFilePath.setText("./");
+
+        jLabelNameFileEmpty.setFont(new java.awt.Font("DejaVu Sans", 1, 12)); // NOI18N
+        jLabelNameFileEmpty.setForeground(new java.awt.Color(255, 51, 0));
+        jLabelNameFileEmpty.setText("File name cannot be empty!");
 
         javax.swing.GroupLayout jPanelExportProfileLayout = new javax.swing.GroupLayout(jPanelExportProfile);
         jPanelExportProfile.setLayout(jPanelExportProfileLayout);
         jPanelExportProfileLayout.setHorizontalGroup(
             jPanelExportProfileLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanelExportProfileLayout.createSequentialGroup()
+                .addContainerGap()
                 .addGroup(jPanelExportProfileLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanelExportProfileLayout.createSequentialGroup()
-                        .addGap(17, 17, 17)
                         .addGroup(jPanelExportProfileLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jSeparator4)
                             .addGroup(jPanelExportProfileLayout.createSequentialGroup()
-                                .addGroup(jPanelExportProfileLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                    .addComponent(jLabel9)
-                                    .addGroup(jPanelExportProfileLayout.createSequentialGroup()
-                                        .addComponent(jRadioButton1)
-                                        .addGap(38, 38, 38)
-                                        .addComponent(jLabelReactionsError, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                                    .addGroup(jPanelExportProfileLayout.createSequentialGroup()
-                                        .addComponent(jLabel31)
-                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                        .addComponent(jLabelProfileName2, javax.swing.GroupLayout.PREFERRED_SIZE, 683, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                                .addGap(0, 0, Short.MAX_VALUE))
-                            .addGroup(jPanelExportProfileLayout.createSequentialGroup()
-                                .addGroup(jPanelExportProfileLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                                    .addGroup(jPanelExportProfileLayout.createSequentialGroup()
-                                        .addComponent(jLabel32)
-                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                        .addComponent(jTextFieldFilePath))
-                                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanelExportProfileLayout.createSequentialGroup()
-                                        .addGap(6, 6, 6)
-                                        .addComponent(jButton24, javax.swing.GroupLayout.PREFERRED_SIZE, 132, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                        .addGap(18, 18, 18)
-                                        .addComponent(jButton25, javax.swing.GroupLayout.PREFERRED_SIZE, 132, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                        .addGap(18, 18, 18)
-                                        .addComponent(jButtonMonitorProfile6, javax.swing.GroupLayout.PREFERRED_SIZE, 132, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                                .addGap(6, 6, 6)
                                 .addGroup(jPanelExportProfileLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanelExportProfileLayout.createSequentialGroup()
-                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                        .addComponent(jButtonMonitorProfile3, javax.swing.GroupLayout.PREFERRED_SIZE, 132, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                    .addGroup(jPanelExportProfileLayout.createSequentialGroup()
+                                        .addComponent(jLabelNameFileEmpty, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                        .addGap(25, 25, 25)
+                                        .addComponent(jButtonExport, javax.swing.GroupLayout.PREFERRED_SIZE, 132, javax.swing.GroupLayout.PREFERRED_SIZE))
                                     .addGroup(jPanelExportProfileLayout.createSequentialGroup()
                                         .addGroup(jPanelExportProfileLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                            .addComponent(jLabel9)
                                             .addGroup(jPanelExportProfileLayout.createSequentialGroup()
-                                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                                .addComponent(jLabel3)
-                                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                                .addComponent(jToggleButtonChooseFile))
-                                            .addGroup(jPanelExportProfileLayout.createSequentialGroup()
+                                                .addComponent(jButton24, javax.swing.GroupLayout.PREFERRED_SIZE, 132, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                                .addGap(18, 18, 18)
+                                                .addComponent(jButton25, javax.swing.GroupLayout.PREFERRED_SIZE, 132, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                                .addGap(18, 18, 18)
+                                                .addComponent(jButtonMonitorProfile6, javax.swing.GroupLayout.PREFERRED_SIZE, 132, javax.swing.GroupLayout.PREFERRED_SIZE)
                                                 .addGap(18, 18, 18)
                                                 .addComponent(jButton5, javax.swing.GroupLayout.PREFERRED_SIZE, 124, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                                        .addGap(0, 0, Short.MAX_VALUE))))))
-                    .addGroup(jPanelExportProfileLayout.createSequentialGroup()
-                        .addGap(29, 29, 29)
-                        .addGroup(jPanelExportProfileLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jRadioButton7)
-                            .addGroup(jPanelExportProfileLayout.createSequentialGroup()
-                                .addComponent(jRadioButton6)
-                                .addGap(50, 50, 50)
-                                .addComponent(jLabel10)
+                                        .addGap(0, 0, Short.MAX_VALUE))))
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanelExportProfileLayout.createSequentialGroup()
+                                .addGap(49, 49, 49)
+                                .addComponent(jLabelFilePath, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(jTextFieldFileName, javax.swing.GroupLayout.PREFERRED_SIZE, 226, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(jLabel3)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addComponent(jComboBoxFrom, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(162, 162, 162)
-                                .addComponent(jLabel15)
-                                .addGap(18, 18, 18)
-                                .addComponent(jComboBoxUntil, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                        .addGap(0, 0, Short.MAX_VALUE))
-                    .addGroup(jPanelExportProfileLayout.createSequentialGroup()
-                        .addGap(84, 84, 84)
+                                .addComponent(jToggleButtonChooseFile)))
+                        .addContainerGap())
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanelExportProfileLayout.createSequentialGroup()
+                        .addGap(0, 9, Short.MAX_VALUE)
                         .addGroup(jPanelExportProfileLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jRadioButton4)
-                            .addComponent(jRadioButton3)
-                            .addComponent(jRadioButton5))
-                        .addGap(69, 69, 69)
-                        .addGroup(jPanelExportProfileLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jCheckBox14)
-                            .addComponent(jCheckBox11)
-                            .addComponent(jCheckBox12)
-                            .addComponent(jCheckBox13))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addGroup(jPanelExportProfileLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jCheckBox15)
-                            .addComponent(jCheckBox17)
-                            .addComponent(jCheckBox18)
-                            .addComponent(jCheckBox16)
-                            .addComponent(jLabel23))
-                        .addGap(207, 207, 207)))
-                .addContainerGap())
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanelExportProfileLayout.createSequentialGroup()
+                                .addComponent(jLabel5)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(jLabelAppId2, javax.swing.GroupLayout.PREFERRED_SIZE, 207, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanelExportProfileLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanelExportProfileLayout.createSequentialGroup()
+                                    .addGroup(jPanelExportProfileLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                        .addComponent(jSeparator3, javax.swing.GroupLayout.PREFERRED_SIZE, 820, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addGroup(jPanelExportProfileLayout.createSequentialGroup()
+                                            .addComponent(jRadioButtonCSV)
+                                            .addGap(60, 60, 60)
+                                            .addComponent(jLabelReactionsError))
+                                        .addGroup(jPanelExportProfileLayout.createSequentialGroup()
+                                            .addGap(47, 47, 47)
+                                            .addComponent(jCheckBoxReactionsLikes)
+                                            .addGap(18, 18, 18)
+                                            .addComponent(jCheckBoxReactionsLoves)
+                                            .addGap(18, 18, 18)
+                                            .addComponent(jCheckBoxReactionsAngry)
+                                            .addGap(18, 18, 18)
+                                            .addComponent(jCheckBoxReactionsSad)
+                                            .addGap(18, 18, 18)
+                                            .addComponent(jCheckBoxReactionsHaha)
+                                            .addGap(18, 18, 18)
+                                            .addComponent(jCheckBoxReactionsWow)
+                                            .addGap(18, 18, 18)
+                                            .addComponent(jCheckBoxReactionsShares)
+                                            .addGap(18, 18, 18)
+                                            .addComponent(jCheckBoxReactionsTime)))
+                                    .addGap(18, 18, 18))
+                                .addGroup(jPanelExportProfileLayout.createSequentialGroup()
+                                    .addGroup(jPanelExportProfileLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                                        .addGroup(jPanelExportProfileLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                            .addComponent(jRadioButtonComments)
+                                            .addComponent(jRadioButtonPosts)
+                                            .addComponent(jRadioButtonBoth))
+                                        .addComponent(jRadioButtonTxt))
+                                    .addGroup(jPanelExportProfileLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                        .addGroup(jPanelExportProfileLayout.createSequentialGroup()
+                                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                            .addComponent(jLabel1)
+                                            .addGap(349, 349, 349))
+                                        .addGroup(jPanelExportProfileLayout.createSequentialGroup()
+                                            .addGap(115, 115, 115)
+                                            .addComponent(jLabel24))
+                                        .addGroup(jPanelExportProfileLayout.createSequentialGroup()
+                                            .addGap(82, 82, 82)
+                                            .addGroup(jPanelExportProfileLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                                .addComponent(jCheckBoxPostIdProfile)
+                                                .addComponent(jCheckBoxPostTime)
+                                                .addComponent(jCheckBoxPostId)
+                                                .addComponent(jCheckBoxPostShares)
+                                                .addComponent(jCheckBoxPostReactions))
+                                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                            .addGroup(jPanelExportProfileLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                                .addComponent(jCheckBoxCommentUserName)
+                                                .addComponent(jCheckBoxCommentId)
+                                                .addComponent(jCheckBoxCommentUserId)
+                                                .addGroup(jPanelExportProfileLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                                                    .addComponent(jLabel23)
+                                                    .addComponent(jCheckBoxCommentTime)))
+                                            .addGap(213, 213, 213)))))))))
             .addGroup(jPanelExportProfileLayout.createSequentialGroup()
-                .addGap(64, 64, 64)
-                .addComponent(jCheckBox3)
-                .addGap(18, 18, 18)
-                .addComponent(jCheckBox4)
-                .addGap(18, 18, 18)
-                .addComponent(jCheckBox5)
-                .addGap(18, 18, 18)
-                .addComponent(jCheckBox6)
-                .addGap(18, 18, 18)
-                .addComponent(jCheckBox7)
-                .addGap(18, 18, 18)
-                .addComponent(jCheckBox8)
-                .addGap(0, 0, 0)
-                .addComponent(jCheckBox9)
-                .addGap(18, 18, 18)
-                .addComponent(jCheckBox10)
-                .addGap(0, 0, Short.MAX_VALUE))
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanelExportProfileLayout.createSequentialGroup()
-                .addContainerGap(15, Short.MAX_VALUE)
                 .addGroup(jPanelExportProfileLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jSeparator3, javax.swing.GroupLayout.PREFERRED_SIZE, 820, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addGroup(jPanelExportProfileLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanelExportProfileLayout.createSequentialGroup()
-                            .addComponent(jRadioButton2)
-                            .addGap(115, 115, 115)
-                            .addComponent(jLabel24)
-                            .addGap(482, 482, 482))
-                        .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanelExportProfileLayout.createSequentialGroup()
-                            .addComponent(jLabel5)
-                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                            .addComponent(jLabelAppId2, javax.swing.GroupLayout.PREFERRED_SIZE, 207, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addContainerGap()))))
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanelExportProfileLayout.createSequentialGroup()
-                .addGap(0, 0, Short.MAX_VALUE)
-                .addComponent(jLabel1)
-                .addGap(349, 349, 349))
+                    .addGroup(jPanelExportProfileLayout.createSequentialGroup()
+                        .addGroup(jPanelExportProfileLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(jPanelExportProfileLayout.createSequentialGroup()
+                                .addGap(17, 17, 17)
+                                .addComponent(jLabel31)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(jLabelProfileName2, javax.swing.GroupLayout.PREFERRED_SIZE, 683, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(jPanelExportProfileLayout.createSequentialGroup()
+                                .addGap(26, 26, 26)
+                                .addGroup(jPanelExportProfileLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(jRadioButtonPeriodAll)
+                                    .addGroup(jPanelExportProfileLayout.createSequentialGroup()
+                                        .addComponent(jRadioButtonPeriodLmtd)
+                                        .addGap(50, 50, 50)
+                                        .addComponent(jLabel10)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                        .addComponent(jComboBoxFrom, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addGap(57, 57, 57)
+                                        .addComponent(jLabel15)
+                                        .addGap(18, 18, 18)
+                                        .addComponent(jComboBoxUntil, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))))
+                        .addGap(0, 0, Short.MAX_VALUE))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanelExportProfileLayout.createSequentialGroup()
+                        .addGap(0, 0, Short.MAX_VALUE)
+                        .addComponent(jProgressBarExport, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap())
         );
         jPanelExportProfileLayout.setVerticalGroup(
             jPanelExportProfileLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -901,71 +940,52 @@ public class MainJFrame extends javax.swing.JFrame {
                 .addGroup(jPanelExportProfileLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel31)
                     .addComponent(jLabelProfileName2))
-                .addGap(30, 30, 30)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(jPanelExportProfileLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jRadioButton1)
+                    .addComponent(jRadioButtonCSV)
                     .addComponent(jLabelReactionsError))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(jPanelExportProfileLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jCheckBox3)
-                    .addComponent(jCheckBox4)
-                    .addComponent(jCheckBox5)
-                    .addComponent(jCheckBox6)
-                    .addComponent(jCheckBox7)
-                    .addComponent(jCheckBox8)
-                    .addComponent(jCheckBox9)
-                    .addComponent(jCheckBox10))
+                    .addComponent(jCheckBoxReactionsLikes)
+                    .addComponent(jCheckBoxReactionsLoves)
+                    .addComponent(jCheckBoxReactionsAngry)
+                    .addComponent(jCheckBoxReactionsSad)
+                    .addComponent(jCheckBoxReactionsHaha)
+                    .addComponent(jCheckBoxReactionsWow)
+                    .addComponent(jCheckBoxReactionsShares)
+                    .addComponent(jCheckBoxReactionsTime))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jSeparator3, javax.swing.GroupLayout.PREFERRED_SIZE, 10, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jLabel1)
-                .addGap(7, 7, 7)
+                .addGroup(jPanelExportProfileLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel1)
+                    .addComponent(jRadioButtonTxt))
                 .addGroup(jPanelExportProfileLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanelExportProfileLayout.createSequentialGroup()
-                        .addGroup(jPanelExportProfileLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(jPanelExportProfileLayout.createSequentialGroup()
-                                .addComponent(jRadioButton2)
-                                .addGap(8, 8, 8))
-                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanelExportProfileLayout.createSequentialGroup()
-                                .addComponent(jLabel23)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)))
-                        .addGroup(jPanelExportProfileLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addGroup(jPanelExportProfileLayout.createSequentialGroup()
-                                .addComponent(jRadioButton3)
-                                .addGap(18, 18, 18)
-                                .addComponent(jRadioButton4)
-                                .addGap(20, 20, 20)
-                                .addComponent(jRadioButton5))
-                            .addGroup(jPanelExportProfileLayout.createSequentialGroup()
-                                .addComponent(jCheckBox18)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addComponent(jCheckBox15)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addComponent(jCheckBox16)
-                                .addGap(12, 12, 12)
-                                .addComponent(jCheckBox17)))
-                        .addGap(31, 31, 31)
+                        .addGap(18, 18, 18)
+                        .addComponent(jRadioButtonPosts)
+                        .addGap(18, 18, 18)
+                        .addComponent(jRadioButtonComments)
+                        .addGap(20, 20, 20)
+                        .addComponent(jRadioButtonBoth)
+                        .addGap(52, 52, 52)
                         .addComponent(jSeparator4, javax.swing.GroupLayout.PREFERRED_SIZE, 10, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jLabel9)
-                        .addGap(8, 8, 8)
-                        .addComponent(jRadioButton7)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(jPanelExportProfileLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(jRadioButton6)
-                            .addComponent(jLabel10)
-                            .addComponent(jComboBoxFrom, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabel15)
-                            .addComponent(jComboBoxUntil, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addGroup(jPanelExportProfileLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(jToggleButtonChooseFile)
-                            .addComponent(jTextFieldFilePath, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabel32)
-                            .addComponent(jLabel3))
                         .addGroup(jPanelExportProfileLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(jPanelExportProfileLayout.createSequentialGroup()
-                                .addGap(27, 27, 27)
+                                .addComponent(jLabel9)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(jRadioButtonPeriodAll)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addGroup(jPanelExportProfileLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                    .addComponent(jRadioButtonPeriodLmtd)
+                                    .addComponent(jLabel10)
+                                    .addComponent(jComboBoxFrom, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(jLabel15)
+                                    .addComponent(jComboBoxUntil, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addGap(35, 35, 35)
+                                .addComponent(jLabelNameFileEmpty)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                                 .addGroup(jPanelExportProfileLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                     .addComponent(jButton24, javax.swing.GroupLayout.PREFERRED_SIZE, 44, javax.swing.GroupLayout.PREFERRED_SIZE)
                                     .addGroup(jPanelExportProfileLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
@@ -973,21 +993,39 @@ public class MainJFrame extends javax.swing.JFrame {
                                         .addComponent(jButtonMonitorProfile6, javax.swing.GroupLayout.PREFERRED_SIZE, 44, javax.swing.GroupLayout.PREFERRED_SIZE)
                                         .addComponent(jButton5, javax.swing.GroupLayout.PREFERRED_SIZE, 44, javax.swing.GroupLayout.PREFERRED_SIZE))))
                             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanelExportProfileLayout.createSequentialGroup()
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(jButtonMonitorProfile3, javax.swing.GroupLayout.PREFERRED_SIZE, 59, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGroup(jPanelExportProfileLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                    .addComponent(jToggleButtonChooseFile)
+                                    .addComponent(jLabel3)
+                                    .addComponent(jTextFieldFileName, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(jLabelFilePath))
+                                .addGap(18, 18, 18)
+                                .addComponent(jButtonExport, javax.swing.GroupLayout.PREFERRED_SIZE, 59, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addGap(2, 2, 2))))
                     .addGroup(jPanelExportProfileLayout.createSequentialGroup()
-                        .addGap(6, 6, 6)
-                        .addComponent(jLabel24)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(jCheckBox12)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(jCheckBox11)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(jCheckBox13)
+                        .addGap(13, 13, 13)
+                        .addGroup(jPanelExportProfileLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jLabel24)
+                            .addComponent(jLabel23))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jCheckBox14)))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addGroup(jPanelExportProfileLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jCheckBoxPostId)
+                            .addComponent(jCheckBoxCommentId))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(jPanelExportProfileLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jCheckBoxPostTime)
+                            .addComponent(jCheckBoxCommentTime))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(jPanelExportProfileLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jCheckBoxPostShares)
+                            .addComponent(jCheckBoxCommentUserId))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(jPanelExportProfileLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jCheckBoxPostIdProfile)
+                            .addComponent(jCheckBoxCommentUserName))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jCheckBoxPostReactions)))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(jProgressBarExport, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
 
         jMainPanel.add(jPanelExportProfile, "card_export");
@@ -1499,16 +1537,16 @@ public class MainJFrame extends javax.swing.JFrame {
 
     private void jComboBoxAppsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jComboBoxAppsActionPerformed
         // TODO add your handling code here:
-        
-        
+
+
     }//GEN-LAST:event_jComboBoxAppsActionPerformed
 
     private void jButton23ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton23ActionPerformed
         // TODO add your handling code here:
         jLabelNoRowSelected.setVisible(false);
         jLabelSearchEmpty.setVisible(false);
-        cl.show(jMainPanel, "card_search"); 
-        
+        cl.show(jMainPanel, "card_search");
+
     }//GEN-LAST:event_jButton23ActionPerformed
 
     private void jCheckBoxCrawllAllPostsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jCheckBoxCrawllAllPostsActionPerformed
@@ -1517,56 +1555,22 @@ public class MainJFrame extends javax.swing.JFrame {
 
     private void jButtonMonitorActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonMonitorActionPerformed
         // TODO add your handling code here:
-        
-        String duration_time_temp = (String)jComboBoxDuration.getSelectedItem();        
+
+        String duration_time_temp = (String)jComboBoxDuration.getSelectedItem();
         int duration_time;
-        if(duration_time_temp != "Infinity"){
+        if(!"Infinity".equals(duration_time_temp)){
             duration_time = Integer.parseInt(duration_time_temp);
         } else {
             duration_time = 0;
         }
-        
-        int check_time = Integer.parseInt((String)jComboBoxCheckTime.getSelectedItem());        
+
+        int check_time = Integer.parseInt((String)jComboBoxCheckTime.getSelectedItem());
         int sleep_time = Integer.parseInt((String)jComboBoxSleepTime.getSelectedItem());
-                
+
         crawlerPage = new CrawlerPageTools(profile.getId(), app, conn, sleep_time,check_time,duration_time);
         crawlerPage.monitor_page();
-        
+
     }//GEN-LAST:event_jButtonMonitorActionPerformed
-
-    private void jToggleButtonChooseFileActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jToggleButtonChooseFileActionPerformed
-        // TODO add your handling code here:
-
-        int returnVal = fileDialog.showOpenDialog(jPanelExportProfile);
-
-        if (returnVal == JFileChooser.APPROVE_OPTION) {
-            java.io.File file = fileDialog.getSelectedFile();
-            jTextFieldFilePath.setText("File Selected :" + file.getName());
-        } else {
-            jTextFieldFilePath.setText("Open command cancelled by user." );
-        }
-    }//GEN-LAST:event_jToggleButtonChooseFileActionPerformed
-
-    private void jCheckBox5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jCheckBox5ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_jCheckBox5ActionPerformed
-
-    private void jButtonMonitorProfile6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonMonitorProfile6ActionPerformed
-        // TODO add your handling code here:
-        prepareScreenCrawlProfile(profile);
-    }//GEN-LAST:event_jButtonMonitorProfile6ActionPerformed
-
-    private void jButton25ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton25ActionPerformed
-        // TODO add your handling code here:
-        jLabelNoRowSelected.setVisible(false);
-        jLabelSearchEmpty.setVisible(false);
-        cl.show(jMainPanel, "card_search");        
-        
-    }//GEN-LAST:event_jButton25ActionPerformed
-
-    private void jButtonMonitorProfile3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonMonitorProfile3ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_jButtonMonitorProfile3ActionPerformed
 
     private void jComboBoxProfilesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jComboBoxProfilesActionPerformed
         // TODO add your handling code here:
@@ -1574,9 +1578,6 @@ public class MainJFrame extends javax.swing.JFrame {
 
     private void jButtonConnectActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonConnectActionPerformed
         // get data from fields and build a settings.ser file
-        
-       
-        
     }//GEN-LAST:event_jButtonConnectActionPerformed
 
     private void jTextFieldAppNameActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextFieldAppNameActionPerformed
@@ -1596,48 +1597,62 @@ public class MainJFrame extends javax.swing.JFrame {
     }//GEN-LAST:event_jTextFieldPortActionPerformed
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-       
+
        String hostname = jTextFieldHostname.getText();
        String user_name =  jTextFieldUsername.getText();
        String port = jTextFieldPort.getText();
        String password = jTextFieldPassword.getText();
-       
+
        HandleSetting hs = new HandleSetting();
        if(hs.writeSettingsFile("./settings/data.ser", hostname, user_name, port, password)){
-            jLabelProblemFile.setVisible(false);      
-            cl.show(jMainPanel, "card_chs_app");           
+                      
+            // obtain all apps to build ChooseAppPanel
+             conn = new Connector(hostname + ":" + port + "/FaceAnalytics?autoReconnect=true&useSSL=false", user_name, password);
+             LinkedHashMap <String, App> app_list = conn.selectAllApps();
+
+             // check if there`s app in the database
+             if(app_list.size()>0){
+
+                    for (String key : app_list.keySet()) {
+                         jComboBoxApps.addItem(app_list.get(key).getIdapp());
+                    }
+             }
+           
+            jLabelProblemFile.setVisible(false);
+            cl.show(jMainPanel, "card_chs_app");
        } else{
             jLabelProblemFile.setVisible(true);
             jPanelCreateApp.repaint();
-            cl.show(jMainPanel, "card_mysql");       
+            cl.show(jMainPanel, "card_mysql");
        }
-        
+       
+
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void jButton6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton6ActionPerformed
         // preview butto to see profiles from the same app in the table
-        
+
         String idapp = (String)jComboBoxApps.getSelectedItem();
         LinkedHashMap<String,String> result = conn.getPagesPreview(idapp);
-        
+
         if (result.size()>0){
-            
+
             DefaultTableModel table = (DefaultTableModel) jTablePostsSummary.getModel();
-            
+
             int rowCount = table.getRowCount();
             //Remove rows one by one from the end of the table
             for (int i = rowCount - 1; i >= 0; i--) {
                 table.removeRow(i);
             }
-            
+
             for(String key: result.keySet()){
                 String [] line = result.get(key).split("<sep>");
                 table.addRow(line);
         }
         jPanelChooseApp.repaint();
-        
+
         }
-        
+
     }//GEN-LAST:event_jButton6ActionPerformed
 
     private void jButtonUseAppActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonUseAppActionPerformed
@@ -1648,12 +1663,12 @@ public class MainJFrame extends javax.swing.JFrame {
         conn.setIdapp(idapp);
 
         LinkedHashMap <String, App> apps = conn.selectAppWhere("idapp", idapp);
-        
+
         for (String key : apps.keySet()) {
-                        
+
             app = apps.get(key);
         }
-        
+
         // build FacebookCrawler
         try {
             fb_crawler = new FacebookCrawler(app);
@@ -1664,27 +1679,27 @@ public class MainJFrame extends javax.swing.JFrame {
         } catch (IOException ex) {
             Logger.getLogger(MainJFrame.class.getName()).log(Level.SEVERE, null, ex);
         }
-        
-        
-        
+
+
+
         LinkedHashMap <String, ProfileElement> profiles = conn.selectProfileWhere("app_idapp", idapp);
-        
+
         for (String key : profiles.keySet()) {
-                        
+
             ProfileElement p = profiles.get(key);
             jComboBoxProfiles.addItem(p.getId());
         }
-        
+
         // setting App id of different labels
         jLabelAppId2.setText(app.getIdapp());
         jLabelAppId3.setText(app.getIdapp());
         jLabelAppId4.setText(app.getIdapp());
-        
 
-        
+
+
         jPanelChooseProfile.repaint();
         cl.show(jMainPanel, "card_chs_profile");
-                
+
     }//GEN-LAST:event_jButtonUseAppActionPerformed
 
     private void jButtonPreviewProfileActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonPreviewProfileActionPerformed
@@ -1704,27 +1719,27 @@ public class MainJFrame extends javax.swing.JFrame {
         for (int i = rowCount - 1; i >= 0; i--) {
             table.removeRow(i);
         }
-        
+
         for(String key: posts.keySet()){
             PostElement post = posts.get(key);
-            table.addRow(new String []{post.getMessage(), post.getData_created_On().toString()});            
+            table.addRow(new String []{post.getMessage(), post.getData_created_On().toString()});
         }
-        
-        jPanelChooseProfile.repaint();        
-        
+
+        jPanelChooseProfile.repaint();
+
     }//GEN-LAST:event_jButtonPreviewProfileActionPerformed
 
     private void jButtonSelectProfileActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonSelectProfileActionPerformed
         // TODO add your handling code here:
-        
-        profile = conn.getProfilebyId((String)jComboBoxProfiles.getSelectedItem());              
+
+        profile = conn.getProfilebyId((String)jComboBoxProfiles.getSelectedItem());
         prepareScreenCrawlProfile(profile);
-        
+
     }//GEN-LAST:event_jButtonSelectProfileActionPerformed
 
     private void jButton22ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton22ActionPerformed
         // TODO add your handling code here:
-        cl.show(jMainPanel, "card_chs_app");        
+        cl.show(jMainPanel, "card_chs_app");
     }//GEN-LAST:event_jButton22ActionPerformed
 
     private void jButton26ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton26ActionPerformed
@@ -1754,12 +1769,12 @@ public class MainJFrame extends javax.swing.JFrame {
     }//GEN-LAST:event_jButton19ActionPerformed
 
     private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
-        
+
         // TODO add your handling code here:
         int result_limit = Integer.parseInt((String)jComboBoxSearchLimit.getSelectedItem());
         String search = jTextFieldSearchBar.getText();
         jLabelSearchEmpty.setVisible(false);
-        
+
         if(search.isEmpty()){
             jLabelSearchEmpty.setVisible(true);
             cl.show(jMainPanel, "card_search");
@@ -1767,7 +1782,7 @@ public class MainJFrame extends javax.swing.JFrame {
 
             String result = fb_crawler.searchProfileByIdDysplayingLastPosts(search, result_limit);
 
-            
+
             DefaultTableModel table = (DefaultTableModel) jTableSearchResults.getModel();
             int rowCount = table.getRowCount();
             //Remove rows one by one from the end of the table
@@ -1778,17 +1793,17 @@ public class MainJFrame extends javax.swing.JFrame {
                 String [] line = result.split("<sep>");
                 table.addRow(line);
             }
-        }       
-        
+        }
+
     }//GEN-LAST:event_jButton3ActionPerformed
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
-        
+
         // get result limit
         int result_limit = Integer.parseInt((String)jComboBoxSearchLimit.getSelectedItem());
         String search = jTextFieldSearchBar.getText();
         jLabelSearchEmpty.setVisible(false);
-        
+
         if(search.isEmpty()){
             jLabelSearchEmpty.setVisible(true);
             cl.show(jMainPanel, "card_search");
@@ -1796,7 +1811,7 @@ public class MainJFrame extends javax.swing.JFrame {
 
             LinkedHashMap<String,String> result = fb_crawler.searchProfileDysplayingLastPosts(search, result_limit);
 
-            
+
             DefaultTableModel table = (DefaultTableModel) jTableSearchResults.getModel();
             int rowCount = table.getRowCount();
             //Remove rows one by one from the end of the table
@@ -1815,26 +1830,26 @@ public class MainJFrame extends javax.swing.JFrame {
 
     private void jButton16ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton16ActionPerformed
         // TODO add your handling code here:
-        
+
         jLabelNoRowSelected.setVisible(false);
-        
+
         int row = jTableSearchResults.getSelectedRow();
-        
+
         if (row == -1){
             jLabelNoRowSelected.setVisible(true);
             jPanelSearch.repaint();
             cl.show(jMainPanel, "card_search");
 
         } else {
-        
+
             String id_profile_selected = (String)jTableSearchResults.getValueAt(row, 0);
             String name_profile_selected = (String)jTableSearchResults.getValueAt(row, 1);
             conn.insertProfile(new ProfileElement(id_profile_selected, name_profile_selected), app.getIdapp());
-            
+
             profile = new ProfileElement(id_profile_selected, name_profile_selected);
             prepareScreenCrawlProfile(profile);
         }
-        
+
     }//GEN-LAST:event_jButton16ActionPerformed
 
     private void jButtonChooseProfileActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonChooseProfileActionPerformed
@@ -1845,15 +1860,15 @@ public class MainJFrame extends javax.swing.JFrame {
     private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
         // TODO add your handling code here:
         ConsoleTextArea.redirectOutput( jTextAreaConsole );
-        // crawling items from a profile               
+        // crawling items from a profile
         int sleep_time = Integer.parseInt((String)jComboBoxSleepTime.getSelectedItem());
         if(jCheckBoxCrawllAllPosts.isSelected()){
             jProgressBar1.setIndeterminate(true);
             jProgressBar1.setVisible(true);
-            
+
             Runnable run = new Runnable() {
                 public void run() {
-                    
+
                     fb_crawler.getAndSaveAllPosts(profile.getId(),sleep_time, 100, conn);
                     jProgressBar1.setIndeterminate(false);
 
@@ -1861,47 +1876,152 @@ public class MainJFrame extends javax.swing.JFrame {
             };
          new Thread(run).start();
         }
-            
+
         if(jCheckBoxCrawlAllComments.isSelected()){
             jProgressBar1.setIndeterminate(true);
             jProgressBar1.setVisible(true);
-            
+
             Runnable run = new Runnable() {
                 public void run() {
-                    
+
                     LinkedHashMap<String,PostElement> result = conn.selectPostsWhere("profile_idprofile", profile.getId());
-                    
+
                     for(String key: result.keySet()){
                         PostElement post = result.get(key);
                         fb_crawler.getAndSaveAllComments(post.getId(), 100, sleep_time, conn);
-                    }                                       
+                    }
                     jProgressBar1.setIndeterminate(false);
                 }
             };
-            new Thread(run).start();            
+            new Thread(run).start();
         }
-            
+
     }//GEN-LAST:event_jButton4ActionPerformed
 
     private void jButton29ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton29ActionPerformed
         // TODO add your handling code here:
 
         prepareExportCard((String)jComboBoxProfiles.getSelectedItem());
-        
+
     }//GEN-LAST:event_jButton29ActionPerformed
 
     private void jButton5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton5ActionPerformed
         // TODO add your handling code here:
         cl.show(jMainPanel, "card_chs_profile");
-        
+
     }//GEN-LAST:event_jButton5ActionPerformed
+
+    private void jToggleButtonChooseFileActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jToggleButtonChooseFileActionPerformed
+        // TODO add your handling code here:
+
+        int returnVal = fileDialog.showOpenDialog(jPanelExportProfile);
+
+        if (returnVal == JFileChooser.APPROVE_OPTION) {
+            jLabelFilePath.setText(fileDialog.getSelectedFile().toString()+"/");
+        }
+    }//GEN-LAST:event_jToggleButtonChooseFileActionPerformed
+
+    private void jCheckBoxReactionsAngryActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jCheckBoxReactionsAngryActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jCheckBoxReactionsAngryActionPerformed
+
+    private void jButtonMonitorProfile6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonMonitorProfile6ActionPerformed
+        // TODO add your handling code here:
+        prepareScreenCrawlProfile(profile);
+    }//GEN-LAST:event_jButtonMonitorProfile6ActionPerformed
+
+    private void jButton25ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton25ActionPerformed
+        // TODO add your handling code here:
+        jLabelNoRowSelected.setVisible(false);
+        jLabelSearchEmpty.setVisible(false);
+        cl.show(jMainPanel, "card_search");
+
+    }//GEN-LAST:event_jButton25ActionPerformed
 
     private void jButton24ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton24ActionPerformed
         // TODO add your handling code here:
         cl.show(jMainPanel, "card_chs_app");
     }//GEN-LAST:event_jButton24ActionPerformed
 
-    
+    private void jButtonExportActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonExportActionPerformed
+
+        String extension = "";
+        // Choose file extension
+        if(jRadioButtonCSV.isSelected()) {
+            extension = ".csv";
+        } else {
+            extension = ".txt";
+        }
+        
+        
+        jLabelNameFileEmpty.setVisible(false);
+        String file_name_temp = jTextFieldFileName.getText() + extension ;
+        String file_path_temp  = jLabelFilePath.getText();
+        Path path = Paths.get(file_path_temp + "/" + file_name_temp );
+        Boolean file_problem = false;
+
+
+
+        try {
+            Files.write(path, "".getBytes("UTF-8"), StandardOpenOption.CREATE_NEW);
+        } catch (UnsupportedEncodingException ex) {
+            Logger.getLogger(MainJFrame.class.getName()).log(Level.SEVERE, null, ex);
+            file_problem = true;
+        } catch (IOException ex) {
+            Logger.getLogger(MainJFrame.class.getName()).log(Level.SEVERE, null, ex);
+            file_problem = true;
+
+        }
+
+        if(jTextFieldFileName.getText().isEmpty()){
+            jLabelNameFileEmpty.setVisible(true);
+            cl.show(jMainPanel, "card_export");
+        } else if(file_problem) {
+            jLabelNameFileEmpty.setText("File could not be created! Check the location or the file name");
+            jLabelNameFileEmpty.setVisible(true);
+            cl.show(jMainPanel, "card_export");
+        } else {
+
+            final String file_name = file_name_temp;
+            final String file_path = file_path_temp;
+
+            jProgressBarExport.setIndeterminate(true);
+            Runnable run = new Runnable() {
+                ExportTools exportTools = new ExportTools(profile, conn);
+                public void run() {
+
+                    // CSV is always selected by defaut
+                    if(jRadioButtonCSV.isSelected()){
+
+                        List <String> fields_csv = readFieldsCSV();
+
+                    } else if (jRadioButtonPosts.isSelected()) {
+                        // export only posts
+                        List <String> fields_post = readFieldsPost();
+                        exportTools.writePostsToFile(file_name, file_path, fields_post);
+
+                    } else if (jRadioButtonComments.isSelected()){
+                        // export only comments
+                        List <String> fields_comments = readFieldsComment();
+                        exportTools.writeCommentsToFile(profile.getId(), file_name, file_path, fields_comments);
+                    } else {
+                        // export both
+                        List <String> fields_post = readFieldsPost();
+                        List <String> fields_comments = readFieldsComment();
+                    }
+                        jLabelNameFileEmpty.setText("Export Done!");
+                        jLabelNameFileEmpty.setVisible(true);
+                        jProgressBarExport.setIndeterminate(false);
+                    }
+            };
+            new Thread(run).start();
+
+        }
+
+        cl.show(jMainPanel, "card_export");
+    }//GEN-LAST:event_jButtonExportActionPerformed
+
+
     /**
      * @param args the command line arguments
      */
@@ -1909,7 +2029,7 @@ public class MainJFrame extends javax.swing.JFrame {
         /* Set the Nimbus look and feel */
         //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
         /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
-         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
+         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html
          */
         try {
             for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
@@ -1933,52 +2053,142 @@ public class MainJFrame extends javax.swing.JFrame {
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
                 new MainJFrame().setVisible(true);
-                
+
                 cl = (CardLayout)jMainPanel.getLayout();
                 Path folder_settings = Paths.get("./settings");
                 if (!Files.exists(folder_settings)){
                     File dir = new File("settings");
                     dir.mkdir();
                 }
-                                                
+
                 jLabelProblemFile.setVisible(false);
                 HandleSetting hs = new HandleSetting();
-                
+
                 FaceSettings fs = hs.readSettingsFile("./settings/data.ser");
                 
                 if (fs == null){
-                    
-                    Path path = Paths.get("./settings/data.ser");                    
+
+                    Path path = Paths.get("./settings/data.ser");
                     if(Files.exists(path)){
                         jLabelProblemFile.setVisible(true);
                     }
-                    cl.show(jMainPanel, "card_mysql");    
-            
+                    cl.show(jMainPanel, "card_mysql");
+
                 } else {
-                    
+
                     // obtain all apps to build ChooseAppPanel
-                    conn = new Connector(fs.getHostname() + ":" + fs.getPort() + "/FaceAnalytics?autoReconnect=true&useSSL=false", fs.getUser(), fs.getPassword());
-                    LinkedHashMap <String, App> app_list = conn.selectAllApps();
+//                    conn = new Connector(fs.getHostname() + ":" + fs.getPort() + "/FaceAnalytics2?autoReconnect=true&useSSL=false", fs.getUser(), fs.getPassword());
+                    conn = new Connector(fs.getHostname() + ":" + fs.getPort(), fs.getUser(), fs.getPassword());
+                    if(!conn.db_exists()){
+                        
+                        if(conn.build_database()){
+                            System.out.println("donneeee!");
+                        }else{
+                            System.out.println("probleeeeemmmmm!");
+                        
+                        }
+                    }
                     
+                    LinkedHashMap <String, App> app_list = conn.selectAllApps();
+
                     // check if there`s app in the database
                     if(app_list.size()>0){
 
                         for (String key : app_list.keySet()) {
-                             jComboBoxApps.addItem(app_list.get(key).getIdapp());                        
+                             jComboBoxApps.addItem(app_list.get(key).getIdapp());
                         }
 
-                        cl.show(jMainPanel, "card_chs_app");                
+                        cl.show(jMainPanel, "card_chs_app");
                     } else {
                         // there`s not app, show CreateAppPanel
-                        cl.show(jMainPanel, "card_create_app");                
-                    
-                    
+                        cl.show(jMainPanel, "card_create_app");
+
+
                     }
-                }                               
+                }
             }
         });
     }
-    
+
+    private List <String> readFieldsCSV(){
+        List <String> fields_csv = new ArrayList<>();
+
+        if(jCheckBoxReactionsAngry.isSelected()){
+            fields_csv.add("angry");
+        }
+                if(jCheckBoxReactionsLikes.isSelected()){
+            fields_csv.add("likes");
+        }
+                        if(jCheckBoxReactionsLoves.isSelected()){
+            fields_csv.add("loves");
+        }
+                                if(jCheckBoxReactionsSad.isSelected()){
+            fields_csv.add("sad");
+        }
+                                        if(jCheckBoxReactionsWow.isSelected()){
+            fields_csv.add("wow");
+        }
+                                                if(jCheckBoxReactionsHaha.isSelected()){
+            fields_csv.add("haha");
+        }
+                                                        if(jCheckBoxReactionsShares.isSelected()){
+            fields_csv.add("shares");
+        }
+                                                                if(jCheckBoxReactionsTime.isSelected()){
+            fields_csv.add("time");
+        }
+                                                               return fields_csv;
+
+    }
+
+    private List <String> readFieldsComment(){
+        List <String>fields_comments = new ArrayList<>();
+
+        if(jCheckBoxCommentId.isSelected()){
+            fields_comments.add("idcomment");
+        }
+
+        if(jCheckBoxCommentTime.isSelected()){
+            fields_comments.add("created_on");
+        }
+
+        if(jCheckBoxCommentUserId.isSelected()){
+            fields_comments.add("iduser");
+        }
+
+        if(jCheckBoxCommentUserName.isSelected()){
+            fields_comments.add("user_name");
+        }
+
+        return fields_comments;
+
+    }
+
+    private List<String> readFieldsPost(){
+        List <String>fields_post = new ArrayList<>();
+
+        if(jCheckBoxPostId.isSelected()){
+            fields_post.add("idpost");
+        }
+
+        if(jCheckBoxPostTime.isSelected()){
+            fields_post.add("created_on");
+        }
+
+        if(jCheckBoxPostShares.isSelected()){
+            fields_post.add("shares");
+        }
+
+        if(jCheckBoxPostIdProfile.isSelected()){
+            fields_post.add("idprofile");
+        }
+        if(jCheckBoxPostReactions.isSelected()){
+            fields_post.add("reactions_count");
+        }
+
+        return fields_post;
+    }
+
     private void prepareExportCard(String idprofile){
            LinkedHashMap <String, ProfileElement> profiles = conn.selectProfileWhere("idprofile", idprofile);
 
@@ -1986,17 +2196,17 @@ public class MainJFrame extends javax.swing.JFrame {
                profile = profiles.get(key);
            }
            jLabelReactionsError.setVisible(false);
-          
+
           jLabelProfileName2.setText(profile.getName());
           jLabelAppId2.setText(app.getIdapp());
           cl.show(jMainPanel,"card_export");
-    
+
     }
-    
+
     private void prepareScreenCrawlProfile(ProfileElement profile){
 
             this.profile = profile;
-        
+
             LinkedHashMap <String, ProfileElement> profiles = conn.selectProfileWhere("idprofile", this.profile.getId());
 
             if (profiles.size() > 0){
@@ -2013,9 +2223,7 @@ public class MainJFrame extends javax.swing.JFrame {
 
             // show card
             cl.show(jMainPanel, "card_crawl_profile");
-    
-    
-    
+
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -2042,30 +2250,31 @@ public class MainJFrame extends javax.swing.JFrame {
     private javax.swing.JButton jButtonChooseApp;
     private javax.swing.JButton jButtonChooseProfile;
     private javax.swing.JButton jButtonConnect;
+    private javax.swing.JButton jButtonExport;
     private javax.swing.JButton jButtonMonitor;
-    private javax.swing.JButton jButtonMonitorProfile3;
     private javax.swing.JButton jButtonMonitorProfile6;
     private javax.swing.JButton jButtonPreviewProfile;
     private javax.swing.JButton jButtonSelectProfile;
     private javax.swing.JButton jButtonUseApp;
-    private javax.swing.JCheckBox jCheckBox10;
-    private javax.swing.JCheckBox jCheckBox11;
-    private javax.swing.JCheckBox jCheckBox12;
-    private javax.swing.JCheckBox jCheckBox13;
-    private javax.swing.JCheckBox jCheckBox14;
-    private javax.swing.JCheckBox jCheckBox15;
-    private javax.swing.JCheckBox jCheckBox16;
-    private javax.swing.JCheckBox jCheckBox17;
-    private javax.swing.JCheckBox jCheckBox18;
-    private javax.swing.JCheckBox jCheckBox3;
-    private javax.swing.JCheckBox jCheckBox4;
-    private javax.swing.JCheckBox jCheckBox5;
-    private javax.swing.JCheckBox jCheckBox6;
-    private javax.swing.JCheckBox jCheckBox7;
-    private javax.swing.JCheckBox jCheckBox8;
-    private javax.swing.JCheckBox jCheckBox9;
+    private javax.swing.JCheckBox jCheckBoxCommentId;
+    private javax.swing.JCheckBox jCheckBoxCommentTime;
+    private javax.swing.JCheckBox jCheckBoxCommentUserId;
+    private javax.swing.JCheckBox jCheckBoxCommentUserName;
     private javax.swing.JCheckBox jCheckBoxCrawlAllComments;
     private javax.swing.JCheckBox jCheckBoxCrawllAllPosts;
+    private javax.swing.JCheckBox jCheckBoxPostId;
+    private javax.swing.JCheckBox jCheckBoxPostIdProfile;
+    private javax.swing.JCheckBox jCheckBoxPostReactions;
+    private javax.swing.JCheckBox jCheckBoxPostShares;
+    private javax.swing.JCheckBox jCheckBoxPostTime;
+    private javax.swing.JCheckBox jCheckBoxReactionsAngry;
+    private javax.swing.JCheckBox jCheckBoxReactionsHaha;
+    private javax.swing.JCheckBox jCheckBoxReactionsLikes;
+    private javax.swing.JCheckBox jCheckBoxReactionsLoves;
+    private javax.swing.JCheckBox jCheckBoxReactionsSad;
+    private javax.swing.JCheckBox jCheckBoxReactionsShares;
+    private javax.swing.JCheckBox jCheckBoxReactionsTime;
+    private javax.swing.JCheckBox jCheckBoxReactionsWow;
     private static javax.swing.JComboBox<String> jComboBoxApps;
     private javax.swing.JComboBox<String> jComboBoxCheckTime;
     private javax.swing.JComboBox<String> jComboBoxDuration;
@@ -2097,7 +2306,6 @@ public class MainJFrame extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel30;
     private javax.swing.JLabel jLabel31;
-    private javax.swing.JLabel jLabel32;
     private javax.swing.JLabel jLabel33;
     private javax.swing.JLabel jLabel34;
     private javax.swing.JLabel jLabel35;
@@ -2118,7 +2326,9 @@ public class MainJFrame extends javax.swing.JFrame {
     private static javax.swing.JLabel jLabelAppId3;
     private static javax.swing.JLabel jLabelAppId4;
     private javax.swing.JLabel jLabelAppName;
+    private javax.swing.JLabel jLabelFilePath;
     private javax.swing.JLabel jLabelIdProfile;
+    private javax.swing.JLabel jLabelNameFileEmpty;
     private javax.swing.JLabel jLabelNoRowSelected;
     private static javax.swing.JLabel jLabelProblemFile;
     private javax.swing.JLabel jLabelProfileName;
@@ -2136,13 +2346,14 @@ public class MainJFrame extends javax.swing.JFrame {
     private static javax.swing.JPanel jPanelMySQL;
     private static javax.swing.JPanel jPanelSearch;
     private javax.swing.JProgressBar jProgressBar1;
-    private javax.swing.JRadioButton jRadioButton1;
-    private javax.swing.JRadioButton jRadioButton2;
-    private javax.swing.JRadioButton jRadioButton3;
-    private javax.swing.JRadioButton jRadioButton4;
-    private javax.swing.JRadioButton jRadioButton5;
-    private javax.swing.JRadioButton jRadioButton6;
-    private javax.swing.JRadioButton jRadioButton7;
+    private javax.swing.JProgressBar jProgressBarExport;
+    private javax.swing.JRadioButton jRadioButtonBoth;
+    private javax.swing.JRadioButton jRadioButtonCSV;
+    private javax.swing.JRadioButton jRadioButtonComments;
+    private javax.swing.JRadioButton jRadioButtonPeriodAll;
+    private javax.swing.JRadioButton jRadioButtonPeriodLmtd;
+    private javax.swing.JRadioButton jRadioButtonPosts;
+    private javax.swing.JRadioButton jRadioButtonTxt;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JScrollPane jScrollPane3;
@@ -2162,7 +2373,7 @@ public class MainJFrame extends javax.swing.JFrame {
     private javax.swing.JTextField jTextFieldAppId;
     private javax.swing.JTextField jTextFieldAppName;
     private javax.swing.JTextField jTextFieldAppSecret;
-    private javax.swing.JTextField jTextFieldFilePath;
+    private javax.swing.JTextField jTextFieldFileName;
     private javax.swing.JTextField jTextFieldHostname;
     private javax.swing.JTextField jTextFieldPassword;
     private javax.swing.JTextField jTextFieldPort;
