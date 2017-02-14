@@ -163,6 +163,7 @@ public class MainJFrame extends javax.swing.JFrame {
         jLabelFilePath = new javax.swing.JLabel();
         jLabelNameFileEmpty = new javax.swing.JLabel();
         jProgressBarExport = new javax.swing.JProgressBar();
+        jButtonSettings = new javax.swing.JButton();
         jPanelCreateApp = new javax.swing.JPanel();
         jLabel11 = new javax.swing.JLabel();
         jButtonConnect = new javax.swing.JButton();
@@ -174,8 +175,9 @@ public class MainJFrame extends javax.swing.JFrame {
         jTextFieldAppSecret = new javax.swing.JTextField();
         jLabel14 = new javax.swing.JLabel();
         jLabel21 = new javax.swing.JLabel();
-        jTextFieldAccessPermissions = new javax.swing.JTextField();
+        jTextFieldPermissions = new javax.swing.JTextField();
         jLabel2 = new javax.swing.JLabel();
+        jLabelAppEmptyField = new javax.swing.JLabel();
         jPanelSearch = new javax.swing.JPanel();
         jButton16 = new javax.swing.JButton();
         jButton17 = new javax.swing.JButton();
@@ -796,6 +798,8 @@ public class MainJFrame extends javax.swing.JFrame {
         jLabelNameFileEmpty.setForeground(new java.awt.Color(255, 51, 0));
         jLabelNameFileEmpty.setText("File name cannot be empty!");
 
+        jButtonSettings.setText("jButton7");
+
         javax.swing.GroupLayout jPanelExportProfileLayout = new javax.swing.GroupLayout(jPanelExportProfile);
         jPanelExportProfile.setLayout(jPanelExportProfileLayout);
         jPanelExportProfileLayout.setHorizontalGroup(
@@ -814,17 +818,17 @@ public class MainJFrame extends javax.swing.JFrame {
                                         .addGap(25, 25, 25)
                                         .addComponent(jButtonExport, javax.swing.GroupLayout.PREFERRED_SIZE, 132, javax.swing.GroupLayout.PREFERRED_SIZE))
                                     .addGroup(jPanelExportProfileLayout.createSequentialGroup()
-                                        .addGroup(jPanelExportProfileLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                            .addComponent(jLabel9)
-                                            .addGroup(jPanelExportProfileLayout.createSequentialGroup()
-                                                .addComponent(jButton24, javax.swing.GroupLayout.PREFERRED_SIZE, 132, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                                .addGap(18, 18, 18)
-                                                .addComponent(jButton25, javax.swing.GroupLayout.PREFERRED_SIZE, 132, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                                .addGap(18, 18, 18)
-                                                .addComponent(jButtonMonitorProfile6, javax.swing.GroupLayout.PREFERRED_SIZE, 132, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                                .addGap(18, 18, 18)
-                                                .addComponent(jButton5, javax.swing.GroupLayout.PREFERRED_SIZE, 124, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                                        .addGap(0, 0, Short.MAX_VALUE))))
+                                        .addComponent(jButton24, javax.swing.GroupLayout.PREFERRED_SIZE, 132, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addGap(18, 18, 18)
+                                        .addComponent(jButton25, javax.swing.GroupLayout.PREFERRED_SIZE, 132, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addGap(18, 18, 18)
+                                        .addComponent(jButtonMonitorProfile6, javax.swing.GroupLayout.PREFERRED_SIZE, 132, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addGap(18, 18, 18)
+                                        .addComponent(jButton5, javax.swing.GroupLayout.PREFERRED_SIZE, 124, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addGap(0, 0, Short.MAX_VALUE))
+                                    .addGroup(jPanelExportProfileLayout.createSequentialGroup()
+                                        .addComponent(jLabel9)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
                             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanelExportProfileLayout.createSequentialGroup()
                                 .addGap(49, 49, 49)
                                 .addComponent(jLabelFilePath, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
@@ -841,7 +845,10 @@ public class MainJFrame extends javax.swing.JFrame {
                             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanelExportProfileLayout.createSequentialGroup()
                                 .addComponent(jLabel5)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(jLabelAppId2, javax.swing.GroupLayout.PREFERRED_SIZE, 207, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addComponent(jLabelAppId2, javax.swing.GroupLayout.PREFERRED_SIZE, 207, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(jButtonSettings, javax.swing.GroupLayout.PREFERRED_SIZE, 22, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addContainerGap())
                             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanelExportProfileLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                                 .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanelExportProfileLayout.createSequentialGroup()
                                     .addGroup(jPanelExportProfileLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -932,11 +939,12 @@ public class MainJFrame extends javax.swing.JFrame {
         jPanelExportProfileLayout.setVerticalGroup(
             jPanelExportProfileLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanelExportProfileLayout.createSequentialGroup()
-                .addGap(7, 7, 7)
+                .addGap(1, 1, 1)
                 .addGroup(jPanelExportProfileLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabelAppId2)
-                    .addComponent(jLabel5))
-                .addGap(15, 15, 15)
+                    .addComponent(jLabel5)
+                    .addComponent(jButtonSettings))
+                .addGap(9, 9, 9)
                 .addGroup(jPanelExportProfileLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel31)
                     .addComponent(jLabelProfileName2))
@@ -1065,6 +1073,10 @@ public class MainJFrame extends javax.swing.JFrame {
         jLabel2.setFont(new java.awt.Font("DejaVu Sans", 1, 14)); // NOI18N
         jLabel2.setText("Insert App Data");
 
+        jLabelAppEmptyField.setFont(new java.awt.Font("DejaVu Sans", 1, 12)); // NOI18N
+        jLabelAppEmptyField.setForeground(new java.awt.Color(255, 51, 51));
+        jLabelAppEmptyField.setText("Fill all the fieds!!!!");
+
         javax.swing.GroupLayout jPanelCreateAppLayout = new javax.swing.GroupLayout(jPanelCreateApp);
         jPanelCreateApp.setLayout(jPanelCreateAppLayout);
         jPanelCreateAppLayout.setHorizontalGroup(
@@ -1085,13 +1097,16 @@ public class MainJFrame extends javax.swing.JFrame {
                         .addGroup(jPanelCreateAppLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                             .addComponent(jLabel14)
                             .addComponent(jLabel13)
-                            .addComponent(jLabel21))
+                            .addGroup(jPanelCreateAppLayout.createSequentialGroup()
+                                .addComponent(jLabel21)
+                                .addGap(38, 38, 38)))
                         .addGap(18, 18, 18)
                         .addGroup(jPanelCreateAppLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                             .addComponent(jTextFieldAccessToken)
                             .addComponent(jTextFieldAppSecret, javax.swing.GroupLayout.DEFAULT_SIZE, 464, Short.MAX_VALUE)
-                            .addComponent(jTextFieldAccessPermissions))))
-                .addContainerGap(158, Short.MAX_VALUE))
+                            .addComponent(jTextFieldPermissions)
+                            .addComponent(jLabelAppEmptyField, javax.swing.GroupLayout.Alignment.TRAILING))))
+                .addContainerGap(131, Short.MAX_VALUE))
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanelCreateAppLayout.createSequentialGroup()
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(jLabel2)
@@ -1120,9 +1135,11 @@ public class MainJFrame extends javax.swing.JFrame {
                     .addComponent(jLabel14))
                 .addGap(18, 18, 18)
                 .addGroup(jPanelCreateAppLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jTextFieldAccessPermissions, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jTextFieldPermissions, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel21))
-                .addGap(92, 92, 92)
+                .addGap(37, 37, 37)
+                .addComponent(jLabelAppEmptyField)
+                .addGap(40, 40, 40)
                 .addComponent(jButtonConnect, javax.swing.GroupLayout.PREFERRED_SIZE, 44, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(99, Short.MAX_VALUE))
         );
@@ -1578,6 +1595,36 @@ public class MainJFrame extends javax.swing.JFrame {
 
     private void jButtonConnectActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonConnectActionPerformed
         // get data from fields and build a settings.ser file
+        String app_name = jTextFieldAppName.getText();
+        String id_app = jTextFieldAppId.getText();
+        String app_secret = jTextFieldAppSecret.getText();
+        String app_permissions = jTextFieldPermissions.getText();
+        String a_token = jTextFieldAccessToken.getText();
+        
+        if(a_token.isEmpty() || id_app.isEmpty() || app_secret.isEmpty() || app_name.isEmpty() || app_permissions.isEmpty()){
+                // there's no app in the database, create APP
+                jLabelAppEmptyField.setVisible(true);
+                 cl.show(jMainPanel, "card_create_app");
+        } else {
+            conn.insertApp(new App(id_app, app_name, a_token, app_secret, app_permissions.split(","), new String [] {""}));
+            LinkedHashMap <String, App> app_list = conn.selectAllApps();
+
+             // check if there`s app in the database
+             if(app_list.size()>0){
+
+                    for (String key : app_list.keySet()) {
+                         jComboBoxApps.addItem(app_list.get(key).getIdapp());
+                    }
+                    jLabelProblemFile.setVisible(false);
+                    cl.show(jMainPanel, "card_chs_app");
+             } else {
+                 jLabelAppEmptyField.setVisible(false);
+                 // there's no app in the database, create APP
+                 cl.show(jMainPanel, "card_create_app");
+             }
+
+        }
+        
     }//GEN-LAST:event_jButtonConnectActionPerformed
 
     private void jTextFieldAppNameActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextFieldAppNameActionPerformed
@@ -1607,7 +1654,7 @@ public class MainJFrame extends javax.swing.JFrame {
        if(hs.writeSettingsFile("./settings/data.ser", hostname, user_name, port, password)){
                       
             // obtain all apps to build ChooseAppPanel
-             conn = new Connector(hostname + ":" + port + "/FaceAnalytics?autoReconnect=true&useSSL=false", user_name, password);
+             conn = new Connector(hostname + ":" + port, user_name, password);
              LinkedHashMap <String, App> app_list = conn.selectAllApps();
 
              // check if there`s app in the database
@@ -1616,10 +1663,15 @@ public class MainJFrame extends javax.swing.JFrame {
                     for (String key : app_list.keySet()) {
                          jComboBoxApps.addItem(app_list.get(key).getIdapp());
                     }
+                    jLabelProblemFile.setVisible(false);
+                    cl.show(jMainPanel, "card_chs_app");
+             } else {
+                jLabelProblemFile.setVisible(false);
+                // there's no app in the database, create APP
+                 cl.show(jMainPanel, "card_create_app");
              }
            
-            jLabelProblemFile.setVisible(false);
-            cl.show(jMainPanel, "card_chs_app");
+
        } else{
             jLabelProblemFile.setVisible(true);
             jPanelCreateApp.repaint();
@@ -2059,53 +2111,58 @@ public class MainJFrame extends javax.swing.JFrame {
                 if (!Files.exists(folder_settings)){
                     File dir = new File("settings");
                     dir.mkdir();
-                }
-
-                jLabelProblemFile.setVisible(false);
-                HandleSetting hs = new HandleSetting();
-
-                FaceSettings fs = hs.readSettingsFile("./settings/data.ser");
-                
-                if (fs == null){
-
-                    Path path = Paths.get("./settings/data.ser");
-                    if(Files.exists(path)){
-                        jLabelProblemFile.setVisible(true);
-                    }
+                    jLabelProblemFile.setVisible(false);
                     cl.show(jMainPanel, "card_mysql");
-
                 } else {
+                    jLabelProblemFile.setVisible(false);
+                    HandleSetting hs = new HandleSetting();
 
-                    // obtain all apps to build ChooseAppPanel
-//                    conn = new Connector(fs.getHostname() + ":" + fs.getPort() + "/FaceAnalytics2?autoReconnect=true&useSSL=false", fs.getUser(), fs.getPassword());
-                    conn = new Connector(fs.getHostname() + ":" + fs.getPort(), fs.getUser(), fs.getPassword());
-                    if(!conn.db_exists()){
-                        
-                        if(conn.build_database()){
-                            System.out.println("donneeee!");
-                        }else{
-                            System.out.println("probleeeeemmmmm!");
-                        
+                    FaceSettings fs = hs.readSettingsFile("./settings/data.ser");
+
+                    if (fs == null){
+
+                        Path path = Paths.get("./settings/data.ser");
+                        if(Files.exists(path)){
+                            jLabelProblemFile.setVisible(true);
                         }
-                    }
-                    
-                    LinkedHashMap <String, App> app_list = conn.selectAllApps();
+                        cl.show(jMainPanel, "card_mysql");
 
-                    // check if there`s app in the database
-                    if(app_list.size()>0){
-
-                        for (String key : app_list.keySet()) {
-                             jComboBoxApps.addItem(app_list.get(key).getIdapp());
-                        }
-
-                        cl.show(jMainPanel, "card_chs_app");
                     } else {
-                        // there`s not app, show CreateAppPanel
-                        cl.show(jMainPanel, "card_create_app");
+
+                        // obtain all apps to build ChooseAppPanel
+    //                    conn = new Connector(fs.getHostname() + ":" + fs.getPort() + "/FaceAnalytics2?autoReconnect=true&useSSL=false", fs.getUser(), fs.getPassword());
+                        conn = new Connector(fs.getHostname() + ":" + fs.getPort(), fs.getUser(), fs.getPassword());
+                        if(!conn.db_exists()){
+
+                            if(conn.build_database()){
+                                System.out.println("donneeee!");
+                            }else{
+                                System.out.println("probleeeeemmmmm!");
+
+                            }
+                        }
+
+                        LinkedHashMap <String, App> app_list = conn.selectAllApps();
+
+                        // check if there`s app in the database
+                        if(app_list.size()>0){
+
+                            for (String key : app_list.keySet()) {
+                                 jComboBoxApps.addItem(app_list.get(key).getIdapp());
+                            }
+
+                            cl.show(jMainPanel, "card_chs_app");
+                        } else {
+                            jLabelProblemFile.setVisible(false);
+                            // there`s not app, show CreateAppPanel
+                            cl.show(jMainPanel, "card_create_app");
 
 
+                        }
                     }
+                
                 }
+
             }
         });
     }
@@ -2255,6 +2312,7 @@ public class MainJFrame extends javax.swing.JFrame {
     private javax.swing.JButton jButtonMonitorProfile6;
     private javax.swing.JButton jButtonPreviewProfile;
     private javax.swing.JButton jButtonSelectProfile;
+    private javax.swing.JButton jButtonSettings;
     private javax.swing.JButton jButtonUseApp;
     private javax.swing.JCheckBox jCheckBoxCommentId;
     private javax.swing.JCheckBox jCheckBoxCommentTime;
@@ -2321,6 +2379,7 @@ public class MainJFrame extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel7;
     private javax.swing.JLabel jLabel8;
     private javax.swing.JLabel jLabel9;
+    private javax.swing.JLabel jLabelAppEmptyField;
     private static javax.swing.JLabel jLabelAppId1;
     private static javax.swing.JLabel jLabelAppId2;
     private static javax.swing.JLabel jLabelAppId3;
@@ -2368,7 +2427,6 @@ public class MainJFrame extends javax.swing.JFrame {
     private javax.swing.JTable jTableReactionsSummary5;
     private javax.swing.JTable jTableSearchResults;
     private javax.swing.JTextArea jTextAreaConsole;
-    private javax.swing.JTextField jTextFieldAccessPermissions;
     private javax.swing.JTextField jTextFieldAccessToken;
     private javax.swing.JTextField jTextFieldAppId;
     private javax.swing.JTextField jTextFieldAppName;
@@ -2376,6 +2434,7 @@ public class MainJFrame extends javax.swing.JFrame {
     private javax.swing.JTextField jTextFieldFileName;
     private javax.swing.JTextField jTextFieldHostname;
     private javax.swing.JTextField jTextFieldPassword;
+    private javax.swing.JTextField jTextFieldPermissions;
     private javax.swing.JTextField jTextFieldPort;
     private javax.swing.JTextField jTextFieldSearchBar;
     private javax.swing.JTextField jTextFieldUsername;
