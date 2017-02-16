@@ -1391,7 +1391,7 @@ public class NewJFrame extends javax.swing.JFrame {
        String password = jTextFieldPassword.getText();
 
        HandleSetting hs = new HandleSetting();
-       if(hs.writeSettingsFile("./settings/data.ser", hostname, user_name, port, password)){
+       if(HandleSetting.writeSettingsFile("./settings/data.ser", hostname, user_name, port, password)){
                       
             // obtain all apps to build ChooseAppPanel
              conn = new Connector(hostname + ":" + port, user_name, password);
@@ -1891,10 +1891,9 @@ public class NewJFrame extends javax.swing.JFrame {
                         // check if there`s app in the database
                         if(app_list.size()>0){
 
-                            for (String key : app_list.keySet()) {
-                                 jComboBoxApps.addItem(app_list.get(key).getIdapp());
-                                 
-                            }
+                            app_list.keySet().forEach((key) -> {
+                                jComboBoxApps.addItem(app_list.get(key).getIdapp());
+                            });
 
                             cl.show(jPanelMain, "card_chs_app");
                         } else {
