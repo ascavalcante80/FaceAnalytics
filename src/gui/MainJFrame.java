@@ -67,7 +67,7 @@ public class MainJFrame extends javax.swing.JFrame {
         buttonGroupFileType = new javax.swing.ButtonGroup();
         buttonGroupPeriod = new javax.swing.ButtonGroup();
         buttonGroupExportOpt = new javax.swing.ButtonGroup();
-        jMainPanel = new javax.swing.JPanel();
+        jPanelMain = new javax.swing.JPanel();
         jPanelChooseApp = new javax.swing.JPanel();
         jComboBoxApps = new javax.swing.JComboBox<>();
         jLabel8 = new javax.swing.JLabel();
@@ -223,8 +223,8 @@ public class MainJFrame extends javax.swing.JFrame {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
-        jMainPanel.setPreferredSize(new java.awt.Dimension(853, 532));
-        jMainPanel.setLayout(new java.awt.CardLayout());
+        jPanelMain.setPreferredSize(new java.awt.Dimension(853, 532));
+        jPanelMain.setLayout(new java.awt.CardLayout());
 
         jPanelChooseApp.setPreferredSize(new java.awt.Dimension(853, 532));
 
@@ -325,7 +325,7 @@ public class MainJFrame extends javax.swing.JFrame {
                 .addContainerGap(8, Short.MAX_VALUE))
         );
 
-        jMainPanel.add(jPanelChooseApp, "card_chs_app");
+        jPanelMain.add(jPanelChooseApp, "card_chs_app");
 
         jPanelCrawlProfile.setFocusTraversalPolicyProvider(true);
         jPanelCrawlProfile.setInheritsPopupMenu(true);
@@ -639,7 +639,7 @@ public class MainJFrame extends javax.swing.JFrame {
                     .addGap(86, 86, 86)))
         );
 
-        jMainPanel.add(jPanelCrawlProfile, "card_crawl_profile");
+        jPanelMain.add(jPanelCrawlProfile, "card_crawl_profile");
 
         jPanelExportProfile.setPreferredSize(new java.awt.Dimension(853, 532));
 
@@ -818,17 +818,17 @@ public class MainJFrame extends javax.swing.JFrame {
                                         .addGap(25, 25, 25)
                                         .addComponent(jButtonExport, javax.swing.GroupLayout.PREFERRED_SIZE, 132, javax.swing.GroupLayout.PREFERRED_SIZE))
                                     .addGroup(jPanelExportProfileLayout.createSequentialGroup()
-                                        .addComponent(jButton24, javax.swing.GroupLayout.PREFERRED_SIZE, 132, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                        .addGap(18, 18, 18)
-                                        .addComponent(jButton25, javax.swing.GroupLayout.PREFERRED_SIZE, 132, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                        .addGap(18, 18, 18)
-                                        .addComponent(jButtonMonitorProfile6, javax.swing.GroupLayout.PREFERRED_SIZE, 132, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                        .addGap(18, 18, 18)
-                                        .addComponent(jButton5, javax.swing.GroupLayout.PREFERRED_SIZE, 124, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                        .addGap(0, 0, Short.MAX_VALUE))
-                                    .addGroup(jPanelExportProfileLayout.createSequentialGroup()
-                                        .addComponent(jLabel9)
-                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
+                                        .addGroup(jPanelExportProfileLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                            .addGroup(jPanelExportProfileLayout.createSequentialGroup()
+                                                .addComponent(jButton24, javax.swing.GroupLayout.PREFERRED_SIZE, 132, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                                .addGap(18, 18, 18)
+                                                .addComponent(jButton25, javax.swing.GroupLayout.PREFERRED_SIZE, 132, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                                .addGap(18, 18, 18)
+                                                .addComponent(jButtonMonitorProfile6, javax.swing.GroupLayout.PREFERRED_SIZE, 132, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                                .addGap(18, 18, 18)
+                                                .addComponent(jButton5, javax.swing.GroupLayout.PREFERRED_SIZE, 124, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                            .addComponent(jLabel9))
+                                        .addGap(0, 0, Short.MAX_VALUE))))
                             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanelExportProfileLayout.createSequentialGroup()
                                 .addGap(49, 49, 49)
                                 .addComponent(jLabelFilePath, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
@@ -1036,7 +1036,7 @@ public class MainJFrame extends javax.swing.JFrame {
                 .addComponent(jProgressBarExport, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
 
-        jMainPanel.add(jPanelExportProfile, "card_export");
+        jPanelMain.add(jPanelExportProfile, "card_export");
 
         jPanelCreateApp.setFocusCycleRoot(true);
         jPanelCreateApp.setPreferredSize(new java.awt.Dimension(853, 532));
@@ -1144,7 +1144,7 @@ public class MainJFrame extends javax.swing.JFrame {
                 .addContainerGap(99, Short.MAX_VALUE))
         );
 
-        jMainPanel.add(jPanelCreateApp, "card_create_app");
+        jPanelMain.add(jPanelCreateApp, "card_create_app");
 
         jButton16.setText("Use Selected Profile");
         jButton16.addActionListener(new java.awt.event.ActionListener() {
@@ -1290,7 +1290,7 @@ public class MainJFrame extends javax.swing.JFrame {
                     .addComponent(jButton19, javax.swing.GroupLayout.PREFERRED_SIZE, 44, javax.swing.GroupLayout.PREFERRED_SIZE)))
         );
 
-        jMainPanel.add(jPanelSearch, "card_search");
+        jPanelMain.add(jPanelSearch, "card_search");
 
         jPanelChooseProfile.setPreferredSize(new java.awt.Dimension(853, 532));
 
@@ -1438,7 +1438,7 @@ public class MainJFrame extends javax.swing.JFrame {
                 .addContainerGap(8, Short.MAX_VALUE))
         );
 
-        jMainPanel.add(jPanelChooseProfile, "card_chs_profile");
+        jPanelMain.add(jPanelChooseProfile, "card_chs_profile");
 
         jPanelMySQL.setPreferredSize(new java.awt.Dimension(853, 532));
 
@@ -1532,20 +1532,20 @@ public class MainJFrame extends javax.swing.JFrame {
                 .addGap(74, 74, 74))
         );
 
-        jMainPanel.add(jPanelMySQL, "card_mysql");
+        jPanelMain.add(jPanelMySQL, "card_mysql");
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addComponent(jMainPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(jPanelMain, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addComponent(jMainPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(jPanelMain, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
@@ -1562,7 +1562,7 @@ public class MainJFrame extends javax.swing.JFrame {
         // TODO add your handling code here:
         jLabelNoRowSelected.setVisible(false);
         jLabelSearchEmpty.setVisible(false);
-        cl.show(jMainPanel, "card_search");
+        cl.show(jPanelMain, "card_search");
 
     }//GEN-LAST:event_jButton23ActionPerformed
 
@@ -1604,7 +1604,7 @@ public class MainJFrame extends javax.swing.JFrame {
         if(a_token.isEmpty() || id_app.isEmpty() || app_secret.isEmpty() || app_name.isEmpty() || app_permissions.isEmpty()){
                 // there's no app in the database, create APP
                 jLabelAppEmptyField.setVisible(true);
-                 cl.show(jMainPanel, "card_create_app");
+                 cl.show(jPanelMain, "card_create_app");
         } else {
             conn.insertApp(new App(id_app, app_name, a_token, app_secret, app_permissions.split(","), new String [] {""}));
             LinkedHashMap <String, App> app_list = conn.selectAllApps();
@@ -1616,11 +1616,11 @@ public class MainJFrame extends javax.swing.JFrame {
                          jComboBoxApps.addItem(app_list.get(key).getIdapp());
                     }
                     jLabelProblemFile.setVisible(false);
-                    cl.show(jMainPanel, "card_chs_app");
+                    cl.show(jPanelMain, "card_chs_app");
              } else {
                  jLabelAppEmptyField.setVisible(false);
                  // there's no app in the database, create APP
-                 cl.show(jMainPanel, "card_create_app");
+                 cl.show(jPanelMain, "card_create_app");
              }
 
         }
@@ -1664,18 +1664,18 @@ public class MainJFrame extends javax.swing.JFrame {
                          jComboBoxApps.addItem(app_list.get(key).getIdapp());
                     }
                     jLabelProblemFile.setVisible(false);
-                    cl.show(jMainPanel, "card_chs_app");
+                    cl.show(jPanelMain, "card_chs_app");
              } else {
                 jLabelProblemFile.setVisible(false);
                 // there's no app in the database, create APP
-                 cl.show(jMainPanel, "card_create_app");
+                 cl.show(jPanelMain, "card_create_app");
              }
            
 
        } else{
             jLabelProblemFile.setVisible(true);
             jPanelCreateApp.repaint();
-            cl.show(jMainPanel, "card_mysql");
+            cl.show(jPanelMain, "card_mysql");
        }
        
 
@@ -1750,7 +1750,7 @@ public class MainJFrame extends javax.swing.JFrame {
 
 
         jPanelChooseProfile.repaint();
-        cl.show(jMainPanel, "card_chs_profile");
+        cl.show(jPanelMain, "card_chs_profile");
 
     }//GEN-LAST:event_jButtonUseAppActionPerformed
 
@@ -1791,7 +1791,7 @@ public class MainJFrame extends javax.swing.JFrame {
 
     private void jButton22ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton22ActionPerformed
         // TODO add your handling code here:
-        cl.show(jMainPanel, "card_chs_app");
+        cl.show(jPanelMain, "card_chs_app");
     }//GEN-LAST:event_jButton22ActionPerformed
 
     private void jButton26ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton26ActionPerformed
@@ -1800,24 +1800,24 @@ public class MainJFrame extends javax.swing.JFrame {
 
     private void jButtonChooseAppActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonChooseAppActionPerformed
         // TODO add your handling code here:
-        cl.show(jMainPanel, "card_chs_app");
+        cl.show(jPanelMain, "card_chs_app");
     }//GEN-LAST:event_jButtonChooseAppActionPerformed
 
     private void jButton28ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton28ActionPerformed
         // TODO add your handling code here:
         jLabelNoRowSelected.setVisible(false);
         jLabelSearchEmpty.setVisible(false);
-        cl.show(jMainPanel, "card_search");
+        cl.show(jPanelMain, "card_search");
     }//GEN-LAST:event_jButton28ActionPerformed
 
     private void jButton17ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton17ActionPerformed
         // TODO add your handling code here:
-        cl.show(jMainPanel, "card_chs_app");
+        cl.show(jPanelMain, "card_chs_app");
     }//GEN-LAST:event_jButton17ActionPerformed
 
     private void jButton19ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton19ActionPerformed
         // TODO add your handling code here:
-        cl.show(jMainPanel, "card_chs_profile");
+        cl.show(jPanelMain, "card_chs_profile");
     }//GEN-LAST:event_jButton19ActionPerformed
 
     private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
@@ -1829,7 +1829,7 @@ public class MainJFrame extends javax.swing.JFrame {
 
         if(search.isEmpty()){
             jLabelSearchEmpty.setVisible(true);
-            cl.show(jMainPanel, "card_search");
+            cl.show(jPanelMain, "card_search");
         } else {
 
             String result = fb_crawler.searchProfileByIdDysplayingLastPosts(search, result_limit);
@@ -1858,7 +1858,7 @@ public class MainJFrame extends javax.swing.JFrame {
 
         if(search.isEmpty()){
             jLabelSearchEmpty.setVisible(true);
-            cl.show(jMainPanel, "card_search");
+            cl.show(jPanelMain, "card_search");
         } else {
 
             LinkedHashMap<String,String> result = fb_crawler.searchProfileDysplayingLastPosts(search, result_limit);
@@ -1890,7 +1890,7 @@ public class MainJFrame extends javax.swing.JFrame {
         if (row == -1){
             jLabelNoRowSelected.setVisible(true);
             jPanelSearch.repaint();
-            cl.show(jMainPanel, "card_search");
+            cl.show(jPanelMain, "card_search");
 
         } else {
 
@@ -1906,7 +1906,7 @@ public class MainJFrame extends javax.swing.JFrame {
 
     private void jButtonChooseProfileActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonChooseProfileActionPerformed
         // TODO add your handling code here:
-        cl.show(jMainPanel, "card_chs_profile");
+        cl.show(jPanelMain, "card_chs_profile");
     }//GEN-LAST:event_jButtonChooseProfileActionPerformed
 
     private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
@@ -1959,7 +1959,7 @@ public class MainJFrame extends javax.swing.JFrame {
 
     private void jButton5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton5ActionPerformed
         // TODO add your handling code here:
-        cl.show(jMainPanel, "card_chs_profile");
+        cl.show(jPanelMain, "card_chs_profile");
 
     }//GEN-LAST:event_jButton5ActionPerformed
 
@@ -1986,13 +1986,13 @@ public class MainJFrame extends javax.swing.JFrame {
         // TODO add your handling code here:
         jLabelNoRowSelected.setVisible(false);
         jLabelSearchEmpty.setVisible(false);
-        cl.show(jMainPanel, "card_search");
+        cl.show(jPanelMain, "card_search");
 
     }//GEN-LAST:event_jButton25ActionPerformed
 
     private void jButton24ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton24ActionPerformed
         // TODO add your handling code here:
-        cl.show(jMainPanel, "card_chs_app");
+        cl.show(jPanelMain, "card_chs_app");
     }//GEN-LAST:event_jButton24ActionPerformed
 
     private void jButtonExportActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonExportActionPerformed
@@ -2027,11 +2027,11 @@ public class MainJFrame extends javax.swing.JFrame {
 
         if(jTextFieldFileName.getText().isEmpty()){
             jLabelNameFileEmpty.setVisible(true);
-            cl.show(jMainPanel, "card_export");
+            cl.show(jPanelMain, "card_export");
         } else if(file_problem) {
             jLabelNameFileEmpty.setText("File could not be created! Check the location or the file name");
             jLabelNameFileEmpty.setVisible(true);
-            cl.show(jMainPanel, "card_export");
+            cl.show(jPanelMain, "card_export");
         } else {
 
             final String file_name = file_name_temp;
@@ -2070,7 +2070,7 @@ public class MainJFrame extends javax.swing.JFrame {
 
         }
 
-        cl.show(jMainPanel, "card_export");
+        cl.show(jPanelMain, "card_export");
     }//GEN-LAST:event_jButtonExportActionPerformed
 
 
@@ -2106,13 +2106,13 @@ public class MainJFrame extends javax.swing.JFrame {
             public void run() {
                 new MainJFrame().setVisible(true);
 
-                cl = (CardLayout)jMainPanel.getLayout();
+                cl = (CardLayout)jPanelMain.getLayout();
                 Path folder_settings = Paths.get("./settings");
                 if (!Files.exists(folder_settings)){
                     File dir = new File("settings");
                     dir.mkdir();
                     jLabelProblemFile.setVisible(false);
-                    cl.show(jMainPanel, "card_mysql");
+                    cl.show(jPanelMain, "card_mysql");
                 } else {
                     jLabelProblemFile.setVisible(false);
                     HandleSetting hs = new HandleSetting();
@@ -2125,7 +2125,7 @@ public class MainJFrame extends javax.swing.JFrame {
                         if(Files.exists(path)){
                             jLabelProblemFile.setVisible(true);
                         }
-                        cl.show(jMainPanel, "card_mysql");
+                        cl.show(jPanelMain, "card_mysql");
 
                     } else {
 
@@ -2151,17 +2151,28 @@ public class MainJFrame extends javax.swing.JFrame {
                                  jComboBoxApps.addItem(app_list.get(key).getIdapp());
                             }
 
-                            cl.show(jMainPanel, "card_chs_app");
+                            cl.show(jPanelMain, "card_chs_app");
                         } else {
                             jLabelProblemFile.setVisible(false);
                             // there`s not app, show CreateAppPanel
-                            cl.show(jMainPanel, "card_create_app");
+                            cl.show(jPanelMain, "card_create_app");
 
 
                         }
                     }
                 
                 }
+                
+                
+                
+                
+                
+                
+                
+                
+                
+                
+                
 
             }
         });
@@ -2256,7 +2267,7 @@ public class MainJFrame extends javax.swing.JFrame {
 
           jLabelProfileName2.setText(profile.getName());
           jLabelAppId2.setText(app.getIdapp());
-          cl.show(jMainPanel,"card_export");
+          cl.show(jPanelMain,"card_export");
 
     }
 
@@ -2279,7 +2290,7 @@ public class MainJFrame extends javax.swing.JFrame {
             jLabelAppId1.setText(app.getIdapp());
 
             // show card
-            cl.show(jMainPanel, "card_crawl_profile");
+            cl.show(jPanelMain, "card_crawl_profile");
 
     }
 
@@ -2396,12 +2407,12 @@ public class MainJFrame extends javax.swing.JFrame {
     private javax.swing.JLabel jLabelReactionsError;
     private javax.swing.JLabel jLabelSearchEmpty;
     private javax.swing.JLabel jLabelTotalPosts7;
-    private static javax.swing.JPanel jMainPanel;
     private static javax.swing.JPanel jPanelChooseApp;
     private static javax.swing.JPanel jPanelChooseProfile;
     private static javax.swing.JPanel jPanelCrawlProfile;
     private javax.swing.JPanel jPanelCreateApp;
     private static javax.swing.JPanel jPanelExportProfile;
+    private static javax.swing.JPanel jPanelMain;
     private static javax.swing.JPanel jPanelMySQL;
     private static javax.swing.JPanel jPanelSearch;
     private javax.swing.JProgressBar jProgressBar1;
