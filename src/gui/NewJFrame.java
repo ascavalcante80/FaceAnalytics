@@ -5,6 +5,7 @@
  */
 package gui;
 
+import crawler.CrawlerPageTools;
 import crawler.FacebookCrawler;
 import database.Connector;
 import export.ExportTools;
@@ -42,6 +43,8 @@ public class NewJFrame extends javax.swing.JFrame {
     String idprofile = null;
     String profile_name = null;
     ProfileElement profile = null;
+    CrawlerPageTools crawlerPage = null;
+
 
     /**
      * Creates new form NewJFrame
@@ -110,6 +113,7 @@ public class NewJFrame extends javax.swing.JFrame {
         jLabel42 = new javax.swing.JLabel();
         jScrollPane3 = new javax.swing.JScrollPane();
         jTextAreaConsole = new javax.swing.JTextArea();
+        jButtonMonitor1 = new javax.swing.JButton();
         jPanelSearch = new javax.swing.JPanel();
         jComboBoxSearchLimit = new javax.swing.JComboBox<>();
         jLabelSearchEmpty = new javax.swing.JLabel();
@@ -566,10 +570,22 @@ public class NewJFrame extends javax.swing.JFrame {
         jTextAreaConsole.setRows(5);
         jScrollPane3.setViewportView(jTextAreaConsole);
 
+        jButtonMonitor1.setText("Monitor Profile");
+        jButtonMonitor1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButtonMonitor1ActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanelMonitorLayout = new javax.swing.GroupLayout(jPanelMonitor);
         jPanelMonitor.setLayout(jPanelMonitorLayout);
         jPanelMonitorLayout.setHorizontalGroup(
             jPanelMonitorLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanelMonitorLayout.createSequentialGroup()
+                .addGap(368, 368, 368)
+                .addComponent(jLabelTotalPosts7)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+            .addComponent(jScrollPane3, javax.swing.GroupLayout.Alignment.TRAILING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanelMonitorLayout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanelMonitorLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -594,13 +610,11 @@ public class NewJFrame extends javax.swing.JFrame {
                         .addComponent(jComboBoxDuration, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jLabel39))
-                    .addComponent(jScrollPane3)
-                    .addComponent(jSeparator3))
+                    .addComponent(jSeparator3)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanelMonitorLayout.createSequentialGroup()
+                        .addGap(0, 0, Short.MAX_VALUE)
+                        .addComponent(jButtonMonitor1)))
                 .addContainerGap())
-            .addGroup(jPanelMonitorLayout.createSequentialGroup()
-                .addGap(368, 368, 368)
-                .addComponent(jLabelTotalPosts7)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         jPanelMonitorLayout.setVerticalGroup(
             jPanelMonitorLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -625,8 +639,10 @@ public class NewJFrame extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jLabelTotalPosts7, javax.swing.GroupLayout.PREFERRED_SIZE, 15, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
-                .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 202, Short.MAX_VALUE)
-                .addGap(117, 117, 117))
+                .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 227, Short.MAX_VALUE)
+                .addGap(18, 18, 18)
+                .addComponent(jButtonMonitor1, javax.swing.GroupLayout.PREFERRED_SIZE, 59, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(15, 15, 15))
         );
 
         jPanelMain.add(jPanelMonitor, "card_monitor");
@@ -1558,10 +1574,8 @@ public class NewJFrame extends javax.swing.JFrame {
     }//GEN-LAST:event_jButtonPreviewProfileActionPerformed
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
-        
-        jLabelProfileSaved.setVisible(false);
-        
         // TODO add your handling code here:
+    	jLabelProfileSaved.setVisible(false);
         int result_limit = Integer.parseInt((String)jComboBoxSearchLimit.getSelectedItem());
         String search = jTextFieldSearchBar.getText();
         jLabelSearchEmpty.setVisible(false);
@@ -1818,6 +1832,25 @@ public class NewJFrame extends javax.swing.JFrame {
         // TODO add your handling code here:
     }//GEN-LAST:event_jButtonSearch2ActionPerformed
 
+    private void jButtonMonitor1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonMonitor1ActionPerformed
+        // TODO add your handling code here:
+        String duration_time_temp = (String)jComboBoxDuration.getSelectedItem();
+        int duration_time;
+        if(!"Infinity".equals(duration_time_temp)){
+                duration_time = Integer.parseInt(duration_time_temp);
+        } else {
+                duration_time = 0;
+        }
+
+        int check_time = Integer.parseInt((String)jComboBoxCheckTime.getSelectedItem());
+        int sleep_time = Integer.parseInt((String)jComboBoxSleepTime.getSelectedItem());
+
+        crawlerPage = new CrawlerPageTools(profile.getId(), app, conn, sleep_time,check_time,duration_time);
+        crawlerPage.monitor_page();
+        cl.show(jPanelMain, "monitor");
+        
+    }//GEN-LAST:event_jButtonMonitor1ActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -2003,6 +2036,7 @@ public class NewJFrame extends javax.swing.JFrame {
     private javax.swing.JButton jButtonExport;
     private javax.swing.JButton jButtonExport1;
     private javax.swing.JButton jButtonMonitor;
+    private javax.swing.JButton jButtonMonitor1;
     private javax.swing.JButton jButtonPreviewApp;
     private javax.swing.JButton jButtonPreviewProfile;
     private javax.swing.JButton jButtonSearch;
