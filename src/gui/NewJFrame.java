@@ -1218,7 +1218,7 @@ public class NewJFrame extends javax.swing.JFrame {
 
         jSeparator2.setOrientation(javax.swing.SwingConstants.VERTICAL);
 
-        jToggleButton2.setIcon(new javax.swing.ImageIcon("/home/alexandre/workspace/FaceAnalytics/icons/settings-ic.png")); // NOI18N
+        jToggleButton2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/gui/settings-ic.png"))); // NOI18N
         jToggleButton2.setToolTipText("Settings");
 
         jComboBoxProfiles.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "-" }));
@@ -1242,7 +1242,7 @@ public class NewJFrame extends javax.swing.JFrame {
 
         jLabelAppId.setText("-");
 
-        jButtonCrawl.setIcon(new javax.swing.ImageIcon("/home/alexandre/workspace/FaceAnalytics/icons/crawling2.png")); // NOI18N
+        jButtonCrawl.setIcon(new javax.swing.ImageIcon(getClass().getResource("/gui/crawling2.png"))); // NOI18N
         jButtonCrawl.setToolTipText("Crawling tools");
         jButtonCrawl.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -1250,7 +1250,7 @@ public class NewJFrame extends javax.swing.JFrame {
             }
         });
 
-        jButtonMonitor.setIcon(new javax.swing.ImageIcon("/home/alexandre/workspace/FaceAnalytics/icons/monitor-ic.png")); // NOI18N
+        jButtonMonitor.setIcon(new javax.swing.ImageIcon(getClass().getResource("/gui/monitor-ic.png"))); // NOI18N
         jButtonMonitor.setToolTipText("Monitoring options");
         jButtonMonitor.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -1258,7 +1258,7 @@ public class NewJFrame extends javax.swing.JFrame {
             }
         });
 
-        jButtonExport1.setIcon(new javax.swing.ImageIcon("/home/alexandre/workspace/FaceAnalytics/icons/export-ic.png")); // NOI18N
+        jButtonExport1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/gui/export-ic.png"))); // NOI18N
         jButtonExport1.setToolTipText("Export tools");
         jButtonExport1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -1266,7 +1266,7 @@ public class NewJFrame extends javax.swing.JFrame {
             }
         });
 
-        jButtonSearch.setIcon(new javax.swing.ImageIcon("/home/alexandre/workspace/FaceAnalytics/icons/search-ic.png")); // NOI18N
+        jButtonSearch.setIcon(new javax.swing.ImageIcon(getClass().getResource("/gui/search-ic.png"))); // NOI18N
         jButtonSearch.setToolTipText("Seach profile");
         jButtonSearch.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -1283,7 +1283,7 @@ public class NewJFrame extends javax.swing.JFrame {
             }
         });
 
-        jButtonSearch2.setIcon(new javax.swing.ImageIcon("/home/alexandre/workspace/FaceAnalytics/icons/database-ic.png")); // NOI18N
+        jButtonSearch2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/gui/database-ic.png"))); // NOI18N
         jButtonSearch2.setToolTipText("MySQL settings");
         jButtonSearch2.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
