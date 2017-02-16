@@ -1880,7 +1880,7 @@
     <Component class="javax.swing.JToggleButton" name="jToggleButton2">
       <Properties>
         <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-          <Image iconType="3" name="/gui2/settings-ic.png"/>
+          <Image iconType="2" name="/home/alexandre/workspace/FaceAnalytics/icons/settings-ic.png"/>
         </Property>
         <Property name="toolTipText" type="java.lang.String" value="Settings"/>
       </Properties>
@@ -1938,7 +1938,7 @@
     <Component class="javax.swing.JButton" name="jButtonCrawl">
       <Properties>
         <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-          <Image iconType="3" name="/gui2/crawling2.png"/>
+          <Image iconType="2" name="/home/alexandre/workspace/FaceAnalytics/icons/crawling2.png"/>
         </Property>
         <Property name="toolTipText" type="java.lang.String" value="Crawling tools"/>
       </Properties>
@@ -1949,7 +1949,7 @@
     <Component class="javax.swing.JButton" name="jButtonMonitor">
       <Properties>
         <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-          <Image iconType="3" name="/gui2/monitor-ic.png"/>
+          <Image iconType="2" name="/home/alexandre/workspace/FaceAnalytics/icons/monitor-ic.png"/>
         </Property>
         <Property name="toolTipText" type="java.lang.String" value="Monitoring options"/>
       </Properties>
@@ -1960,7 +1960,7 @@
     <Component class="javax.swing.JButton" name="jButtonExport1">
       <Properties>
         <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-          <Image iconType="3" name="/gui2/export-ic.png"/>
+          <Image iconType="2" name="/home/alexandre/workspace/FaceAnalytics/icons/export-ic.png"/>
         </Property>
         <Property name="toolTipText" type="java.lang.String" value="Export tools"/>
       </Properties>
@@ -1971,7 +1971,7 @@
     <Component class="javax.swing.JButton" name="jButtonSearch">
       <Properties>
         <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-          <Image iconType="3" name="/gui2/search-ic.png"/>
+          <Image iconType="2" name="/home/alexandre/workspace/FaceAnalytics/icons/search-ic.png"/>
         </Property>
         <Property name="toolTipText" type="java.lang.String" value="Seach profile"/>
       </Properties>
@@ -1996,7 +1996,7 @@
     <Component class="javax.swing.JButton" name="jButtonSearch2">
       <Properties>
         <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-          <Image iconType="3" name="/gui2/database-ic.png"/>
+          <Image iconType="2" name="/home/alexandre/workspace/FaceAnalytics/icons/database-ic.png"/>
         </Property>
         <Property name="toolTipText" type="java.lang.String" value="MySQL settings"/>
       </Properties>
