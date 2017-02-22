@@ -1,25 +1,5 @@
 package crawler;
 
-import database.Connector;
-import facebook.App;
-import java.io.IOException;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.concurrent.TimeUnit;
-
-import javax.net.ssl.HandshakeCompletedListener;
-
-import facebook4j.Facebook;
-import facebook4j.FacebookException;
-import facebook4j.FacebookFactory;
-import facebook4j.Post;
-import facebook4j.Reading;
-import facebook4j.ResponseList;
-import facebook4j.auth.AccessToken;
-import util.Converter;
-
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -31,21 +11,31 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
-import java.sql.SQLClientInfoException;
 import java.sql.Timestamp;
-import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.LinkedHashMap;
+import java.util.concurrent.TimeUnit;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.junit.After;
 
+import database.Connector;
+import facebook.App;
 import facebook.CommentsElement;
 import facebook.PostElement;
 import facebook.UserElement;
+import facebook4j.Facebook;
+import facebook4j.FacebookException;
+import facebook4j.FacebookFactory;
 import facebook4j.Page;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import facebook4j.Post;
+import facebook4j.Reading;
+import facebook4j.ResponseList;
+import facebook4j.auth.AccessToken;
+import util.Converter;
 
 public class FacebookCrawler implements Runnable {
 
@@ -59,7 +49,7 @@ public class FacebookCrawler implements Runnable {
         
 	public FacebookCrawler(App app) throws InterruptedException, FacebookException, IOException{
 
-                this.app = app;
+        this.app = app;
 		this.access_token = app.getAccess_token();
 		facebook = new FacebookFactory().getInstance();
 		AccessToken ac = new AccessToken(access_token);
@@ -107,7 +97,7 @@ public class FacebookCrawler implements Runnable {
 
         public LinkedHashMap<String,String> searchProfileDysplayingLastPosts(String page_name, int result_limit){
 		
-		LinkedHashMap<String, String> last_posts= new LinkedHashMap();
+		LinkedHashMap<String, String> last_posts= new LinkedHashMap<String, String>();
 		try {
 			ResponseList<Page> list_pages = facebook.searchPages(page_name,new Reading().limit(result_limit));
 			String message;
@@ -278,7 +268,7 @@ public class FacebookCrawler implements Runnable {
 	
 	public LinkedHashMap <String, Integer> getAllReactions(String post_id) throws IOException, JSONException{
 
-		LinkedHashMap <String, Integer> reactions = new LinkedHashMap();
+		LinkedHashMap <String, Integer> reactions = new LinkedHashMap<String, Integer>();
 
 		JSONObject json = readJsonFromUrl("https://graph.facebook.com/v2.8/?ids=" + post_id + "&fields=reactions.type(LOVE).limit(0).summary(total_count).as(reactions_love)%2Creactions.type(WOW).limit(0).summary(total_count).as(reactions_wow)%2Creactions.type(HAHA).limit(0).summary(total_count).as(reactions_haha)%2C%20reactions.type(LIKE).limit(0).summary(total_count).as(reactions_like)%2Creactions.type(SAD).limit(0).summary(total_count).as(reactions_sad)%2Creactions.type(ANGRY).limit(0).summary(total_count).as(reactions_angry)&access_token=" + access_token);
 		int loves  = json.getJSONObject(post_id).getJSONObject("reactions_love").getJSONObject("summary").getInt("total_count");
@@ -293,7 +283,7 @@ public class FacebookCrawler implements Runnable {
 		reactions.put("haha", new Integer(haha));
 		reactions.put("likes", new Integer(likes));
 		reactions.put("sad", new Integer(sad));
-		reactions.put("angry", new Integer(loves));
+		reactions.put("angry", new Integer(angry));
 
 		return reactions;
 
