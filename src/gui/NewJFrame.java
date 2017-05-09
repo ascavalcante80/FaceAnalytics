@@ -5,14 +5,17 @@
  */
 package gui;
 
+import chart.ChartBuilder;
 import crawler.CrawlerPageTools;
 import crawler.FacebookCrawler;
 import database.Connector;
+import database.ReactionsReader;
 import export.ExportTools;
 import facebook.App;
 import facebook.PostElement;
 import facebook.ProfileElement;
 import facebook4j.FacebookException;
+import java.awt.BorderLayout;
 import java.awt.CardLayout;
 import java.io.File;
 import java.io.IOException;
@@ -25,6 +28,8 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import javax.swing.JFileChooser;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.table.DefaultTableModel;
 import util.ConsoleTextArea;
 import util.FaceSettings;
@@ -35,7 +40,7 @@ import util.HandleSetting;
  * @author alexandre
  */
 public class NewJFrame extends javax.swing.JFrame {
-    
+
     static Connector conn;
     static CardLayout cl = null;
     static App app = null;
@@ -44,7 +49,6 @@ public class NewJFrame extends javax.swing.JFrame {
     String profile_name = null;
     ProfileElement profile = null;
     CrawlerPageTools crawlerPage = null;
-
 
     /**
      * Creates new form NewJFrame
@@ -63,6 +67,9 @@ public class NewJFrame extends javax.swing.JFrame {
     private void initComponents() {
 
         fileDialog = new javax.swing.JFileChooser();
+        buttonGroupExportMode = new javax.swing.ButtonGroup();
+        buttonGroupExportPostCmts = new javax.swing.ButtonGroup();
+        buttonGroupPeriod = new javax.swing.ButtonGroup();
         jPanelMain = new javax.swing.JPanel();
         jPanelDataBase = new javax.swing.JPanel();
         jLabel17 = new javax.swing.JLabel();
@@ -75,6 +82,8 @@ public class NewJFrame extends javax.swing.JFrame {
         jTextFieldPassword = new javax.swing.JTextField();
         jLabelProblemFile = new javax.swing.JLabel();
         jButton1 = new javax.swing.JButton();
+        jLabelWarning = new javax.swing.JLabel();
+        jLabel32 = new javax.swing.JLabel();
         jPanelCreateApp = new javax.swing.JPanel();
         jLabel12 = new javax.swing.JLabel();
         jTextFieldAppId = new javax.swing.JTextField();
@@ -97,6 +106,7 @@ public class NewJFrame extends javax.swing.JFrame {
         jTablePostsSummary = new javax.swing.JTable();
         jLabel1 = new javax.swing.JLabel();
         jButtonUseApp = new javax.swing.JButton();
+        jButtonUseApp1 = new javax.swing.JButton();
         jPanelMonitor = new javax.swing.JPanel();
         jLabelTotalPosts7 = new javax.swing.JLabel();
         jLabel16 = new javax.swing.JLabel();
@@ -114,6 +124,7 @@ public class NewJFrame extends javax.swing.JFrame {
         jScrollPane3 = new javax.swing.JScrollPane();
         jTextAreaConsole = new javax.swing.JTextArea();
         jButtonMonitor1 = new javax.swing.JButton();
+        jLabel31 = new javax.swing.JLabel();
         jPanelSearch = new javax.swing.JPanel();
         jComboBoxSearchLimit = new javax.swing.JComboBox<>();
         jLabelSearchEmpty = new javax.swing.JLabel();
@@ -145,6 +156,7 @@ public class NewJFrame extends javax.swing.JFrame {
         jLabel9 = new javax.swing.JLabel();
         jLabel10 = new javax.swing.JLabel();
         jLabelErrorCrawl = new javax.swing.JLabel();
+        jLabel48 = new javax.swing.JLabel();
         jPanelExport = new javax.swing.JPanel();
         jSeparator8 = new javax.swing.JSeparator();
         jLabel23 = new javax.swing.JLabel();
@@ -188,6 +200,11 @@ public class NewJFrame extends javax.swing.JFrame {
         jCheckBoxCommentId = new javax.swing.JCheckBox();
         jButtonExport = new javax.swing.JButton();
         jProgressBarExport = new javax.swing.JProgressBar();
+        jPanelChart = new javax.swing.JPanel();
+        jLabel33 = new javax.swing.JLabel();
+        jButton17 = new javax.swing.JButton();
+        jScrollPane4 = new javax.swing.JScrollPane();
+        jTablePostChart = new javax.swing.JTable();
         jSeparator1 = new javax.swing.JSeparator();
         jSeparator2 = new javax.swing.JSeparator();
         jToggleButton2 = new javax.swing.JToggleButton();
@@ -205,10 +222,14 @@ public class NewJFrame extends javax.swing.JFrame {
         jButtonSearch = new javax.swing.JButton();
         jButtonSearch1 = new javax.swing.JButton();
         jButtonSearch2 = new javax.swing.JButton();
+        jButtonNLP = new javax.swing.JButton();
+        jLabel22 = new javax.swing.JLabel();
+        jButtonNLP1 = new javax.swing.JButton();
 
         fileDialog.setFileSelectionMode(javax.swing.JFileChooser.DIRECTORIES_ONLY);
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setResizable(false);
 
         jPanelMain.setBackground(new java.awt.Color(255, 153, 153));
         jPanelMain.setLayout(new java.awt.CardLayout());
@@ -248,38 +269,58 @@ public class NewJFrame extends javax.swing.JFrame {
             }
         });
 
+        jLabelWarning.setFont(new java.awt.Font("DejaVu Sans", 1, 12)); // NOI18N
+        jLabelWarning.setForeground(new java.awt.Color(255, 51, 51));
+        jLabelWarning.setText("Be careful! Here, you can change the database settings. Choosing wrong settings can make the database inaccessible ");
+
+        jLabel32.setIcon(new javax.swing.ImageIcon(getClass().getResource("/gui/warning.png"))); // NOI18N
+        jLabel32.setToolTipText("");
+
         javax.swing.GroupLayout jPanelDataBaseLayout = new javax.swing.GroupLayout(jPanelDataBase);
         jPanelDataBase.setLayout(jPanelDataBaseLayout);
         jPanelDataBaseLayout.setHorizontalGroup(
             jPanelDataBaseLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanelDataBaseLayout.createSequentialGroup()
-                .addContainerGap(159, Short.MAX_VALUE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGroup(jPanelDataBaseLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanelDataBaseLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                        .addGroup(jPanelDataBaseLayout.createSequentialGroup()
-                            .addComponent(jLabel18)
-                            .addGap(18, 18, 18)
-                            .addComponent(jTextFieldUsername, javax.swing.GroupLayout.PREFERRED_SIZE, 464, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGroup(jPanelDataBaseLayout.createSequentialGroup()
-                            .addComponent(jLabel17)
-                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                            .addComponent(jTextFieldHostname, javax.swing.GroupLayout.PREFERRED_SIZE, 464, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(jPanelDataBaseLayout.createSequentialGroup()
-                        .addGroup(jPanelDataBaseLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addComponent(jLabel19)
-                            .addComponent(jLabel20))
-                        .addGap(18, 18, 18)
-                        .addGroup(jPanelDataBaseLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(jTextFieldPassword)
-                            .addComponent(jTextFieldPort, javax.swing.GroupLayout.PREFERRED_SIZE, 253, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                    .addComponent(jLabelProblemFile))
-                .addGap(153, 153, 153))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanelDataBaseLayout.createSequentialGroup()
+                        .addGroup(jPanelDataBaseLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(jPanelDataBaseLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                                .addGroup(jPanelDataBaseLayout.createSequentialGroup()
+                                    .addComponent(jLabel18)
+                                    .addGap(18, 18, 18)
+                                    .addComponent(jTextFieldUsername, javax.swing.GroupLayout.PREFERRED_SIZE, 464, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addGroup(jPanelDataBaseLayout.createSequentialGroup()
+                                    .addComponent(jLabel17)
+                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                    .addComponent(jTextFieldHostname, javax.swing.GroupLayout.PREFERRED_SIZE, 464, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(jPanelDataBaseLayout.createSequentialGroup()
+                                .addGroup(jPanelDataBaseLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                                    .addComponent(jLabel19)
+                                    .addComponent(jLabel20))
+                                .addGap(18, 18, 18)
+                                .addGroup(jPanelDataBaseLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                    .addComponent(jTextFieldPassword)
+                                    .addComponent(jTextFieldPort, javax.swing.GroupLayout.PREFERRED_SIZE, 253, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                            .addComponent(jLabelProblemFile))
+                        .addGap(153, 153, 153))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanelDataBaseLayout.createSequentialGroup()
+                        .addComponent(jLabelWarning)
+                        .addGap(15, 15, 15))))
+            .addGroup(jPanelDataBaseLayout.createSequentialGroup()
+                .addGap(386, 386, 386)
+                .addComponent(jLabel32)
+                .addGap(0, 0, Short.MAX_VALUE))
         );
         jPanelDataBaseLayout.setVerticalGroup(
             jPanelDataBaseLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanelDataBaseLayout.createSequentialGroup()
-                .addContainerGap(104, Short.MAX_VALUE)
+                .addContainerGap(69, Short.MAX_VALUE)
+                .addComponent(jLabel32, javax.swing.GroupLayout.PREFERRED_SIZE, 105, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jLabelWarning, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(28, 28, 28)
                 .addGroup(jPanelDataBaseLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jTextFieldHostname, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel17))
@@ -295,11 +336,11 @@ public class NewJFrame extends javax.swing.JFrame {
                 .addGroup(jPanelDataBaseLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jTextFieldPassword, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel20))
-                .addGap(82, 82, 82)
+                .addGap(45, 45, 45)
                 .addComponent(jLabelProblemFile)
                 .addGap(44, 44, 44)
                 .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(114, 114, 114))
+                .addGap(25, 25, 25))
         );
 
         jPanelMain.add(jPanelDataBase, "card_database");
@@ -375,7 +416,7 @@ public class NewJFrame extends javax.swing.JFrame {
                             .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 250, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(jLabel5)
                             .addGap(223, 223, 223))))
-                .addContainerGap(146, Short.MAX_VALUE))
+                .addContainerGap(164, Short.MAX_VALUE))
         );
         jPanelCreateAppLayout.setVerticalGroup(
             jPanelCreateAppLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -406,7 +447,7 @@ public class NewJFrame extends javax.swing.JFrame {
                 .addComponent(jLabelAppEmptyField)
                 .addGap(40, 40, 40)
                 .addComponent(jButtonConnect, javax.swing.GroupLayout.PREFERRED_SIZE, 44, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(86, Short.MAX_VALUE))
+                .addContainerGap(94, Short.MAX_VALUE))
         );
 
         jPanelMain.add(jPanelCreateApp, "card_create_app");
@@ -432,14 +473,14 @@ public class NewJFrame extends javax.swing.JFrame {
 
             },
             new String [] {
-                "Name", "Total Posts", "Last Post"
+                "Name", "Total Posts"
             }
         ) {
             Class[] types = new Class [] {
-                java.lang.String.class, java.lang.String.class, java.lang.String.class
+                java.lang.String.class, java.lang.String.class
             };
             boolean[] canEdit = new boolean [] {
-                false, false, false
+                false, false
             };
 
             public Class getColumnClass(int columnIndex) {
@@ -462,16 +503,28 @@ public class NewJFrame extends javax.swing.JFrame {
             }
         });
 
+        jButtonUseApp1.setText("Insert New App");
+        jButtonUseApp1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButtonUseApp1ActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanelChooseAppLayout = new javax.swing.GroupLayout(jPanelChooseApp);
         jPanelChooseApp.setLayout(jPanelChooseAppLayout);
         jPanelChooseAppLayout.setHorizontalGroup(
             jPanelChooseAppLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanelChooseAppLayout.createSequentialGroup()
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(jButtonUseApp1, javax.swing.GroupLayout.PREFERRED_SIZE, 132, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(30, 30, 30)
                 .addComponent(jButtonUseApp, javax.swing.GroupLayout.PREFERRED_SIZE, 132, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(32, 32, 32))
             .addGroup(jPanelChooseAppLayout.createSequentialGroup()
                 .addGroup(jPanelChooseAppLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanelChooseAppLayout.createSequentialGroup()
+                        .addGap(340, 340, 340)
+                        .addComponent(jLabel8))
                     .addGroup(jPanelChooseAppLayout.createSequentialGroup()
                         .addGap(31, 31, 31)
                         .addGroup(jPanelChooseAppLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -479,16 +532,13 @@ public class NewJFrame extends javax.swing.JFrame {
                                 .addComponent(jComboBoxApps, javax.swing.GroupLayout.PREFERRED_SIZE, 401, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                                 .addComponent(jButtonPreviewApp, javax.swing.GroupLayout.PREFERRED_SIZE, 108, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addComponent(jLabel1)))
-                    .addGroup(jPanelChooseAppLayout.createSequentialGroup()
-                        .addGap(340, 340, 340)
-                        .addComponent(jLabel8)))
-                .addContainerGap(301, Short.MAX_VALUE))
+                            .addComponent(jLabel1))))
+                .addContainerGap(305, Short.MAX_VALUE))
             .addGroup(jPanelChooseAppLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                 .addGroup(jPanelChooseAppLayout.createSequentialGroup()
                     .addGap(29, 29, 29)
                     .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 795, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addContainerGap(29, Short.MAX_VALUE)))
+                    .addContainerGap(33, Short.MAX_VALUE)))
         );
         jPanelChooseAppLayout.setVerticalGroup(
             jPanelChooseAppLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -501,14 +551,16 @@ public class NewJFrame extends javax.swing.JFrame {
                     .addComponent(jButtonPreviewApp))
                 .addGap(28, 28, 28)
                 .addComponent(jLabel8)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 339, Short.MAX_VALUE)
-                .addComponent(jButtonUseApp, javax.swing.GroupLayout.PREFERRED_SIZE, 44, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 347, Short.MAX_VALUE)
+                .addGroup(jPanelChooseAppLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jButtonUseApp, javax.swing.GroupLayout.PREFERRED_SIZE, 44, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jButtonUseApp1, javax.swing.GroupLayout.PREFERRED_SIZE, 44, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(39, 39, 39))
             .addGroup(jPanelChooseAppLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                 .addGroup(jPanelChooseAppLayout.createSequentialGroup()
                     .addGap(164, 164, 164)
                     .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 277, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addContainerGap(112, Short.MAX_VALUE)))
+                    .addContainerGap(120, Short.MAX_VALUE)))
         );
 
         jPanelMain.add(jPanelChooseApp, "card_chs_app");
@@ -577,6 +629,11 @@ public class NewJFrame extends javax.swing.JFrame {
             }
         });
 
+        jLabel31.setFont(new java.awt.Font("DejaVu Sans", 1, 14)); // NOI18N
+        jLabel31.setForeground(new java.awt.Color(102, 102, 102));
+        jLabel31.setText("?");
+        jLabel31.setToolTipText("<html>\n<p>Here we can configure the way FaceCrawler monitors the profile choosed. </p>\n\n<p>\"Check for new posts every XX minutes\" allows you to set the intervals used to verify the profile for a new post. </p>\n\n<p>\"Count reactions every XX minutes\" allows you to set the intervals used by the system to count the reactions when the system is monitoring a post. </p>\n\n<p>\"Monitor post for XX hours\" determines the time the system you monitor the post.</p>\n</html>");
+
         javax.swing.GroupLayout jPanelMonitorLayout = new javax.swing.GroupLayout(jPanelMonitor);
         jPanelMonitor.setLayout(jPanelMonitorLayout);
         jPanelMonitorLayout.setHorizontalGroup(
@@ -585,10 +642,10 @@ public class NewJFrame extends javax.swing.JFrame {
                 .addGap(368, 368, 368)
                 .addComponent(jLabelTotalPosts7)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-            .addComponent(jScrollPane3, javax.swing.GroupLayout.Alignment.TRAILING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanelMonitorLayout.createSequentialGroup()
+            .addGroup(jPanelMonitorLayout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanelMonitorLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jScrollPane3)
                     .addGroup(jPanelMonitorLayout.createSequentialGroup()
                         .addComponent(jScrollPane6, javax.swing.GroupLayout.PREFERRED_SIZE, 841, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(0, 0, Short.MAX_VALUE))
@@ -613,13 +670,17 @@ public class NewJFrame extends javax.swing.JFrame {
                     .addComponent(jSeparator3)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanelMonitorLayout.createSequentialGroup()
                         .addGap(0, 0, Short.MAX_VALUE)
-                        .addComponent(jButtonMonitor1)))
+                        .addGroup(jPanelMonitorLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jButtonMonitor1, javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(jLabel31, javax.swing.GroupLayout.Alignment.TRAILING))))
                 .addContainerGap())
         );
         jPanelMonitorLayout.setVerticalGroup(
             jPanelMonitorLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanelMonitorLayout.createSequentialGroup()
-                .addGap(37, 37, 37)
+                .addContainerGap()
+                .addComponent(jLabel31)
+                .addGap(16, 16, 16)
                 .addGroup(jPanelMonitorLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanelMonitorLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                         .addComponent(jComboBoxSleepTime, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -639,7 +700,7 @@ public class NewJFrame extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jLabelTotalPosts7, javax.swing.GroupLayout.PREFERRED_SIZE, 15, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
-                .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 227, Short.MAX_VALUE)
+                .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 233, Short.MAX_VALUE)
                 .addGap(18, 18, 18)
                 .addComponent(jButtonMonitor1, javax.swing.GroupLayout.PREFERRED_SIZE, 59, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(15, 15, 15))
@@ -649,6 +710,11 @@ public class NewJFrame extends javax.swing.JFrame {
 
         jComboBoxSearchLimit.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "15", "20", "25", "35", "40", "45", "50", "55", "60", "65", "70", "75", "80", "85", "90", "95", "99" }));
         jComboBoxSearchLimit.setSelectedIndex(4);
+        jComboBoxSearchLimit.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jComboBoxSearchLimitActionPerformed(evt);
+            }
+        });
 
         jLabelSearchEmpty.setFont(new java.awt.Font("DejaVu Sans", 1, 12)); // NOI18N
         jLabelSearchEmpty.setForeground(new java.awt.Color(255, 0, 0));
@@ -716,7 +782,7 @@ public class NewJFrame extends javax.swing.JFrame {
                         .addComponent(jButton16, javax.swing.GroupLayout.PREFERRED_SIZE, 166, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addComponent(jLabelNoRowSelected, javax.swing.GroupLayout.PREFERRED_SIZE, 166, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 762, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(0, 46, Short.MAX_VALUE))
+                .addGap(0, 64, Short.MAX_VALUE))
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanelSearchLayout.createSequentialGroup()
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGroup(jPanelSearchLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -746,7 +812,7 @@ public class NewJFrame extends javax.swing.JFrame {
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanelSearchLayout.createSequentialGroup()
                 .addGap(102, 102, 102)
                 .addComponent(jLabel7)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 10, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 18, Short.MAX_VALUE)
                 .addGroup(jPanelSearchLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 39, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jCheckBoxSearchID)
@@ -768,23 +834,22 @@ public class NewJFrame extends javax.swing.JFrame {
                     .addGroup(jPanelSearchLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                         .addComponent(jTextFieldSearchBar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addComponent(jComboBoxSearchLimit, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addContainerGap(430, Short.MAX_VALUE)))
+                    .addContainerGap(438, Short.MAX_VALUE)))
         );
 
         jPanelMain.add(jPanelSearch, "card_search");
 
-        jLabel46.setText("Count the reactions every");
+        jLabel46.setText("Sleep time:");
 
-        jComboBoxSleepTimeCrawl.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "10", "9", "8", "7", "6", "5", "4", "3", "2", "1" }));
-        jComboBoxSleepTimeCrawl.setSelectedIndex(5);
+        jComboBoxSleepTimeCrawl.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "90", "60", "30", "10", "9", "8", "7", "6", "5", "4", "3", "2", "1" }));
 
-        jLabel47.setText("minutes");
+        jLabel47.setText("seconds");
 
         jLabel35.setFont(new java.awt.Font("DejaVu Sans", 1, 14)); // NOI18N
-        jLabel35.setText("Monitoring Options");
+        jLabel35.setText("Crawling Options");
 
         jLabel28.setFont(new java.awt.Font("DejaVu Sans", 1, 14)); // NOI18N
-        jLabel28.setText("Crawling Options");
+        jLabel28.setText("Choose Item to Crawl");
 
         jCheckBoxCrawllAllPosts.setSelected(true);
         jCheckBoxCrawllAllPosts.setText("Crawl posts");
@@ -818,6 +883,10 @@ public class NewJFrame extends javax.swing.JFrame {
         jLabelErrorCrawl.setForeground(new java.awt.Color(255, 0, 0));
         jLabelErrorCrawl.setText("You must select at least one crawling option!");
 
+        jLabel48.setFont(new java.awt.Font("DejaVu Sans", 1, 18)); // NOI18N
+        jLabel48.setText("?");
+        jLabel48.setToolTipText("The system will crawl all the content on the profile. It makes request of 100 items at time. Between every request, the system must make a pause. Here you can set the sleep time.");
+
         javax.swing.GroupLayout jPanelCrawlLayout = new javax.swing.GroupLayout(jPanelCrawl);
         jPanelCrawl.setLayout(jPanelCrawlLayout);
         jPanelCrawlLayout.setHorizontalGroup(
@@ -827,7 +896,7 @@ public class NewJFrame extends javax.swing.JFrame {
                 .addComponent(jCheckBoxCrawllAllPosts)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(jCheckBoxCrawlAllComments)
-                .addGap(173, 173, 173))
+                .addGap(175, 175, 175))
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanelCrawlLayout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jSeparator4)
@@ -847,69 +916,78 @@ public class NewJFrame extends javax.swing.JFrame {
                 .addComponent(jLabel10)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, 149, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 186, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 204, Short.MAX_VALUE)
                 .addComponent(jLabel9)
                 .addGap(18, 18, 18)
                 .addComponent(jComboBox2, javax.swing.GroupLayout.PREFERRED_SIZE, 149, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(163, 163, 163))
             .addGroup(jPanelCrawlLayout.createSequentialGroup()
+                .addGap(351, 351, 351)
+                .addComponent(jLabel35)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(jLabel48, javax.swing.GroupLayout.PREFERRED_SIZE, 17, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(19, 19, 19))
+            .addGroup(jPanelCrawlLayout.createSequentialGroup()
                 .addGroup(jPanelCrawlLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanelCrawlLayout.createSequentialGroup()
-                        .addGap(226, 226, 226)
-                        .addComponent(jLabel46)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jComboBoxSleepTimeCrawl, javax.swing.GroupLayout.PREFERRED_SIZE, 52, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jLabel47))
-                    .addGroup(jPanelCrawlLayout.createSequentialGroup()
-                        .addGap(344, 344, 344)
-                        .addComponent(jLabel35))
                     .addGroup(jPanelCrawlLayout.createSequentialGroup()
                         .addGap(354, 354, 354)
                         .addComponent(jLabel28))
                     .addGroup(jPanelCrawlLayout.createSequentialGroup()
-                        .addGap(359, 359, 359)
-                        .addComponent(jLabel29))
+                        .addGap(320, 320, 320)
+                        .addComponent(jLabel46)
+                        .addGap(18, 18, 18)
+                        .addComponent(jComboBoxSleepTimeCrawl, javax.swing.GroupLayout.PREFERRED_SIZE, 52, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jLabel47))
                     .addGroup(jPanelCrawlLayout.createSequentialGroup()
-                        .addGap(236, 236, 236)
-                        .addComponent(jLabelErrorCrawl, javax.swing.GroupLayout.PREFERRED_SIZE, 372, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addGap(251, 251, 251)
+                        .addComponent(jLabelErrorCrawl, javax.swing.GroupLayout.PREFERRED_SIZE, 372, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(jPanelCrawlLayout.createSequentialGroup()
+                        .addGap(374, 374, 374)
+                        .addComponent(jLabel29)))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         jPanelCrawlLayout.setVerticalGroup(
             jPanelCrawlLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanelCrawlLayout.createSequentialGroup()
-                .addGap(47, 47, 47)
-                .addComponent(jLabel35)
-                .addGap(22, 22, 22)
+                .addGap(21, 21, 21)
+                .addGroup(jPanelCrawlLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel35)
+                    .addComponent(jLabel48))
+                .addGap(44, 44, 44)
                 .addGroup(jPanelCrawlLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jComboBoxSleepTimeCrawl, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel46)
                     .addComponent(jLabel47))
-                .addGap(34, 34, 34)
+                .addGap(38, 38, 38)
                 .addComponent(jSeparator4, javax.swing.GroupLayout.PREFERRED_SIZE, 10, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(39, 39, 39)
-                .addComponent(jLabel28)
-                .addGap(25, 25, 25)
-                .addGroup(jPanelCrawlLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jCheckBoxCrawllAllPosts)
-                    .addComponent(jCheckBoxCrawlAllComments))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jLabelErrorCrawl)
-                .addGap(5, 5, 5)
-                .addComponent(jSeparator5, javax.swing.GroupLayout.PREFERRED_SIZE, 16, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jLabel29)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 46, Short.MAX_VALUE)
-                .addGroup(jPanelCrawlLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jComboBox2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel9)
-                    .addComponent(jLabel10))
-                .addGap(50, 50, 50)
-                .addComponent(jButton4, javax.swing.GroupLayout.PREFERRED_SIZE, 49, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
-                .addComponent(jProgressBar1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(21, 21, 21))
+                .addComponent(jLabel28)
+                .addGroup(jPanelCrawlLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanelCrawlLayout.createSequentialGroup()
+                        .addGap(65, 65, 65)
+                        .addComponent(jLabelErrorCrawl)
+                        .addGap(16, 16, 16)
+                        .addComponent(jSeparator5, javax.swing.GroupLayout.PREFERRED_SIZE, 16, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jLabel29)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 49, Short.MAX_VALUE)
+                        .addGroup(jPanelCrawlLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jComboBox2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jLabel9)
+                            .addComponent(jLabel10))
+                        .addGap(50, 50, 50)
+                        .addComponent(jButton4, javax.swing.GroupLayout.PREFERRED_SIZE, 49, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
+                        .addComponent(jProgressBar1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(21, 21, 21))
+                    .addGroup(jPanelCrawlLayout.createSequentialGroup()
+                        .addGap(29, 29, 29)
+                        .addGroup(jPanelCrawlLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jCheckBoxCrawllAllPosts)
+                            .addComponent(jCheckBoxCrawlAllComments))
+                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
         );
 
         jPanelMain.add(jPanelCrawl, "card_crawl");
@@ -927,16 +1005,20 @@ public class NewJFrame extends javax.swing.JFrame {
         jLabel24.setFont(new java.awt.Font("DejaVu Sans", 1, 12)); // NOI18N
         jLabel24.setText("Choose Period");
 
+        buttonGroupPeriod.add(jRadioButtonPeriodLmtd);
         jRadioButtonPeriodLmtd.setText("Limited");
 
+        buttonGroupPeriod.add(jRadioButtonPeriodAll);
         jRadioButtonPeriodAll.setSelected(true);
         jRadioButtonPeriodAll.setText("All");
 
+        buttonGroupExportMode.add(jRadioButtonCSV);
         jRadioButtonCSV.setText("Export Reactions count progress to CSV file");
         jRadioButtonCSV.setOpaque(true);
 
         jLabel25.setText("From");
 
+        buttonGroupExportMode.add(jRadioButtonTxt);
         jRadioButtonTxt.setSelected(true);
         jRadioButtonTxt.setText("Export text content to .txt file");
 
@@ -993,11 +1075,14 @@ public class NewJFrame extends javax.swing.JFrame {
 
         jCheckBoxReactionsTime.setText("Timestamp");
 
+        buttonGroupExportPostCmts.add(jRadioButtonPosts);
         jRadioButtonPosts.setSelected(true);
         jRadioButtonPosts.setText("Only posts");
 
+        buttonGroupExportPostCmts.add(jRadioButtonComments);
         jRadioButtonComments.setText("Only Comments");
 
+        buttonGroupExportPostCmts.add(jRadioButtonBoth);
         jRadioButtonBoth.setText("Posts and Comments");
 
         jCheckBoxPostTime.setSelected(true);
@@ -1071,7 +1156,7 @@ public class NewJFrame extends javax.swing.JFrame {
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                                 .addComponent(jToggleButtonChooseFile))
                             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanelExportLayout.createSequentialGroup()
-                                .addGap(0, 9, Short.MAX_VALUE)
+                                .addGap(0, 27, Short.MAX_VALUE)
                                 .addGroup(jPanelExportLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanelExportLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                                         .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanelExportLayout.createSequentialGroup()
@@ -1205,7 +1290,7 @@ public class NewJFrame extends javax.swing.JFrame {
                     .addComponent(jLabel26)
                     .addComponent(jTextFieldFileName, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabelFilePath))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 23, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 31, Short.MAX_VALUE)
                 .addGroup(jPanelExportLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jButtonExport, javax.swing.GroupLayout.PREFERRED_SIZE, 59, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabelNameFileEmpty))
@@ -1215,6 +1300,113 @@ public class NewJFrame extends javax.swing.JFrame {
         );
 
         jPanelMain.add(jPanelExport, "card_export");
+
+        jLabel33.setFont(new java.awt.Font("DejaVu Sans", 1, 14)); // NOI18N
+        jLabel33.setText("Plot Chart");
+
+        jButton17.setText("Plot Chart");
+        jButton17.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton17ActionPerformed(evt);
+            }
+        });
+
+        jTablePostChart.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+                {null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null}
+            },
+            new String [] {
+                "id", "Post", "Likes", "Wow", "Haha", "Sad", "Love", "Share"
+            }
+        ) {
+            Class[] types = new Class [] {
+                java.lang.String.class, java.lang.String.class, java.lang.Integer.class, java.lang.Integer.class, java.lang.Integer.class, java.lang.Integer.class, java.lang.Integer.class, java.lang.Integer.class
+            };
+            boolean[] canEdit = new boolean [] {
+                false, false, false, false, false, false, false, false
+            };
+
+            public Class getColumnClass(int columnIndex) {
+                return types [columnIndex];
+            }
+
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
+            }
+        });
+        jTablePostChart.setColumnSelectionAllowed(true);
+        jTablePostChart.getTableHeader().setReorderingAllowed(false);
+        jScrollPane4.setViewportView(jTablePostChart);
+        jTablePostChart.getColumnModel().getSelectionModel().setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
+        if (jTablePostChart.getColumnModel().getColumnCount() > 0) {
+            jTablePostChart.getColumnModel().getColumn(0).setResizable(false);
+            jTablePostChart.getColumnModel().getColumn(0).setPreferredWidth(1);
+            jTablePostChart.getColumnModel().getColumn(1).setPreferredWidth(25);
+            jTablePostChart.getColumnModel().getColumn(2).setResizable(false);
+            jTablePostChart.getColumnModel().getColumn(2).setPreferredWidth(3);
+            jTablePostChart.getColumnModel().getColumn(3).setResizable(false);
+            jTablePostChart.getColumnModel().getColumn(3).setPreferredWidth(7);
+            jTablePostChart.getColumnModel().getColumn(4).setResizable(false);
+            jTablePostChart.getColumnModel().getColumn(4).setPreferredWidth(7);
+            jTablePostChart.getColumnModel().getColumn(5).setResizable(false);
+            jTablePostChart.getColumnModel().getColumn(5).setPreferredWidth(7);
+            jTablePostChart.getColumnModel().getColumn(6).setResizable(false);
+            jTablePostChart.getColumnModel().getColumn(6).setPreferredWidth(7);
+            jTablePostChart.getColumnModel().getColumn(7).setResizable(false);
+            jTablePostChart.getColumnModel().getColumn(7).setPreferredWidth(3);
+        }
+
+        javax.swing.GroupLayout jPanelChartLayout = new javax.swing.GroupLayout(jPanelChart);
+        jPanelChart.setLayout(jPanelChartLayout);
+        jPanelChartLayout.setHorizontalGroup(
+            jPanelChartLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanelChartLayout.createSequentialGroup()
+                .addContainerGap(16, Short.MAX_VALUE)
+                .addGroup(jPanelChartLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(jLabel33)
+                    .addGroup(jPanelChartLayout.createSequentialGroup()
+                        .addGap(670, 670, 670)
+                        .addComponent(jButton17, javax.swing.GroupLayout.PREFERRED_SIZE, 166, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(jScrollPane4))
+                .addGap(0, 19, Short.MAX_VALUE))
+        );
+        jPanelChartLayout.setVerticalGroup(
+            jPanelChartLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanelChartLayout.createSequentialGroup()
+                .addGap(21, 21, 21)
+                .addComponent(jLabel33)
+                .addGap(18, 18, 18)
+                .addComponent(jScrollPane4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 16, Short.MAX_VALUE)
+                .addComponent(jButton17, javax.swing.GroupLayout.PREFERRED_SIZE, 44, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18))
+        );
+
+        jPanelMain.add(jPanelChart, "card_chart");
 
         jSeparator2.setOrientation(javax.swing.SwingConstants.VERTICAL);
 
@@ -1229,6 +1421,7 @@ public class NewJFrame extends javax.swing.JFrame {
 
         jLabel4.setText("Comments count:");
 
+        jLabelProfileName.setFont(new java.awt.Font("DejaVu Sans", 1, 13)); // NOI18N
         jLabelProfileName.setText("-");
 
         jButtonPreviewProfile.setText("Select");
@@ -1291,101 +1484,127 @@ public class NewJFrame extends javax.swing.JFrame {
             }
         });
 
+        jButtonNLP.setFont(new java.awt.Font("DejaVu Sans", 1, 18)); // NOI18N
+        jButtonNLP.setForeground(new java.awt.Color(102, 102, 102));
+        jButtonNLP.setText("NLP");
+        jButtonNLP.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButtonNLPActionPerformed(evt);
+            }
+        });
+
+        jLabel22.setText("Profile:");
+
+        jButtonNLP1.setFont(new java.awt.Font("DejaVu Sans", 1, 18)); // NOI18N
+        jButtonNLP1.setForeground(new java.awt.Color(102, 102, 102));
+        jButtonNLP1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/gui/seo-51-512.png"))); // NOI18N
+        jButtonNLP1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButtonNLP1ActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
+                .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                                    .addComponent(jLabel3)
-                                    .addComponent(jLabel4)
-                                    .addComponent(jLabel2))
-                                .addGap(18, 18, 18)
-                                .addComponent(jComboBoxProfiles, javax.swing.GroupLayout.PREFERRED_SIZE, 317, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addComponent(jLabelProfileName, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 414, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(jButtonPreviewProfile)
-                        .addGap(45, 45, 45)
-                        .addComponent(jLabel6)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jLabelAppId, javax.swing.GroupLayout.PREFERRED_SIZE, 237, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(18, 18, 18)
-                        .addComponent(jToggleButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                                .addComponent(jButtonCrawl, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(jButtonMonitor, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(jButtonSearch, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                            .addComponent(jButtonSearch2)
+                            .addComponent(jButtonExport1, javax.swing.GroupLayout.Alignment.TRAILING))
+                        .addGap(0, 0, Short.MAX_VALUE))
                     .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jButtonSearch1)
+                            .addComponent(jButtonNLP, javax.swing.GroupLayout.PREFERRED_SIZE, 78, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jButtonNLP1, javax.swing.GroupLayout.PREFERRED_SIZE, 78, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 11, Short.MAX_VALUE)))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                                .addComponent(jLabel3)
+                                .addComponent(jLabel4))
                             .addGroup(layout.createSequentialGroup()
-                                .addContainerGap()
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                                        .addGap(0, 0, Short.MAX_VALUE)
-                                        .addComponent(jButtonExport1))
-                                    .addGroup(layout.createSequentialGroup()
-                                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                                                .addComponent(jButtonCrawl)
-                                                .addComponent(jButtonMonitor))
-                                            .addComponent(jButtonSearch))
-                                        .addGap(0, 0, Short.MAX_VALUE))))
-                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                                .addGap(0, 0, Short.MAX_VALUE)
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(jButtonSearch1, javax.swing.GroupLayout.Alignment.TRAILING)
-                                    .addComponent(jButtonSearch2, javax.swing.GroupLayout.Alignment.TRAILING))))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(jSeparator2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(10, 10, 10)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(jSeparator1)
-                            .addComponent(jPanelMain, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
+                                .addComponent(jSeparator2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(10, 10, 10)
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                    .addComponent(jSeparator1)
+                                    .addComponent(jPanelMain, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
+                        .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                            .addComponent(jLabel2)
+                            .addGap(18, 18, 18)
+                            .addComponent(jComboBoxProfiles, javax.swing.GroupLayout.PREFERRED_SIZE, 317, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                            .addComponent(jButtonPreviewProfile)
+                            .addGap(45, 45, 45)
+                            .addComponent(jLabel6)
+                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                            .addComponent(jLabelAppId, javax.swing.GroupLayout.PREFERRED_SIZE, 237, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addGap(18, 18, 18)
+                            .addComponent(jToggleButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(66, 66, 66)
+                        .addComponent(jLabel22)
+                        .addGap(18, 18, 18)
+                        .addComponent(jLabelProfileName, javax.swing.GroupLayout.PREFERRED_SIZE, 414, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jToggleButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                        .addComponent(jComboBoxProfiles, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addComponent(jLabel2)
-                        .addComponent(jButtonPreviewProfile)
-                        .addComponent(jLabel6)
-                        .addComponent(jLabelAppId)))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jLabelProfileName)
-                .addGap(3, 3, 3)
-                .addComponent(jLabel3)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 12, Short.MAX_VALUE)
-                .addComponent(jLabel4)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addGroup(layout.createSequentialGroup()
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jToggleButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                .addComponent(jComboBoxProfiles, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(jLabel2)
+                                .addComponent(jButtonPreviewProfile)
+                                .addComponent(jLabel6)
+                                .addComponent(jLabelAppId)))
+                        .addGap(4, 4, 4)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabelProfileName)
+                            .addComponent(jLabel22))
+                        .addGap(3, 3, 3)
+                        .addComponent(jLabel3))
+                    .addComponent(jButtonSearch2, javax.swing.GroupLayout.PREFERRED_SIZE, 65, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 7, Short.MAX_VALUE)
+                .addComponent(jLabel4)
+                .addGap(14, 14, 14)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                             .addGroup(layout.createSequentialGroup()
                                 .addComponent(jSeparator1, javax.swing.GroupLayout.PREFERRED_SIZE, 4, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(jPanelMain, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addComponent(jSeparator2)))
+                            .addComponent(jSeparator2))
+                        .addContainerGap())
                     .addGroup(layout.createSequentialGroup()
-                        .addGap(7, 7, 7)
-                        .addComponent(jButtonSearch2, javax.swing.GroupLayout.PREFERRED_SIZE, 65, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(jButtonSearch1, javax.swing.GroupLayout.PREFERRED_SIZE, 65, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 93, Short.MAX_VALUE)
+                        .addGap(18, 18, 18)
+                        .addComponent(jButtonNLP, javax.swing.GroupLayout.PREFERRED_SIZE, 65, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(jButtonNLP1, javax.swing.GroupLayout.PREFERRED_SIZE, 65, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
                         .addComponent(jButtonSearch, javax.swing.GroupLayout.PREFERRED_SIZE, 65, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(18, 18, 18)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(jButtonCrawl, javax.swing.GroupLayout.PREFERRED_SIZE, 65, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(18, 18, 18)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(jButtonMonitor, javax.swing.GroupLayout.PREFERRED_SIZE, 65, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(18, 18, 18)
                         .addComponent(jButtonExport1, javax.swing.GroupLayout.PREFERRED_SIZE, 65, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(22, 22, 22)))
-                .addContainerGap())
+                        .addGap(17, 17, 17))))
         );
 
         pack();
@@ -1401,42 +1620,38 @@ public class NewJFrame extends javax.swing.JFrame {
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
 
-       String hostname = jTextFieldHostname.getText();
-       String user_name =  jTextFieldUsername.getText();
-       String port = jTextFieldPort.getText();
-       String password = jTextFieldPassword.getText();
+        String hostname = jTextFieldHostname.getText();
+        String user_name = jTextFieldUsername.getText();
+        String port = jTextFieldPort.getText();
+        String password = jTextFieldPassword.getText();
 
-       HandleSetting hs = new HandleSetting();
-       if(HandleSetting.writeSettingsFile("./settings/data.ser", hostname, user_name, port, password)){
-                      
+        HandleSetting hs = new HandleSetting();
+        if (HandleSetting.writeSettingsFile("./settings/data.ser", hostname, user_name, port, password)) {
+
             // obtain all apps to build ChooseAppPanel
-             conn = new Connector(hostname + ":" + port, user_name, password);
-             LinkedHashMap <String, App> app_list = conn.selectAllApps();
+            conn = new Connector(hostname + ":" + port, user_name, password);
+            LinkedHashMap<String, App> app_list = conn.selectAllApps();
 
-             // check if there`s app in the database
-             if(app_list.size()>0){
+            // check if there`s app in the database
+            if (app_list.size() > 0) {
 
-                    for (String key : app_list.keySet()) {
-                         //jComboBoxApps.addItem(app_list.get(key).getIdapp());
-                         
-                         
-                         
-                    }
-                    jLabelProblemFile.setVisible(false);
-                    cl.show(jPanelMain, "card_chs_app");
-             } else {
+                for (String key : app_list.keySet()) {
+                    //jComboBoxApps.addItem(app_list.get(key).getIdapp());
+
+                }
+                jLabelProblemFile.setVisible(false);
+                cl.show(jPanelMain, "card_chs_app");
+            } else {
                 jLabelProblemFile.setVisible(false);
                 // there's no app in the database, create APP
-                 cl.show(jPanelMain, "card_create_app");
-             }
-           
+                cl.show(jPanelMain, "card_create_app");
+            }
 
-       } else{
+        } else {
             jLabelProblemFile.setVisible(true);
             jPanelCreateApp.repaint();
             cl.show(jPanelMain, "card_database");
-       }
-       
+        }
 
 
     }//GEN-LAST:event_jButton1ActionPerformed
@@ -1447,12 +1662,12 @@ public class NewJFrame extends javax.swing.JFrame {
     }//GEN-LAST:event_jComboBoxAppsActionPerformed
 
     private void jButtonPreviewAppActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonPreviewAppActionPerformed
-        // preview butto to see profiles from the same app in the table
+        // preview button to see profiles from the same app in the table
 
-        String idapp = (String)jComboBoxApps.getSelectedItem();
-        LinkedHashMap<String,String> result = conn.getPagesPreview(idapp);
+        String idapp = (String) jComboBoxApps.getSelectedItem();
+        LinkedHashMap<String, String> result = conn.getPagesPreview(idapp);
 
-        if (result.size()>0){
+        if (result.size() > 0) {
 
             DefaultTableModel table = (DefaultTableModel) jTablePostsSummary.getModel();
 
@@ -1462,8 +1677,8 @@ public class NewJFrame extends javax.swing.JFrame {
                 table.removeRow(i);
             }
 
-            for(String key: result.keySet()){
-                String [] line = result.get(key).split("<sep>");
+            for (String key : result.keySet()) {
+                String[] line = result.get(key).split("<sep>");
                 table.addRow(line);
             }
             jPanelChooseApp.repaint();
@@ -1473,11 +1688,11 @@ public class NewJFrame extends javax.swing.JFrame {
 
     private void jButtonUseAppActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonUseAppActionPerformed
 
-        ConsoleTextArea.redirectOutput( jTextAreaConsole );
-        String idapp = (String)jComboBoxApps.getSelectedItem();
+        ConsoleTextArea.redirectOutput(jTextAreaConsole);
+        String idapp = (String) jComboBoxApps.getSelectedItem();
         conn.setIdapp(idapp);
 
-        LinkedHashMap <String, App> apps = conn.selectAppWhere("idapp", idapp);
+        LinkedHashMap<String, App> apps = conn.selectAppWhere("idapp", idapp);
 
         for (String key : apps.keySet()) {
 
@@ -1495,17 +1710,24 @@ public class NewJFrame extends javax.swing.JFrame {
             System.out.println("ex");
         }
 
-        LinkedHashMap <String, ProfileElement> profiles = conn.selectProfileWhere("app_idapp", idapp);
+        LinkedHashMap<String, ProfileElement> profiles = conn.selectProfileWhere("app_idapp", idapp);
 
         for (String key : profiles.keySet()) {
 
             ProfileElement p = profiles.get(key);
-            jComboBoxProfiles.addItem(p.getId());
+            jComboBoxProfiles.addItem(p.getId() + " - " + p.getName());
         }
 
         // setting App id of different labels
         jLabelAppId.setText(app.getIdapp());
-        
+
+        // reactivating buttons
+        jButtonCrawl.setEnabled(true);
+        jButtonSearch.setEnabled(true);
+        jButtonMonitor.setEnabled(true);
+        jButtonExport1.setEnabled(true);
+        jButtonNLP.setEnabled(true);
+
         cl.show(jPanelMain, "card_monitor");
     }//GEN-LAST:event_jButtonUseAppActionPerformed
 
@@ -1525,16 +1747,16 @@ public class NewJFrame extends javax.swing.JFrame {
         String app_permissions = jTextFieldPermissions.getText();
         String a_token = jTextFieldAccessToken.getText();
 
-        if(a_token.isEmpty() || id_app.isEmpty() || app_secret.isEmpty() || app_name.isEmpty() || app_permissions.isEmpty()){
+        if (a_token.isEmpty() || id_app.isEmpty() || app_secret.isEmpty() || app_name.isEmpty() || app_permissions.isEmpty()) {
             // there's no app in the database, create APP
             jLabelAppEmptyField.setVisible(true);
             cl.show(jPanelMain, "card_create_app");
         } else {
-            conn.insertApp(new App(id_app, app_name, a_token, app_secret, app_permissions.split(","), new String [] {""}));
-            LinkedHashMap <String, App> app_list = conn.selectAllApps();
+            conn.insertApp(new App(id_app, app_name, a_token, app_secret, app_permissions.split(","), new String[]{""}));
+            LinkedHashMap<String, App> app_list = conn.selectAllApps();
 
             // check if there`s app in the database
-            if(app_list.size()>0){
+            if (app_list.size() > 0) {
 
                 for (String key : app_list.keySet()) {
                     jComboBoxApps.addItem(app_list.get(key).getIdapp());
@@ -1553,14 +1775,16 @@ public class NewJFrame extends javax.swing.JFrame {
 
     private void jButtonPreviewProfileActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonPreviewProfileActionPerformed
         // preview details of a profile
-        idprofile = (String)jComboBoxProfiles.getSelectedItem();
-        
-        if(idprofile.equals("-")){
+        idprofile = (String) jComboBoxProfiles.getSelectedItem();
+
+        idprofile = idprofile.split(" - ")[0];
+
+        if (idprofile.equals("-")) {
             jLabelProfileName.setText("You must choose an app first!!");
         } else {
-            LinkedHashMap <String, ProfileElement> profiles = conn.selectProfileWhere("idprofile", idprofile);
+            LinkedHashMap<String, ProfileElement> profiles = conn.selectProfileWhere("idprofile", idprofile);
 
-            if (profiles.size() > 0){
+            if (profiles.size() > 0) {
                 profile = profiles.get(idprofile);
             }
 
@@ -1568,25 +1792,23 @@ public class NewJFrame extends javax.swing.JFrame {
 
             // inserir códigos para reactions posts etc
             jPanelMain.repaint();
-        
         }
-        
     }//GEN-LAST:event_jButtonPreviewProfileActionPerformed
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
         // TODO add your handling code here:
-    	jLabelProfileSaved.setVisible(false);
-        int result_limit = Integer.parseInt((String)jComboBoxSearchLimit.getSelectedItem());
+        jLabelProfileSaved.setVisible(false);
+        int result_limit = Integer.parseInt((String) jComboBoxSearchLimit.getSelectedItem());
         String search = jTextFieldSearchBar.getText();
         jLabelSearchEmpty.setVisible(false);
-        
-        if(search.isEmpty()){
+
+        if (search.isEmpty()) {
             jLabelSearchEmpty.setVisible(true);
             cl.show(jPanelMain, "card_search");
         } else {
-                                
-            if (jCheckBoxSearchID.isSelected()){
-            
+
+            if (jCheckBoxSearchID.isSelected()) {
+
                 String result = fb_crawler.searchProfileByIdDysplayingLastPosts(search, result_limit);
 
                 DefaultTableModel table = (DefaultTableModel) jTableSearchResults.getModel();
@@ -1595,15 +1817,14 @@ public class NewJFrame extends javax.swing.JFrame {
                 for (int i = rowCount - 1; i >= 0; i--) {
                     table.removeRow(i);
                 }
-                if (!result.isEmpty()){
-                    String [] line = result.split("<sep>");
+                if (!result.isEmpty()) {
+                    String[] line = result.split("<sep>");
                     table.addRow(line);
                 }
-        
-            } else {
-            
 
-                LinkedHashMap<String,String> result = fb_crawler.searchProfileDysplayingLastPosts(search, result_limit);
+            } else {
+
+                LinkedHashMap<String, String> result = fb_crawler.searchProfileDysplayingLastPosts(search, result_limit);
 
                 DefaultTableModel table = (DefaultTableModel) jTableSearchResults.getModel();
                 int rowCount = table.getRowCount();
@@ -1611,20 +1832,20 @@ public class NewJFrame extends javax.swing.JFrame {
                 for (int i = rowCount - 1; i >= 0; i--) {
                     table.removeRow(i);
                 }
-                if (result.size()>0){
+                if (result.size() > 0) {
 
-                    for(String key: result.keySet()){
-                        String [] line = result.get(key).split("<sep>");
+                    for (String key : result.keySet()) {
+                        String[] line = result.get(key).split("<sep>");
                         table.addRow(line);
                     }
-                }        
-        
+                }
+
             }
-            
+
             cl.show(jPanelMain, "card_search");
         }
-        
-        
+
+
     }//GEN-LAST:event_jButton2ActionPerformed
 
     private void jButton16ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton16ActionPerformed
@@ -1634,26 +1855,26 @@ public class NewJFrame extends javax.swing.JFrame {
 
         int row = jTableSearchResults.getSelectedRow();
 
-        if (row == -1){
+        if (row == -1) {
             jLabelNoRowSelected.setVisible(true);
             jPanelSearch.repaint();
             cl.show(jPanelMain, "card_search");
 
         } else {
 
-            String id_profile_selected = (String)jTableSearchResults.getValueAt(row, 0);
-            String name_profile_selected = (String)jTableSearchResults.getValueAt(row, 1);
+            String id_profile_selected = (String) jTableSearchResults.getValueAt(row, 0);
+            String name_profile_selected = (String) jTableSearchResults.getValueAt(row, 1);
             conn.insertProfile(new ProfileElement(id_profile_selected, name_profile_selected), app.getIdapp());
             jLabelProfileSaved.setVisible(true);
-            
-            LinkedHashMap <String, ProfileElement> profiles = conn.selectProfileWhere("app_idapp", app.getIdapp());
+
+            LinkedHashMap<String, ProfileElement> profiles = conn.selectProfileWhere("app_idapp", app.getIdapp());
 
             for (String key : profiles.keySet()) {
 
                 ProfileElement p = profiles.get(key);
-                jComboBoxProfiles.addItem(p.getId());
+                jComboBoxProfiles.addItem(p.getId() + " - " + p.getName());
             }
-            
+
         }
         cl.show(jPanelMain, "card_search");
 
@@ -1667,15 +1888,15 @@ public class NewJFrame extends javax.swing.JFrame {
         // TODO add your handling code here:
         jLabelErrorCrawl.setVisible(false);
         // crawling items from a profile
-        int sleep_time = Integer.parseInt((String)jComboBoxSleepTimeCrawl.getSelectedItem());
-        if(jCheckBoxCrawllAllPosts.isSelected()){
+        final int sleep_time = Integer.parseInt((String) jComboBoxSleepTimeCrawl.getSelectedItem());
+        if (jCheckBoxCrawllAllPosts.isSelected()) {
             jProgressBar1.setIndeterminate(true);
             jProgressBar1.setVisible(true);
 
             Runnable run = new Runnable() {
                 public void run() {
 
-                    fb_crawler.getAndSaveAllPosts(profile.getId(),sleep_time, 100, conn);
+                    fb_crawler.getAndSaveAllPosts(profile.getId(), sleep_time, 100, conn);
                     jProgressBar1.setIndeterminate(false);
 
                 }
@@ -1683,16 +1904,16 @@ public class NewJFrame extends javax.swing.JFrame {
             new Thread(run).start();
         }
 
-        if(jCheckBoxCrawlAllComments.isSelected()){
+        if (jCheckBoxCrawlAllComments.isSelected()) {
             jProgressBar1.setIndeterminate(true);
             jProgressBar1.setVisible(true);
 
             Runnable run = new Runnable() {
                 public void run() {
 
-                    LinkedHashMap<String,PostElement> result = conn.selectPostsWhere("profile_idprofile", profile.getId());
+                    LinkedHashMap<String, PostElement> result = conn.selectPostsWhere("profile_idprofile", profile.getId());
 
-                    for(String key: result.keySet()){
+                    for (String key : result.keySet()) {
                         PostElement post = result.get(key);
                         fb_crawler.getAndSaveAllComments(post.getId(), 100, sleep_time, conn);
                     }
@@ -1701,12 +1922,13 @@ public class NewJFrame extends javax.swing.JFrame {
             };
             new Thread(run).start();
         }
-        if (!jCheckBoxCrawllAllPosts.isSelected() && jCheckBoxCrawlAllComments.isSelected()){
+
+        if (!jCheckBoxCrawllAllPosts.isSelected() && jCheckBoxCrawlAllComments.isSelected()) {
             jLabelErrorCrawl.setVisible(true);
-        }  
-        
+        }
+
         cl.show(jPanelMain, "card_crawl");
-        
+
     }//GEN-LAST:event_jButton4ActionPerformed
 
     private void jToggleButtonChooseFileActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jToggleButtonChooseFileActionPerformed
@@ -1715,7 +1937,7 @@ public class NewJFrame extends javax.swing.JFrame {
         int returnVal = fileDialog.showOpenDialog(jPanelExport);
 
         if (returnVal == JFileChooser.APPROVE_OPTION) {
-            jLabelFilePath.setText(fileDialog.getSelectedFile().toString()+"/");
+            jLabelFilePath.setText(fileDialog.getSelectedFile().toString() + "/");
         }
     }//GEN-LAST:event_jToggleButtonChooseFileActionPerformed
 
@@ -1727,16 +1949,16 @@ public class NewJFrame extends javax.swing.JFrame {
 
         String extension = "";
         // Choose file extension
-        if(jRadioButtonCSV.isSelected()) {
+        if (jRadioButtonCSV.isSelected()) {
             extension = ".csv";
         } else {
             extension = ".txt";
         }
 
         jLabelNameFileEmpty.setVisible(false);
-        String file_name_temp = jTextFieldFileName.getText() + extension ;
-        String file_path_temp  = jLabelFilePath.getText();
-        Path path = Paths.get(file_path_temp + "/" + file_name_temp );
+        String file_name_temp = jTextFieldFileName.getText() + extension;
+        String file_path_temp = jLabelFilePath.getText();
+        Path path = Paths.get(file_path_temp + "/" + file_name_temp);
         Boolean file_problem = false;
 
         try {
@@ -1750,10 +1972,10 @@ public class NewJFrame extends javax.swing.JFrame {
 
         }
 
-        if(jTextFieldFileName.getText().isEmpty()){
+        if (jTextFieldFileName.getText().isEmpty()) {
             jLabelNameFileEmpty.setVisible(true);
             cl.show(jPanelMain, "card_export");
-        } else if(file_problem) {
+        } else if (file_problem) {
             jLabelNameFileEmpty.setText("File could not be created! Check the location or the file name");
             jLabelNameFileEmpty.setVisible(true);
             cl.show(jPanelMain, "card_export");
@@ -1765,26 +1987,27 @@ public class NewJFrame extends javax.swing.JFrame {
             jProgressBarExport.setIndeterminate(true);
             Runnable run = new Runnable() {
                 ExportTools exportTools = new ExportTools(profile, conn);
+
                 public void run() {
 
                     // CSV is always selected by defaut
-                    if(jRadioButtonCSV.isSelected()){
+                    if (jRadioButtonCSV.isSelected()) {
 
-                        List <String> fields_csv = readFieldsCSV();
+                        List<String> fields_csv = readFieldsCSV();
 
                     } else if (jRadioButtonPosts.isSelected()) {
                         // export only posts
-                        List <String> fields_post = readFieldsPost();
+                        List<String> fields_post = readFieldsPost();
                         exportTools.writePostsToFile(file_name, file_path, fields_post);
 
-                    } else if (jRadioButtonComments.isSelected()){
+                    } else if (jRadioButtonComments.isSelected()) {
                         // export only comments
-                        List <String> fields_comments = readFieldsComment();
+                        List<String> fields_comments = readFieldsComment();
                         exportTools.writeCommentsToFile(profile.getId(), file_name, file_path, fields_comments);
                     } else {
                         // export both
-                        List <String> fields_post = readFieldsPost();
-                        List <String> fields_comments = readFieldsComment();
+                        List<String> fields_post = readFieldsPost();
+                        List<String> fields_comments = readFieldsComment();
                     }
                     jLabelNameFileEmpty.setText("Export Done!");
                     jLabelNameFileEmpty.setVisible(true);
@@ -1821,40 +2044,128 @@ public class NewJFrame extends javax.swing.JFrame {
 
     }//GEN-LAST:event_jButtonSearchActionPerformed
 
+    private void jButtonMonitor1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonMonitor1ActionPerformed
+        // TODO add your handling code here:
+        String duration_time_temp = (String) jComboBoxDuration.getSelectedItem();
+        int duration_time;
+        if (!"Infinity".equals(duration_time_temp)) {
+            duration_time = Integer.parseInt(duration_time_temp);
+        } else {
+            duration_time = 0;
+        }
+
+        int check_time = Integer.parseInt((String) jComboBoxCheckTime.getSelectedItem());
+        int sleep_time = Integer.parseInt((String) jComboBoxSleepTime.getSelectedItem());
+
+        crawlerPage = new CrawlerPageTools(profile.getId(), app, conn, sleep_time, check_time, duration_time);
+        crawlerPage.monitor_page();
+        cl.show(jPanelMain, "monitor");
+
+    }//GEN-LAST:event_jButtonMonitor1ActionPerformed
+
+    private void jComboBoxSearchLimitActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jComboBoxSearchLimitActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jComboBoxSearchLimitActionPerformed
+
+    private void jButtonNLPActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonNLPActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jButtonNLPActionPerformed
+
+    private void jButtonUseApp1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonUseApp1ActionPerformed
+        // TODO add your handling code here:
+        cl.show(jPanelMain, "card_create_app");
+    }//GEN-LAST:event_jButtonUseApp1ActionPerformed
+
+    private void jButtonNLP1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonNLP1ActionPerformed
+        // TODO criar codigo para exibir erro qundo nenhum profile estiver selecionado        
+        if (!(this.idprofile == null)) {
+
+            LinkedHashMap<String, PostElement> result = conn.getAllPosts(this.idprofile);
+
+            if (result.size() > 0) {
+
+                DefaultTableModel table = (DefaultTableModel) jTablePostChart.getModel();
+
+                int rowCount = table.getRowCount();
+                //Remove rows one by one from the end of the table
+                for (int i = rowCount - 1; i >= 0; i--) {
+                    table.removeRow(i);
+                }
+
+                for (String key : result.keySet()) {
+
+                    String[] line = new String[8];
+                    line[0] = result.get(key).getId();
+                    line[1] = result.get(key).getMessage();
+
+                    ReactionsReader rr = new ReactionsReader(result.get(key).getId());
+                    LinkedHashMap<String, Integer> reactionsCount = rr.getReactionsTotal();
+
+                    if (reactionsCount.size() > 0) {
+                        line[2] = reactionsCount.get("likes").toString();
+                        line[3] = reactionsCount.get("wow").toString();
+                        line[4] = reactionsCount.get("haha").toString();
+                        line[5] = reactionsCount.get("sad").toString();
+                        line[6] = reactionsCount.get("loves").toString();
+                        line[7] = reactionsCount.get("shares").toString();
+
+                        table.addRow(line);
+                    }
+                }
+                jPanelChart.repaint();
+
+            }
+        } else {
+
+            // TODO criar codigo para exibir erro qundo nenhum profile estiver selecionado 
+        }
+
+        cl.show(jPanelMain, "card_chart");
+    }//GEN-LAST:event_jButtonNLP1ActionPerformed
+
+    private void jButtonSearch2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonSearch2ActionPerformed
+        // TODO add your handling code here:
+        cl.show(jPanelMain, "card_database");
+    }//GEN-LAST:event_jButtonSearch2ActionPerformed
+
     private void jButtonSearch1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonSearch1ActionPerformed
 
         // TODO add your handling code here:
         cl.show(jPanelMain, "card_chs_app");
-
     }//GEN-LAST:event_jButtonSearch1ActionPerformed
 
-    private void jButtonSearch2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonSearch2ActionPerformed
+    private void jButton17ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton17ActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_jButtonSearch2ActionPerformed
 
-    private void jButtonMonitor1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonMonitor1ActionPerformed
-        // TODO add your handling code here:
-        String duration_time_temp = (String)jComboBoxDuration.getSelectedItem();
-        int duration_time;
-        if(!"Infinity".equals(duration_time_temp)){
-                duration_time = Integer.parseInt(duration_time_temp);
+        int row = jTablePostChart.getSelectedRow();
+
+        if (row == -1) {
+            // TODO mostrar mensagem de error
+            jTablePostChart.repaint();
+            cl.show(jPanelMain, "card_chart");
+
         } else {
-                duration_time = 0;
+
+            String idPostSelected = (String) jTablePostChart.getValueAt(row, 0);
+
+            Runnable run = new Runnable() {
+                public void run() {
+                    ChartBuilder.drawWindow(idPostSelected);
+
+                }
+            };
+            new Thread(run).start();
+
         }
 
-        int check_time = Integer.parseInt((String)jComboBoxCheckTime.getSelectedItem());
-        int sleep_time = Integer.parseInt((String)jComboBoxSleepTime.getSelectedItem());
 
-        crawlerPage = new CrawlerPageTools(profile.getId(), app, conn, sleep_time,check_time,duration_time);
-        crawlerPage.monitor_page();
-        cl.show(jPanelMain, "monitor");
-        
-    }//GEN-LAST:event_jButtonMonitor1ActionPerformed
+    }//GEN-LAST:event_jButton17ActionPerformed
 
     /**
      * @param args the command line arguments
      */
     public static void main(String args[]) {
+
         /* Set the Nimbus look and feel */
         //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
         /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
@@ -1865,27 +2176,44 @@ public class NewJFrame extends javax.swing.JFrame {
                 if ("Nimbus".equals(info.getName())) {
                     javax.swing.UIManager.setLookAndFeel(info.getClassName());
                     break;
+
                 }
             }
         } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(NewJFrame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(NewJFrame.class
+                    .getName()).log(java.util.logging.Level.SEVERE, null, ex);
+
         } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(NewJFrame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(NewJFrame.class
+                    .getName()).log(java.util.logging.Level.SEVERE, null, ex);
+
         } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(NewJFrame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(NewJFrame.class
+                    .getName()).log(java.util.logging.Level.SEVERE, null, ex);
+
         } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(NewJFrame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(NewJFrame.class
+                    .getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
         //</editor-fold>
 
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                
+
                 new NewJFrame().setVisible(true);
-                cl = (CardLayout)jPanelMain.getLayout();
+                cl = (CardLayout) jPanelMain.getLayout();
+
+                // check if folder to save reactions exists
+                Path folder_r_monitoring = Paths.get("./reaction_monitoring");
+                if (!Files.exists(folder_r_monitoring)) {
+                    File dir = new File("reaction_monitoring");
+                    dir.mkdir();
+                }
+
+                // check if folder to save setting exists
                 Path folder_settings = Paths.get("./settings");
-                if (!Files.exists(folder_settings)){
+                if (!Files.exists(folder_settings)) {
                     File dir = new File("settings");
                     dir.mkdir();
                     jLabelProblemFile.setVisible(false);
@@ -1896,101 +2224,102 @@ public class NewJFrame extends javax.swing.JFrame {
 
                     FaceSettings fs = hs.readSettingsFile("./settings/data.ser");
 
-                    if (fs == null){
+                    if (fs == null) {
 
                         Path path = Paths.get("./settings/data.ser");
-                        if(Files.exists(path)){
+                        if (Files.exists(path)) {
                             jLabelProblemFile.setVisible(true);
                         }
                         cl.show(jPanelMain, "card_database");
 
                     } else {
 
-                        // obtain all apps to build ChooseAppPanel
-    //                    conn = new Connector(fs.getHostname() + ":" + fs.getPort() + "/FaceAnalytics2?autoReconnect=true&useSSL=false", fs.getUser(), fs.getPassword());
+                        // obtain all apps to build ChooseAppPanel                    
                         conn = new Connector(fs.getHostname() + ":" + fs.getPort(), fs.getUser(), fs.getPassword());
-                        if(!conn.db_exists()){
+                        if (!conn.db_exists()) {
 
-                            if(conn.build_database()){
+                            if (conn.build_database()) {
                                 System.out.println("donneeee!");
-                            }else{
+                            } else {
                                 System.out.println("probleeeeemmmmm!");
-
                             }
                         }
 
-                        LinkedHashMap <String, App> app_list = conn.selectAllApps();
+                        LinkedHashMap<String, App> app_list = conn.selectAllApps();
 
                         // check if there`s app in the database
-                        if(app_list.size()>0){
+                        if (app_list.size() > 0) {
 
                             app_list.keySet().forEach((key) -> {
                                 jComboBoxApps.addItem(app_list.get(key).getIdapp());
                             });
+
+                            jButtonCrawl.setEnabled(false);
+                            jButtonSearch.setEnabled(false);
+                            jButtonMonitor.setEnabled(false);
+                            jButtonExport1.setEnabled(false);
+                            jButtonNLP.setEnabled(false);
 
                             cl.show(jPanelMain, "card_chs_app");
                         } else {
                             jLabelProblemFile.setVisible(false);
                             // there`s not app, show CreateAppPanel
                             cl.show(jPanelMain, "card_create_app");
-
-
                         }
                     }
-                
+
                 }
             }
         });
     }
 
-   
-        private List <String> readFieldsCSV(){
-        List <String> fields_csv = new ArrayList<>();
+    private List<String> readFieldsCSV() {
+        List<String> fields_csv = new ArrayList<>();
 
-        if(jCheckBoxReactionsAngry.isSelected()){
+        if (jCheckBoxReactionsAngry.isSelected()) {
             fields_csv.add("angry");
         }
-                if(jCheckBoxReactionsLikes.isSelected()){
+        if (jCheckBoxReactionsLikes.isSelected()) {
             fields_csv.add("likes");
         }
-                        if(jCheckBoxReactionsLoves.isSelected()){
+        if (jCheckBoxReactionsLoves.isSelected()) {
             fields_csv.add("loves");
         }
-                                if(jCheckBoxReactionsSad.isSelected()){
+        if (jCheckBoxReactionsSad.isSelected()) {
             fields_csv.add("sad");
         }
-                                        if(jCheckBoxReactionsWow.isSelected()){
+        if (jCheckBoxReactionsWow.isSelected()) {
             fields_csv.add("wow");
         }
-                                                if(jCheckBoxReactionsHaha.isSelected()){
+        if (jCheckBoxReactionsHaha.isSelected()) {
             fields_csv.add("haha");
         }
-                                                        if(jCheckBoxReactionsShares.isSelected()){
+        if (jCheckBoxReactionsShares.isSelected()) {
             fields_csv.add("shares");
         }
-                                                                if(jCheckBoxReactionsTime.isSelected()){
+        if (jCheckBoxReactionsTime.isSelected()) {
             fields_csv.add("time");
         }
-                                                               return fields_csv;
+        return fields_csv;
 
     }
 
-    private List <String> readFieldsComment(){
-        List <String>fields_comments = new ArrayList<>();
+    private List<String> readFieldsComment() {
+        List<String> fields_comments = new ArrayList<>();
 
-        if(jCheckBoxCommentId.isSelected()){
+        if (jCheckBoxCommentId.isSelected()) {
             fields_comments.add("idcomment");
         }
 
-        if(jCheckBoxCommentTime.isSelected()){
+        if (jCheckBoxCommentTime.isSelected()) {
             fields_comments.add("created_on");
         }
 
-        if(jCheckBoxCommentUserId.isSelected()){
+        if (jCheckBoxCommentUserId.isSelected()) {
             fields_comments.add("iduser");
         }
 
-        if(jCheckBoxCommentUserName.isSelected()){
+        if (jCheckBoxCommentUserName.isSelected()) {
             fields_comments.add("user_name");
         }
 
@@ -1998,51 +2327,57 @@ public class NewJFrame extends javax.swing.JFrame {
 
     }
 
-    private List<String> readFieldsPost(){
-        List <String>fields_post = new ArrayList<>();
+    private List<String> readFieldsPost() {
+        List<String> fields_post = new ArrayList<>();
 
-        if(jCheckBoxPostId.isSelected()){
+        if (jCheckBoxPostId.isSelected()) {
             fields_post.add("idpost");
         }
 
-        if(jCheckBoxPostTime.isSelected()){
+        if (jCheckBoxPostTime.isSelected()) {
             fields_post.add("created_on");
         }
 
-        if(jCheckBoxPostShares.isSelected()){
+        if (jCheckBoxPostShares.isSelected()) {
             fields_post.add("shares");
         }
 
-        if(jCheckBoxPostIdProfile.isSelected()){
+        if (jCheckBoxPostIdProfile.isSelected()) {
             fields_post.add("idprofile");
         }
-        if(jCheckBoxPostReactions.isSelected()){
+        if (jCheckBoxPostReactions.isSelected()) {
             fields_post.add("reactions_count");
         }
 
         return fields_post;
     }
 
-    
-    
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.ButtonGroup buttonGroupExportMode;
+    private javax.swing.ButtonGroup buttonGroupExportPostCmts;
+    private javax.swing.ButtonGroup buttonGroupPeriod;
     private javax.swing.JFileChooser fileDialog;
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton16;
+    private javax.swing.JButton jButton17;
     private javax.swing.JButton jButton2;
     private javax.swing.JButton jButton4;
     private javax.swing.JButton jButtonConnect;
-    private javax.swing.JButton jButtonCrawl;
+    private static javax.swing.JButton jButtonCrawl;
     private javax.swing.JButton jButtonExport;
-    private javax.swing.JButton jButtonExport1;
-    private javax.swing.JButton jButtonMonitor;
+    private static javax.swing.JButton jButtonExport1;
+    private static javax.swing.JButton jButtonMonitor;
     private javax.swing.JButton jButtonMonitor1;
+    private static javax.swing.JButton jButtonNLP;
+    private static javax.swing.JButton jButtonNLP1;
     private javax.swing.JButton jButtonPreviewApp;
     private javax.swing.JButton jButtonPreviewProfile;
-    private javax.swing.JButton jButtonSearch;
+    private static javax.swing.JButton jButtonSearch;
     private javax.swing.JButton jButtonSearch1;
     private javax.swing.JButton jButtonSearch2;
     private javax.swing.JButton jButtonUseApp;
+    private javax.swing.JButton jButtonUseApp1;
     private javax.swing.JCheckBox jCheckBoxCommentId;
     private javax.swing.JCheckBox jCheckBoxCommentTime;
     private javax.swing.JCheckBox jCheckBoxCommentUserId;
@@ -2088,6 +2423,7 @@ public class NewJFrame extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel20;
     private javax.swing.JLabel jLabel21;
+    private javax.swing.JLabel jLabel22;
     private javax.swing.JLabel jLabel23;
     private javax.swing.JLabel jLabel24;
     private javax.swing.JLabel jLabel25;
@@ -2097,6 +2433,9 @@ public class NewJFrame extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel29;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel30;
+    private javax.swing.JLabel jLabel31;
+    private javax.swing.JLabel jLabel32;
+    private javax.swing.JLabel jLabel33;
     private javax.swing.JLabel jLabel34;
     private javax.swing.JLabel jLabel35;
     private javax.swing.JLabel jLabel38;
@@ -2107,6 +2446,7 @@ public class NewJFrame extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel42;
     private javax.swing.JLabel jLabel46;
     private javax.swing.JLabel jLabel47;
+    private javax.swing.JLabel jLabel48;
     private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;
     private javax.swing.JLabel jLabel7;
@@ -2124,6 +2464,8 @@ public class NewJFrame extends javax.swing.JFrame {
     private javax.swing.JLabel jLabelReactionsError;
     private javax.swing.JLabel jLabelSearchEmpty;
     private javax.swing.JLabel jLabelTotalPosts7;
+    private javax.swing.JLabel jLabelWarning;
+    private javax.swing.JPanel jPanelChart;
     private javax.swing.JPanel jPanelChooseApp;
     private javax.swing.JPanel jPanelCrawl;
     private javax.swing.JPanel jPanelCreateApp;
@@ -2144,6 +2486,7 @@ public class NewJFrame extends javax.swing.JFrame {
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JScrollPane jScrollPane3;
+    private javax.swing.JScrollPane jScrollPane4;
     private javax.swing.JScrollPane jScrollPane6;
     private javax.swing.JSeparator jSeparator1;
     private javax.swing.JSeparator jSeparator2;
@@ -2152,6 +2495,7 @@ public class NewJFrame extends javax.swing.JFrame {
     private javax.swing.JSeparator jSeparator5;
     private javax.swing.JSeparator jSeparator8;
     private javax.swing.JSeparator jSeparator9;
+    private javax.swing.JTable jTablePostChart;
     private javax.swing.JTable jTablePostsSummary;
     private javax.swing.JTable jTableReactionsSummary5;
     private javax.swing.JTable jTableSearchResults;

@@ -10,6 +10,7 @@ import facebook.ReactionsElement;
 import facebook.UserElement;
 import facebook.App;
 import facebook.CommentsElement;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 
 
@@ -250,7 +251,7 @@ public class Connector {
             
         } catch (SQLException e) {
             // TODO Auto-generated catch block
-            e.printStackTrace();
+            System.out.println(user.getId() +   ": user already saved in the database");
             return false;
         }
         
@@ -562,7 +563,7 @@ public class Connector {
             
             // our SQL SELECT query.
             // if you only need a few columns, specify them by name instead of using "*"
-            String query = "SELECT profile.idprofile, profile.name, message, created_on FROM FaceAnalytics.profile inner join FaceAnalytics.posts on FaceAnalytics.posts.profile_idprofile=FaceAnalytics.profile.idprofile where posts.app_idapp=\""+idapp+"\" limit 10";
+            String query = "Select FaceAnalytics.profile.idprofile, FaceAnalytics.profile.name, count(FaceAnalytics.posts.message) as 'Total Posts' FROM FaceAnalytics.profile inner join FaceAnalytics.posts on FaceAnalytics.posts.profile_idprofile=FaceAnalytics.profile.idprofile where posts.app_idapp=\"" + idapp + "\"  group by FaceAnalytics.profile.idprofile";
             
             // create the java statement
             Statement st = conn.createStatement();
@@ -575,9 +576,9 @@ public class Connector {
             {
                 String idprofile = rs.getString("idprofile");
                 String name = rs.getString("name");
-                String message = rs.getString("message");
-                String date = rs.getDate("created_on").toString();
-                result.put(idprofile, name + "<sep>" + message + "<sep>" + date);
+                String total_posts = (String)rs.getString("Total Posts");
+                
+                result.put(idprofile, name + "<sep>" + total_posts);
                 
             }
             st.close();
@@ -688,6 +689,49 @@ public class Connector {
         }
     }
     
+    public LinkedHashMap<String,PostElement> getAllPosts(String idprofile){
+        
+        Connection conn = null;
+
+        
+        LinkedHashMap <String,PostElement> result = new LinkedHashMap<>();        
+        try
+        {
+            // create our mysql database connection
+            conn = get_connection();
+            
+            // our SQL SELECT query.
+            // if you only need a few columns, specify them by name instead of using "*"
+            String query = "SELECT * FROM FaceAnalytics.posts where profile_idprofile ='"+ idprofile +"'";
+            
+            // create the java statement
+            Statement st = conn.createStatement();
+            
+            
+            // execute the query, and get a java resultset
+            ResultSet rs = st.executeQuery(query);
+            
+            // iterate through the java resultset
+            while (rs.next())
+            {
+                String idpost = rs.getString("idpost");
+                String message = rs.getString("message");
+                Timestamp dateCreated = rs.getTimestamp("created_on");
+                int shares = rs.getInt("shares");
+                
+                result.put(idpost, new PostElement(idpost, message, dateCreated, idprofile, shares));
+            }
+            st.close();
+            return result;
+        }
+        catch (Exception e)
+        {
+            System.err.println("Got an exception! ");
+            System.err.println(e.getMessage());
+            return null;
+        }
+    
+    }
     
     public CommentsElement getCommentbyId(String id){
         

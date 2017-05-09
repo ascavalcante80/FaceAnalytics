@@ -1,2 +1,0 @@
-time,loves,wow,haha,likes,sad,angry,shares
-2017-02-16 21:06:40.348,242,7,24,4610,0,242,614

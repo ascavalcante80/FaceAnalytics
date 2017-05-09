@@ -57,7 +57,6 @@ public class CrawlerPageTools implements Runnable {
 		this.page_id = page_id;
 	}
 
-
 	public void monitor_page(){
 
 		String threadname = "Thread Monitor Page";
@@ -68,8 +67,6 @@ public class CrawlerPageTools implements Runnable {
 			threadAnalyserPage.start ();
 		}	
 	}
-
-
 
 	@Override
 	public void run() {

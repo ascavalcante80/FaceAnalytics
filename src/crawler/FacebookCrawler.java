@@ -85,12 +85,13 @@ public class FacebookCrawler implements Runnable {
 	public String getSharesCount(String postId)  {
 		JSONObject json;
 		try {
+
 			json = readJsonFromUrl("https://graph.facebook.com/"+ postId +"?fields=shares&access_token=" + access_token);
 			JSONObject jsonShares = json.getJSONObject("shares");
 			return jsonShares.get("count").toString();
 		} catch (IOException | JSONException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			System.out.println(postId + ": Impossible to retrive shares counts. It usually happens when the profile being crawled shares a post from another user.");
 			return "0";
 		}
 	}
@@ -416,7 +417,7 @@ public class FacebookCrawler implements Runnable {
 						// save posts in list
 						if (!posts_list.containsKey(post.getId())) {
 							posts_list.put(post.getId(), post.getMessage()+ "<sep>" + post.getCreatedTime().toString());
-                                                                                                                
+                                                                                                                                                                        
                                                         int shares = Integer.parseInt(getSharesCount(post.getId()));
                                                         Timestamp created_on = new Timestamp(post.getCreatedTime().getTime());
                                                         conn.insertPost(new PostElement(post.getId(),post.getMessage(), created_on, profile_id,shares), app.getIdapp());
@@ -464,7 +465,7 @@ public class FacebookCrawler implements Runnable {
                 }
                 long time_now =0;
 
-		Path path = Paths.get(post_id + "_reactions_monitoring.txt");
+		Path path = Paths.get("./reaction_monitoring/ "+ post_id + "_reactions_monitoring.txt");
 
 		try {
 			Files.write(path, ("time,loves,wow,haha,likes,sad,angry,shares" + "\n").getBytes("UTF-8"), StandardOpenOption.CREATE_NEW);
