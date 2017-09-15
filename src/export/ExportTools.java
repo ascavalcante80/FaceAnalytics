@@ -21,18 +21,18 @@ import facebook.ProfileElement;
 public class ExportTools {
 
 	private ProfileElement profile;
-	private Connector conn;
+	private Connector connector;
 
 	public ExportTools(ProfileElement profile, Connector conn) {
 		super();
 		this.profile = profile;
-		this.conn = conn;
+		this.connector = conn;
 	}
-	public Connector getConn() {
-		return conn;
+	public Connector getConnector() {
+		return connector;
 	}
-	public void setConn(Connector conn) {
-		this.conn = conn;
+	public void setConnector(Connector connector) {
+		this.connector = connector;
 	}
 
 	public ProfileElement getProfile() {
@@ -51,7 +51,7 @@ public class ExportTools {
 
 	public Boolean writePostsToFile(String fileName, String file_location, List<String> fields){
 
-		LinkedHashMap <String, PostElement > result = conn.selectPostsWhere("profile_idprofile", profile.getId());
+		LinkedHashMap <String, PostElement > result = connector.selectPostsWhere("profile_idprofile", profile.getId());
 		String line_out ="";
 		for (String key: result.keySet()){
 
@@ -95,12 +95,12 @@ public class ExportTools {
 	public Boolean writeCommentsToFile(String id_profile, String fileName, String file_location, List<String> fields){
                 
             
-                LinkedHashMap <String, PostElement> all_posts = conn.selectPostsWhere("profile_idprofile", id_profile);
+                LinkedHashMap <String, PostElement> all_posts = connector.selectPostsWhere("profile_idprofile", id_profile);
                 String line_out ="";
                 for (String key1: all_posts.keySet()){
                     PostElement post = all_posts.get(key1);
                      
-                    LinkedHashMap <String, CommentsElement > result = conn.selectCommentsWhere("posts_idpost", post.getId());
+                    LinkedHashMap <String, CommentsElement > result = connector.selectCommentsWhere("posts_idpost", post.getId());
 
 
                     for (String key: result.keySet()){
@@ -108,19 +108,19 @@ public class ExportTools {
                             CommentsElement comment = result.get(key);
                             line_out += "<COMMENT>";
                             if (fields.contains("idcomment")){
-                                    line_out +=  comment.getId() + "<sep>"	;			
+                                    line_out +=  comment.getId() + "<sep>";			
                             }
 
                             if (fields.contains("created_on")){
-                                    line_out +=  comment.getData_created_On().toString() + "<sep>"	;			
+                                    line_out +=  comment.getData_created_On().toString() + "<sep>";			
                             }
-                            if (fields.contains("iduser")){
-                                    line_out +=  comment.getUser().getId() + "<sep>"	;			
+                            if (fields.contains("users_iduser")){
+                                    line_out +=  comment.getUser().getId() + "<sep>";			
                             }
 
-                            if (fields.contains("user_name")){				
+                            if (fields.contains("user_name")){			
 
-                                line_out += conn.getUserbyId(comment.getUser().getId()).getName() + "<sep>"	;			
+                                line_out += connector.getUserbyId(comment.getUser().getId()).getName() + "<sep>";			
                             }
 
                             // comment is always on
@@ -144,13 +144,14 @@ public class ExportTools {
 			e.printStackTrace();
 			return false;
 		}
+
                 return true;
            
 	}
 		
 	private String concatenateComments(String text_building, String id_post, String fileName, String file_location, List<String> fields){
 
-		LinkedHashMap <String, CommentsElement > result = conn.selectCommentsWhere("posts_idpost", id_post);
+		LinkedHashMap <String, CommentsElement > result = connector.selectCommentsWhere("posts_idpost", id_post);
 
 
 		for (String key: result.keySet()){
@@ -170,7 +171,7 @@ public class ExportTools {
 
 			if (fields.contains("user_name")){				
 
-				text_building += conn.getUserbyId(comment.getUser().getId()).getName() + "<sep>"	;			
+				text_building += connector.getUserbyId(comment.getUser().getId()).getName() + "<sep>"	;			
 			}
 
 			if (fields.contains("comment")){
@@ -199,7 +200,7 @@ public class ExportTools {
 		}
 
 		LinkedHashMap <String, CommentsElement > result = new LinkedHashMap();
-		LinkedHashMap <String, PostElement> all_posts = conn.selectPostsWhere("profile_idprofile", id_profile);
+		LinkedHashMap <String, PostElement> all_posts = connector.selectPostsWhere("profile_idprofile", id_profile);
 
 		String line_post="";
 		for (String key: all_posts.keySet()){
@@ -260,13 +261,13 @@ public class ExportTools {
 //		String app_secret = "d3ee1c88b86872e512802ceabca50970";
 //		String [] permissions = {"read_stream","public_profile","user_friends", "email", "user_about_me", "user_actions.books", "user_actions.fitness", "user_actions.music", "user_actions.news", "user_actions.video", "user_actions:{app_namespace}", "user_birthday", "user_education_history", "user_events", "user_games_activity", "user_hometown", "user_likes", "user_location", "user_managed_groups", "user_photos", "user_posts", "user_relationships", "user_relationship_details", "user_religion_politics", "user_tagged_places", "user_videos", "user_website", "user_work_history", "read_custom_friendlists", "read_insights", "read_audience_network_insights", "read_page_mailboxes", "manage_pages", "publish_pages", "publish_actions", "rsvp_event", "pages_show_list", "pages_manage_cta", "ads_read", "ads_management"};
 //		String [] profiles = {"profiles","tests"};
-//		Connector conn = new Connector("jdbc:mysql://localhost:3306/FaceAnalytics?autoReconnect=true&useSSL=false", "root", "20060907jl");
+//		Connector connector = new Connector("jdbc:mysql://localhost:3306/FaceAnalytics?autoReconnect=true&useSSL=false", "root", "20060907jl");
 //
 //		ProfileElement profile = new ProfileElement("1535230416709539", "Emmanuel Macron");
-//		//		conn.insertProfile(profile, app_id);
+//		//		connector.insertProfile(profile, app_id);
 //
-//		ExportTools et = new ExportTools( profile, conn);
-//		conn.setIdapp(app_id);
+//		ExportTools et = new ExportTools( profile, connector);
+//		connector.setIdapp(app_id);
 //
 //		//		et.writePostsToFile("TESTS.txt", "", new ArrayList<String>(Arrays.asList("idpost", "message")));
 ////		et.writeCommentsToFile(profile.get,"CommenESTS.txt", "", new ArrayList<String>(Arrays.asList("idcomment", "comment")));
