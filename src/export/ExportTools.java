@@ -52,9 +52,10 @@ public class ExportTools {
 	public Boolean writePostsToFile(String fileName, String file_location, List<String> fields){
 
 		LinkedHashMap <String, PostElement > result = connector.selectPostsWhere("profile_idprofile", profile.getId());
-		String line_out ="";
+		
 		for (String key: result.keySet()){
-
+                        
+                        String line_out ="";
 			PostElement post = result.get(key);
 			line_out += "<POST>";
 			if (fields.contains("idpost")){
@@ -72,7 +73,7 @@ public class ExportTools {
 				line_out += "shares: " + post.getShares() + "<sep>"	;			
 			}
 
-                        line_out +=  post.getMessage() + "<sep>"	;			
+                        line_out +=  post.getMessage().replaceAll("\n", " ") + "<sep>"	;			
 
 			// delete trailing <sep> at the end of String
 			if (line_out.endsWith("<sep>")){
@@ -81,22 +82,37 @@ public class ExportTools {
 			}
 
 			line_out += "\n";
+                        System.out.println("Writing post: " + post.getId());
+                        
+                        try {
+                            writeFiles(file_location+fileName, line_out);
+
+                        } catch (IOException e) {
+                                // TODO Auto-generated catch block
+                                e.printStackTrace();
+                                return false;
+                        }
+
+                        
 		}
-		try {
+                return true;
+		/*try {
 			writeFiles(file_location+fileName, line_out);
 			return true;
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 			return false;
-		}
+		}*/
 	}
 
 	public Boolean writeCommentsToFile(String id_profile, String fileName, String file_location, List<String> fields){
                 
             
                 LinkedHashMap <String, PostElement> all_posts = connector.selectPostsWhere("profile_idprofile", id_profile);
-                String line_out ="";
+                String line_out;
+                
+                                
                 for (String key1: all_posts.keySet()){
                     PostElement post = all_posts.get(key1);
                      
@@ -104,7 +120,9 @@ public class ExportTools {
 
 
                     for (String key: result.keySet()){
-
+                            
+                            line_out ="";
+                            
                             CommentsElement comment = result.get(key);
                             line_out += "<COMMENT>";
                             if (fields.contains("idcomment")){
@@ -124,7 +142,7 @@ public class ExportTools {
                             }
 
                             // comment is always on
-                            line_out +=  comment.getComment() + "<sep>"	;			
+                            line_out +=  comment.getComment().replaceAll("\n", " ") + "<sep>"	;			
 
                             // delete trailing <sep> at the end of String
                             if (line_out.endsWith("<sep>")){
@@ -133,18 +151,18 @@ public class ExportTools {
                             }
 
                             line_out += "\n";
+                            System.out.println("Writing comment: " + comment.getId());
+                            
+                            try {
+                                    writeFiles(file_location+fileName, line_out);
+                            } catch (IOException e) {
+                                    // TODO Auto-generated catch block
+                                    e.printStackTrace();
+                                    return false;
+                            }
                     }
-		
-                    
                 }
-                try {
-			writeFiles(file_location+fileName, line_out);
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-			return false;
-		}
-
+                
                 return true;
            
 	}
@@ -159,7 +177,7 @@ public class ExportTools {
 			CommentsElement comment = result.get(key);
 			text_building += "<COMMENT>";
 			if (fields.contains("idcomment")){
-				text_building +=  comment.getId() + "<sep>"	;			
+				text_building +=  comment.getId() + "<sep>";			
 			}
 
 			if (fields.contains("created_on")){
@@ -174,9 +192,9 @@ public class ExportTools {
 				text_building += connector.getUserbyId(comment.getUser().getId()).getName() + "<sep>"	;			
 			}
 
-			if (fields.contains("comment")){
-				text_building +=  comment.getComment() + "<sep>"	;			
-			}
+                        // comment is always present
+                        text_building +=  comment.getComment().replaceAll("\n", " ") + "<sep>"	;			
+			
 
 			// delete trailing <sep> at the end of String
 			if (text_building.endsWith("<sep>")){
@@ -185,6 +203,7 @@ public class ExportTools {
 			}
 
 			text_building += "\n";
+                        System.out.println("Writing comment: " + comment.getId());
 		}
 		return text_building;
 	}
@@ -204,7 +223,8 @@ public class ExportTools {
 
 		String line_post="";
 		for (String key: all_posts.keySet()){
-//			line_post="\n";
+                    
+			line_post="";
 			PostElement post = all_posts.get(key);
 			line_post += "<POST>";
 			if (fields_post.contains("idprofile")){
@@ -222,7 +242,7 @@ public class ExportTools {
 				line_post += "shares: " + post.getShares() + "<sep>"	;			
 			}
                         // post is always on
-                        line_post +=  post.getMessage() + "<sep>"	;			
+                        line_post +=  post.getMessage().replaceAll("\n", " ") + "<sep>"	;			
 
 			// delete trailing <sep> at the end of String
 			if (line_post.endsWith("<sep>")){
@@ -231,49 +251,18 @@ public class ExportTools {
 			}
 
 			line_post += "\n";
-//
-//			try {
-//				Thread.sleep(1000);
-//			} catch (InterruptedException e) {
-//				// TODO Auto-generated catch block
-//				e.printStackTrace();
-//			}
-
+                        System.out.println("Writing comment: " + post.getId());
 			line_post = concatenateComments(line_post, post.getId(), fileName, file_location, fields_comments);
-			System.out.println("writing comments...");
-
-		}
-		try {
-			writeFiles(file_location+fileName, line_post);
-		} catch (IOException e) {
-			e.printStackTrace();
+			
+                        try {
+                                writeFiles(file_location+fileName, line_post);
+                        } catch (IOException e) {
+                                e.printStackTrace();
+                                return false;
+                        }
 		}
 		return true;
-
-
 	}
-
-//	public static void main(String [] args){
-//
-//
-//		String access_token = "EAAClJnYbrdYBACXz1NOldz5dkns0kaQbFpOegmUKZC5KrdPyUKc6zQXpEnQ1iD60eDhInAmX8Mki5Kmuos389vNHsTBrxCvtoIBswvxl5ZA6aZBB2rhYHMOWvTYXH74b3qZCseyS5BkxzCoXcX66ZBVCPwzwKcJ4ZD";
-//		String app_id = "181584608865750";
-//		String app_secret = "d3ee1c88b86872e512802ceabca50970";
-//		String [] permissions = {"read_stream","public_profile","user_friends", "email", "user_about_me", "user_actions.books", "user_actions.fitness", "user_actions.music", "user_actions.news", "user_actions.video", "user_actions:{app_namespace}", "user_birthday", "user_education_history", "user_events", "user_games_activity", "user_hometown", "user_likes", "user_location", "user_managed_groups", "user_photos", "user_posts", "user_relationships", "user_relationship_details", "user_religion_politics", "user_tagged_places", "user_videos", "user_website", "user_work_history", "read_custom_friendlists", "read_insights", "read_audience_network_insights", "read_page_mailboxes", "manage_pages", "publish_pages", "publish_actions", "rsvp_event", "pages_show_list", "pages_manage_cta", "ads_read", "ads_management"};
-//		String [] profiles = {"profiles","tests"};
-//		Connector connector = new Connector("jdbc:mysql://localhost:3306/FaceAnalytics?autoReconnect=true&useSSL=false", "root", "20060907jl");
-//
-//		ProfileElement profile = new ProfileElement("1535230416709539", "Emmanuel Macron");
-//		//		connector.insertProfile(profile, app_id);
-//
-//		ExportTools et = new ExportTools( profile, connector);
-//		connector.setIdapp(app_id);
-//
-//		//		et.writePostsToFile("TESTS.txt", "", new ArrayList<String>(Arrays.asList("idpost", "message")));
-////		et.writeCommentsToFile(profile.get,"CommenESTS.txt", "", new ArrayList<String>(Arrays.asList("idcomment", "comment")));
-//		et.writeCommentsAndPostToFile(profile.getId(), "CO333MM22NENE.txt", "", new ArrayList<String>(Arrays.asList("idpost", "message")), new ArrayList<String>(Arrays.asList("idcomment", "comment")));
-//
-//	}
 }
 
 

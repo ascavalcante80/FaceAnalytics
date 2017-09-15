@@ -65,8 +65,8 @@ public class Connector {
                 stmt.executeUpdate(query);
             }
             
-            conn.close();
             stmt.close();
+            conn.close();
             
             return true;
         } catch (SQLException e) {

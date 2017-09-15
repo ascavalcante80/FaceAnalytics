@@ -55,9 +55,9 @@ public class ReactionsReader {
             reactionsCount.put("shares", Integer.parseInt(items[7]));
 
         } catch (FileNotFoundException ex) {
-            Logger.getLogger(ChartBuilder.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getAnonymousLogger();
         } catch (IOException ex) {
-            Logger.getLogger(ChartBuilder.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getAnonymousLogger();
         }
 
         return reactionsCount;
@@ -76,9 +76,9 @@ public class ReactionsReader {
                 String[] items = line.split(",");
 
                 String timeStamp = items[0].split(" ")[1];
-                
+
                 LinkedHashMap<String, Float> reactions = new LinkedHashMap<>();
-                
+
                 reactions.put("loves", Float.parseFloat(items[1]));
                 reactions.put("wow", Float.parseFloat(items[2]));
                 reactions.put("haha", Float.parseFloat(items[3]));
@@ -89,7 +89,7 @@ public class ReactionsReader {
 
                 allReactions.put(timeStamp, reactions);
             }
-            
+
             return allReactions;
         } catch (FileNotFoundException ex) {
             Logger.getLogger(ChartBuilder.class.getName()).log(Level.SEVERE, null, ex);
