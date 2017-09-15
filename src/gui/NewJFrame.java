@@ -189,9 +189,9 @@ public class NewJFrame extends javax.swing.JFrame {
         jLabelFilePath = new javax.swing.JLabel();
         jLabelNameFileEmpty = new javax.swing.JLabel();
         jCheckBoxReactionsTime = new javax.swing.JCheckBox();
-        jRadioButtonOnlyPosts = new javax.swing.JRadioButton();
-        jRadioButtonOnlyComments = new javax.swing.JRadioButton();
-        jRadioButtonBothPostCmmt = new javax.swing.JRadioButton();
+        jRadioButtonPosts = new javax.swing.JRadioButton();
+        jRadioButtonComments = new javax.swing.JRadioButton();
+        jRadioButtonBoth = new javax.swing.JRadioButton();
         jCheckBoxPostTime = new javax.swing.JCheckBox();
         jCheckBoxPostId = new javax.swing.JCheckBox();
         jCheckBoxCommentTime = new javax.swing.JCheckBox();
@@ -747,7 +747,6 @@ public class NewJFrame extends javax.swing.JFrame {
             }
         });
         jTableSearchResults.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
-        jTableSearchResults.setShowHorizontalLines(true);
         jScrollPane2.setViewportView(jTableSearchResults);
 
         jLabelNoRowSelected.setFont(new java.awt.Font("DejaVu Sans", 1, 12)); // NOI18N
@@ -1075,15 +1074,15 @@ public class NewJFrame extends javax.swing.JFrame {
 
         jCheckBoxReactionsTime.setText("Timestamp");
 
-        buttonGroupExportPostCmts.add(jRadioButtonOnlyPosts);
-        jRadioButtonOnlyPosts.setSelected(true);
-        jRadioButtonOnlyPosts.setText("Only posts");
+        buttonGroupExportPostCmts.add(jRadioButtonPosts);
+        jRadioButtonPosts.setSelected(true);
+        jRadioButtonPosts.setText("Only posts");
 
-        buttonGroupExportPostCmts.add(jRadioButtonOnlyComments);
-        jRadioButtonOnlyComments.setText("Only Comments");
+        buttonGroupExportPostCmts.add(jRadioButtonComments);
+        jRadioButtonComments.setText("Only Comments");
 
-        buttonGroupExportPostCmts.add(jRadioButtonBothPostCmmt);
-        jRadioButtonBothPostCmmt.setText("Posts and Comments");
+        buttonGroupExportPostCmts.add(jRadioButtonBoth);
+        jRadioButtonBoth.setText("Posts and Comments");
 
         jCheckBoxPostTime.setSelected(true);
         jCheckBoxPostTime.setText("Timestamp");
@@ -1185,9 +1184,9 @@ public class NewJFrame extends javax.swing.JFrame {
                                         .addGroup(jPanelExportLayout.createSequentialGroup()
                                             .addGroup(jPanelExportLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                                                 .addGroup(jPanelExportLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                                    .addComponent(jRadioButtonOnlyComments)
-                                                    .addComponent(jRadioButtonOnlyPosts)
-                                                    .addComponent(jRadioButtonBothPostCmmt))
+                                                    .addComponent(jRadioButtonComments)
+                                                    .addComponent(jRadioButtonPosts)
+                                                    .addComponent(jRadioButtonBoth))
                                                 .addComponent(jRadioButtonTxt))
                                             .addGroup(jPanelExportLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                                 .addGroup(jPanelExportLayout.createSequentialGroup()
@@ -1243,11 +1242,11 @@ public class NewJFrame extends javax.swing.JFrame {
                 .addGroup(jPanelExportLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanelExportLayout.createSequentialGroup()
                         .addGap(18, 18, 18)
-                        .addComponent(jRadioButtonOnlyPosts)
+                        .addComponent(jRadioButtonPosts)
                         .addGap(18, 18, 18)
-                        .addComponent(jRadioButtonOnlyComments)
+                        .addComponent(jRadioButtonComments)
                         .addGap(20, 20, 20)
-                        .addComponent(jRadioButtonBothPostCmmt))
+                        .addComponent(jRadioButtonBoth))
                     .addGroup(jPanelExportLayout.createSequentialGroup()
                         .addGap(13, 13, 13)
                         .addGroup(jPanelExportLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
@@ -1313,41 +1312,41 @@ public class NewJFrame extends javax.swing.JFrame {
 
         jTablePostChart.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null, null}
+                {null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null}
             },
             new String [] {
-                "id", "Post", "Likes", "Wow", "Haha", "Sad", "Love", "Angry", "Share"
+                "id", "Post", "Likes", "Wow", "Haha", "Sad", "Love", "Share"
             }
         ) {
             Class[] types = new Class [] {
-                java.lang.String.class, java.lang.String.class, java.lang.Integer.class, java.lang.Integer.class, java.lang.Integer.class, java.lang.Integer.class, java.lang.Integer.class, java.lang.Object.class, java.lang.Integer.class
+                java.lang.String.class, java.lang.String.class, java.lang.Integer.class, java.lang.Integer.class, java.lang.Integer.class, java.lang.Integer.class, java.lang.Integer.class, java.lang.Integer.class
             };
             boolean[] canEdit = new boolean [] {
-                false, false, false, false, false, false, false, false, false
+                false, false, false, false, false, false, false, false
             };
 
             public Class getColumnClass(int columnIndex) {
@@ -1365,7 +1364,6 @@ public class NewJFrame extends javax.swing.JFrame {
         if (jTablePostChart.getColumnModel().getColumnCount() > 0) {
             jTablePostChart.getColumnModel().getColumn(0).setResizable(false);
             jTablePostChart.getColumnModel().getColumn(0).setPreferredWidth(1);
-            jTablePostChart.getColumnModel().getColumn(1).setResizable(false);
             jTablePostChart.getColumnModel().getColumn(1).setPreferredWidth(25);
             jTablePostChart.getColumnModel().getColumn(2).setResizable(false);
             jTablePostChart.getColumnModel().getColumn(2).setPreferredWidth(3);
@@ -1378,8 +1376,7 @@ public class NewJFrame extends javax.swing.JFrame {
             jTablePostChart.getColumnModel().getColumn(6).setResizable(false);
             jTablePostChart.getColumnModel().getColumn(6).setPreferredWidth(7);
             jTablePostChart.getColumnModel().getColumn(7).setResizable(false);
-            jTablePostChart.getColumnModel().getColumn(8).setResizable(false);
-            jTablePostChart.getColumnModel().getColumn(8).setPreferredWidth(3);
+            jTablePostChart.getColumnModel().getColumn(7).setPreferredWidth(3);
         }
 
         javax.swing.GroupLayout jPanelChartLayout = new javax.swing.GroupLayout(jPanelChart);
@@ -2012,12 +2009,12 @@ public class NewJFrame extends javax.swing.JFrame {
 
                         List<String> fields_csv = readFieldsCSV();
 
-                    } else if (jRadioButtonOnlyPosts.isSelected()) {
+                    } else if (jRadioButtonPosts.isSelected()) {
                         // export only posts
                         List<String> fields_post = readFieldsPost();
                         exportTools.writePostsToFile(file_name, file_path, fields_post);
 
-                    } else if (jRadioButtonOnlyComments.isSelected() && !jRadioButtonOnlyComments.isSelected()) {
+                    } else if (jRadioButtonComments.isSelected() && !jRadioButtonPosts.isSelected()) {
                         // export only comments
                         List<String> fields_comments = readFieldsComment();
                         exportTools.writeCommentsToFile(profile.getId(), file_name, file_path, fields_comments);
@@ -2495,12 +2492,12 @@ public class NewJFrame extends javax.swing.JFrame {
     private javax.swing.JPanel jPanelSearch;
     private javax.swing.JProgressBar jProgressBar1;
     private javax.swing.JProgressBar jProgressBarExport;
-    private javax.swing.JRadioButton jRadioButtonBothPostCmmt;
+    private javax.swing.JRadioButton jRadioButtonBoth;
     private javax.swing.JRadioButton jRadioButtonCSV;
-    private javax.swing.JRadioButton jRadioButtonOnlyComments;
-    private javax.swing.JRadioButton jRadioButtonOnlyPosts;
+    private javax.swing.JRadioButton jRadioButtonComments;
     private javax.swing.JRadioButton jRadioButtonPeriodAll;
     private javax.swing.JRadioButton jRadioButtonPeriodLmtd;
+    private javax.swing.JRadioButton jRadioButtonPosts;
     private javax.swing.JRadioButton jRadioButtonTxt;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
