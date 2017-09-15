@@ -30,13 +30,11 @@ public class Connector {
         this.password = password;
        
     }
-    
-    
+        
     public String getIdapp(){
         return idapp;
     }
-    
-    
+        
     public void setIdapp(String idapp){
         this.idapp = idapp;
     }
@@ -59,18 +57,27 @@ public class Connector {
                 stmt.executeUpdate(query);
             }
             
-            conn.close();
+
             
             conn= DriverManager.getConnection(this.url, this.user, this.password);
             stmt = conn.createStatement();
             for (String query: queries_db){            
                 stmt.executeUpdate(query);
             }
+            
+            conn.close();
+            stmt.close();
+            
             return true;
         } catch (SQLException e) {
-            e.printStackTrace();
-            
-            return false;
+            try {
+                e.printStackTrace();
+                conn.close();
+                return false;
+            } catch (SQLException ex) {
+                Logger.getLogger(Connector.class.getName()).log(Level.SEVERE, null, ex);
+                return false;
+            }
         }        
     }
     
@@ -78,17 +85,12 @@ public class Connector {
         LinkedHashMap<String, App> app_list = new LinkedHashMap<>();
         Connection conn = null;
         String db = null;
-        try {
-            conn = DriverManager.getConnection(this.local_host, this.user, this.password);
-            String b= conn.getCatalog();
-            
-            
-        } catch (SQLException ex) {
-            Logger.getLogger(Connector.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        
+   
         try
         {            
+            
+            conn = DriverManager.getConnection(this.local_host, this.user, this.password);
+        
             String query = "show databases;";
             Statement st = conn.createStatement();
             ResultSet rs = st.executeQuery(query);
@@ -100,27 +102,44 @@ public class Connector {
             }
             
             st.close();
+            rs.close();
+            conn.close();
         }
-        catch (Exception e)
+        catch (SQLException e)
         {
-            String err = e.getMessage();
-            System.err.println(err);
+            try {
+                String err = e.getMessage();
+                System.err.println(err);
+                
+                conn.close();
+            } catch (SQLException ex) {
+                Logger.getLogger(Connector.class.getName()).log(Level.SEVERE, null, ex);
+                return false;
+            }
+            
         }
         return false;
     }
    
     private Connection get_connection(){
         
-        Connection con = null;
+        Connection conn = null;
         
         try{
-            con = DriverManager.getConnection(this.url, this.user, this.password);
-            return con;
+            conn = DriverManager.getConnection(this.url, this.user, this.password);
+            return conn;
             
         } catch (SQLException ex) {
             
             Logger lgr = Logger.getLogger(Connector.class.getName());
             lgr.log(Level.SEVERE, ex.getMessage(), ex);
+            
+            try {
+                conn.close();
+            } catch (SQLException ex1) {
+                Logger.getLogger(Connector.class.getName()).log(Level.SEVERE, null, ex1);
+            }
+            
             return null;
         }
     }
@@ -128,7 +147,7 @@ public class Connector {
     
     public Boolean insertPost(PostElement post, String idapp){
         
-        Connection con = null;
+        Connection conn = null;
         
         // the mysql insert statement
         String query = " INSERT INTO posts (idpost, message, created_on, profile_idprofile, app_idapp, shares) values (?, ?, ?, ?, ?, ?)";
@@ -136,8 +155,8 @@ public class Connector {
         // create the mysql insert preparedstatement
         java.sql.PreparedStatement preparedStmt;
         try {
-            con = get_connection();
-            preparedStmt = con.prepareStatement(query);
+            conn = get_connection();
+            preparedStmt = conn.prepareStatement(query);
             preparedStmt.setString (1, post.getId());
             preparedStmt.setString (2, post.getMessage());
             preparedStmt.setTimestamp(3, post.getData_created_On());
@@ -147,20 +166,27 @@ public class Connector {
             
             // execute the preparedstatement
             preparedStmt.execute();
-            con.close();
+            preparedStmt.close();
+            conn.close();
             return true;
             
         } catch (SQLException e) {
             
-            return false;
+            try {
+                conn.close();
+                
+            } catch (SQLException ex) {
+                Logger.getLogger(Connector.class.getName()).log(Level.SEVERE, null, ex);
+            }
         }
+        return false;
         
     }
     
     
     public Boolean insertComment(CommentsElement comment, String idapp){
         
-        Connection con = null;
+        Connection conn = null;
         
         // the mysql insert statement
         String query = " INSERT INTO comments (idcomment, comment, created_on, posts_idpost, app_idapp, users_iduser, likes) values (?, ?, ?, ?, ?, ?, ?)";
@@ -168,8 +194,8 @@ public class Connector {
         // create the mysql insert preparedstatement
         java.sql.PreparedStatement preparedStmt;
         try {
-            con = get_connection();
-            preparedStmt = con.prepareStatement(query);
+            conn = get_connection();
+            preparedStmt = conn.prepareStatement(query);
             preparedStmt.setString (1, comment.getId());
             preparedStmt.setString (2, comment.getComment());
             preparedStmt.setTimestamp  (3, comment.getData_created_On());
@@ -180,21 +206,28 @@ public class Connector {
             
             // execute the preparedstatement
             preparedStmt.execute();
-            con.close();
+            preparedStmt.close();
+            conn.close();
             return true;
             
         } catch (SQLException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-            return false;
+            try {
+                // TODO Auto-generated catch block
+                e.printStackTrace();                
+                conn.close();
+
+            } catch (SQLException ex) {
+                Logger.getLogger(Connector.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            
         }
-        
+        return false;
     }
     
     
     public Boolean insertProfile(ProfileElement profile, String idapp){
         
-        Connection con = null;
+        Connection conn = null;
         String query = null;
         
         
@@ -205,29 +238,34 @@ public class Connector {
         // create the mysql insert preparedstatement
         java.sql.PreparedStatement preparedStmt;
         try {
-            con = get_connection();
-            preparedStmt = con.prepareStatement(query);
+            conn = get_connection();
+            preparedStmt = conn.prepareStatement(query);
             preparedStmt.setString (1, profile.getId());
             preparedStmt.setString (2, profile.getName());
             preparedStmt.setString(3, idapp);
             
             // execute the preparedstatement
             preparedStmt.execute();
-            con.close();
+            preparedStmt.close();
+            conn.close();
             return true;
             
         } catch (SQLException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-            return false;
+            try {
+                // TODO Auto-generated catch block
+                e.printStackTrace();                
+                conn.close();
+            } catch (SQLException ex) {
+                Logger.getLogger(Connector.class.getName()).log(Level.SEVERE, null, ex);
+            }
         }
-        
+        return false;
     }
     
     
     public Boolean insertUser(UserElement user, String idapp){
         
-        Connection con = null;
+        Connection conn = null;
         String query = null;
         
         // the mysql insert statement
@@ -235,32 +273,38 @@ public class Connector {
                 + " values (?, ?, ?)";
         
         // create the mysql insert preparedstatement
-        java.sql.PreparedStatement preparedStmt;
+        java.sql.PreparedStatement preparedStmt = null;
         try {
-            con = get_connection();
-            preparedStmt = con.prepareStatement(query);
+            conn = get_connection();
+            preparedStmt = conn.prepareStatement(query);
             preparedStmt.setString (1, user.getId());
             preparedStmt.setString (2, user.getName());
             preparedStmt.setString(3, idapp);
             
             // execute the preparedstatement
             preparedStmt.execute();
-            con.close();
+            preparedStmt.close();
+            conn.close();
             return true;
             
             
         } catch (SQLException e) {
-            // TODO Auto-generated catch block
-            System.out.println(user.getId() +   ": user already saved in the database");
-            return false;
+            try {
+                // TODO Auto-generated catch block
+                System.out.println(user.getId() +   ": user already saved in the database");
+                conn.close();
+                
+            } catch (SQLException ex) {
+                Logger.getLogger(Connector.class.getName()).log(Level.SEVERE, null, ex);
+            }
         }
-        
+        return false;
     }
     
     
     public Boolean insertApp(App app){
         
-        Connection con = null;
+        Connection conn = null;
         String query = null;
         
         // the mysql insert statement
@@ -270,8 +314,8 @@ public class Connector {
         // create the mysql insert preparedstatement
         java.sql.PreparedStatement preparedStmt;
         try {
-            con = get_connection();
-            preparedStmt = con.prepareStatement(query);
+            conn = get_connection();
+            preparedStmt = conn.prepareStatement(query);
             
             preparedStmt.setString (1, app.getIdapp());
             preparedStmt.setString (2, app.getApp_name());
@@ -282,20 +326,27 @@ public class Connector {
             
             // execute the preparedstatement
             preparedStmt.execute();
-            con.close();
+            preparedStmt.close();
+            conn.close();
             return true;
             
         } catch (SQLException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-            return false;
+            try {
+                // TODO Auto-generated catch block
+                e.printStackTrace();                
+                conn.close();
+                
+            } catch (SQLException ex) {
+                Logger.getLogger(Connector.class.getName()).log(Level.SEVERE, null, ex);
+            }
         }
+        return false;
     }
     
     
     public Boolean insertReactions(ReactionsElement reaction){
         
-        Connection con = null;
+        Connection conn = null;
         String query = null;
         
         // the mysql insert statement
@@ -305,8 +356,8 @@ public class Connector {
         // create the mysql insert preparedstatement
         java.sql.PreparedStatement preparedStmt;
         try {
-            con = get_connection();
-            preparedStmt = con.prepareStatement(query);
+            conn = get_connection();
+            preparedStmt = conn.prepareStatement(query);
             preparedStmt.setString (1, reaction.getIdpost());
             preparedStmt.setString(2, reaction.getIdprofile());
             preparedStmt.setString(3, reaction.getIduser());
@@ -315,14 +366,20 @@ public class Connector {
             
             // execute the preparedstatement
             preparedStmt.execute();
-            con.close();
+            preparedStmt.close();
+            conn.close();
             return true;
             
         } catch (SQLException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-            return false;
+            try {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+                conn.close();
+            } catch (SQLException ex) {
+                Logger.getLogger(Connector.class.getName()).log(Level.SEVERE, null, ex);
+            }
         }
+            return false;
     }
     
     
@@ -365,13 +422,21 @@ public class Connector {
                 app_list.put(idapp, new App(idapp, app_name, access_token, app_secret, permissions.split(","), profiles.split(",")));
             }
             st.close();
+            rs.close();
+            conn.close();
         }
         catch (Exception e)
         {
-            e.printStackTrace();
-            System.err.println("Got an exception! ");
-            System.err.println(e.getMessage());
-            return null;
+            try {
+                e.printStackTrace();
+                System.err.println("Got an exception! ");
+                System.err.println(e.getMessage());
+                conn.close();
+                return null;
+            } catch (SQLException ex) {
+                Logger.getLogger(Connector.class.getName()).log(Level.SEVERE, null, ex);
+                return null;
+            }
         }
         return app_list;
     }
@@ -407,16 +472,24 @@ public class Connector {
                 result.put(id_post, new PostElement(id_post, message, created_on, id_profile, shares));
             }
             st.close();
+            conn.close();
+                    return result;
         }
         catch (Exception e)
         {
-            e.printStackTrace();
-            System.err.println("Got an exception! ");
-            System.err.println(e.getMessage());
+            try {
+                e.printStackTrace();
+                System.err.println("Got an exception! ");
+                System.err.println(e.getMessage());
+                conn.close();
+            } catch (SQLException ex) {
+                Logger.getLogger(Connector.class.getName()).log(Level.SEVERE, null, ex);
+                return null;
+            }
             return null;
         }
         
-        return result;
+
     }
     
     public LinkedHashMap <String, CommentsElement> selectCommentsWhere(String field, String value){
@@ -452,18 +525,20 @@ public class Connector {
             }
             st.close();
             conn.close();
+            return result;
         }
         catch (Exception e)
         {
-            e.printStackTrace();
-            System.err.println("Got an exception! ");
-            System.err.println(e.getMessage());
+            try {
+                e.printStackTrace();
+                System.err.println("Got an exception! ");
+                System.err.println(e.getMessage());
+                conn.close();
+            } catch (SQLException ex) {
+                Logger.getLogger(Connector.class.getName()).log(Level.SEVERE, null, ex);
+            }
             return null;
-        }
-        
-        return result;
-        
-        
+        }        
     }
     
     public LinkedHashMap <String, App> selectAppWhere(String field, String value){
@@ -498,16 +573,21 @@ public class Connector {
                 
             }
             st.close();
+            rs.close();
+            return result;
         }
         catch (Exception e)
         {
-            e.printStackTrace();
-            System.err.println("Got an exception! ");
-            System.err.println(e.getMessage());
-            return null;
+            try {
+                e.printStackTrace();
+                System.err.println("Got an exception! ");
+                System.err.println(e.getMessage());
+                conn.close();
+            } catch (SQLException ex) {
+                Logger.getLogger(Connector.class.getName()).log(Level.SEVERE, null, ex);
+            }
+                return null;
         }
-        
-        return result;
         
     }
     
@@ -539,17 +619,27 @@ public class Connector {
                 result.put(id_profile, new ProfileElement(id_profile, name));
                 
             }
+            rs.close();
             st.close();
+            conn.close();
+            return result;
         }
         catch (Exception e)
         {
-            e.printStackTrace();
-            System.err.println("Got an exception! ");
-            System.err.println(e.getMessage());
-            return null;
+            try {
+                e.printStackTrace();
+                System.err.println("Got an exception! ");
+                System.err.println(e.getMessage());
+                
+                conn.close();
+                
+            } catch (SQLException ex) {
+                Logger.getLogger(Connector.class.getName()).log(Level.SEVERE, null, ex);
+            }
+                return null;
         }
         
-        return result;
+
     }
     
     public LinkedHashMap<String,String> getPagesPreview(String idapp){
@@ -582,13 +672,23 @@ public class Connector {
                 
             }
             st.close();
+            conn.close();
+            rs.close();
             return result;
         }
         catch (Exception e)
         {
-            System.err.println("Got an exception! ");
-            System.err.println(e.getMessage());
-            return null;
+            try {
+                System.err.println("Got an exception! ");
+                System.err.println(e.getMessage());
+                
+                conn.close();
+                
+                
+            } catch (SQLException ex) {
+                Logger.getLogger(Connector.class.getName()).log(Level.SEVERE, null, ex);
+            }
+                return null;
         }
     }
     
@@ -632,13 +732,22 @@ public class Connector {
                 
             }
             st.close();
+            rs.close();
+            conn.close();
             return new App(idapp, app_name, access_token, app_secret, permissions.split(","), profiles.split(","));
         }
         catch (Exception e)
         {
-            System.err.println("Got an exception! ");
-            System.err.println(e.getMessage());
-            return null;
+            try {
+                System.err.println("Got an exception! ");
+                System.err.println(e.getMessage());
+                
+                conn.close();
+                
+            } catch (SQLException ex) {
+                Logger.getLogger(Connector.class.getName()).log(Level.SEVERE, null, ex);
+            }
+                return null;
         }
         
     }
@@ -679,13 +788,21 @@ public class Connector {
                 
             }
             st.close();
+            rs.close();
+            conn.close();
             return new PostElement(id, message, dateCreated, idprofile,shares);
         }
         catch (Exception e)
         {
-            System.err.println("Got an exception! ");
-            System.err.println(e.getMessage());
-            return null;
+            try {
+                System.err.println("Got an exception! ");
+                System.err.println(e.getMessage());
+                
+                conn.close();
+            } catch (SQLException ex) {
+                Logger.getLogger(Connector.class.getName()).log(Level.SEVERE, null, ex);
+            }
+                return null;
         }
     }
     
@@ -707,7 +824,6 @@ public class Connector {
             // create the java statement
             Statement st = conn.createStatement();
             
-            
             // execute the query, and get a java resultset
             ResultSet rs = st.executeQuery(query);
             
@@ -722,13 +838,22 @@ public class Connector {
                 result.put(idpost, new PostElement(idpost, message, dateCreated, idprofile, shares));
             }
             st.close();
+            rs.close();
+            conn.close();
             return result;
         }
         catch (Exception e)
         {
-            System.err.println("Got an exception! ");
-            System.err.println(e.getMessage());
-            return null;
+            try {
+                System.err.println("Got an exception! ");
+                System.err.println(e.getMessage());
+                
+                conn.close();
+                
+            } catch (SQLException ex) {
+                Logger.getLogger(Connector.class.getName()).log(Level.SEVERE, null, ex);
+            }
+                return null;
         }
     
     }
@@ -774,14 +899,23 @@ public class Connector {
                 
             }
             st.close();
+            rs.close();
+            conn.close();
             
             return new CommentsElement(id_user, comment, new UserElement(id_user, user_name), post_id, data_created_On, likes);
         }
         catch (Exception e)
         {
-            System.err.println("Got an exception! ");
-            System.err.println(e.getMessage());
-            return null;
+            try {
+                System.err.println("Got an exception! ");
+                System.err.println(e.getMessage());
+                
+                conn.close();
+                
+            } catch (SQLException ex) {
+                Logger.getLogger(Connector.class.getName()).log(Level.SEVERE, null, ex);
+            }
+                return null;
         }
         
     }
@@ -816,13 +950,20 @@ public class Connector {
                 
             }
             st.close();
+            rs.close();
+            conn.close();
             return new UserElement(id, name);
         }
         catch (Exception e)
         {
-            System.err.println("Got an exception! ");
-            System.err.println(e.getMessage());
-            return null;
+            try {
+                System.err.println("Got an exception! ");
+                System.err.println(e.getMessage());
+                conn.close();
+            } catch (SQLException ex) {
+                Logger.getLogger(Connector.class.getName()).log(Level.SEVERE, null, ex);
+            }
+                return null;
         }
         
     }
@@ -857,18 +998,23 @@ public class Connector {
                 
             }
             st.close();
+            rs.close();
+            conn.close();
             return new ProfileElement(id, name);
         }
         catch (Exception e)
         {
-            System.err.println("Got an exception! ");
-            System.err.println(e.getMessage());
-            return null;
+            try {
+                System.err.println("Got an exception! ");
+                System.err.println(e.getMessage());
+                conn.close();
+                
+            } catch (SQLException ex) {
+                Logger.getLogger(Connector.class.getName()).log(Level.SEVERE, null, ex);
+            }
+                return null;
         }
         
     }
-    
-    
-    
     
 }
