@@ -35,6 +35,7 @@ import facebook4j.Post;
 import facebook4j.Reading;
 import facebook4j.ResponseList;
 import facebook4j.auth.AccessToken;
+import java.io.File;
 import util.Converter;
 
 public class FacebookCrawler implements Runnable {
@@ -464,8 +465,14 @@ public class FacebookCrawler implements Runnable {
                     end_time = start_time + TimeUnit.HOURS.toMillis(duration_moritonig);
                 }
                 long time_now =0;
-
-		Path path = Paths.get("./reaction_monitoring/ "+ post_id + "_reactions_monitoring.txt");
+                
+                File dirOut = new File("../reaction_monitoring/");
+                
+                if (!dirOut.exists()) {
+                    dirOut.mkdir();
+                } 
+                
+		Path path = Paths.get("../reaction_monitoring/ "+ post_id + "_reactions_monitoring.txt");
 
 		try {
 			Files.write(path, ("time,loves,wow,haha,likes,sad,angry,shares" + "\n").getBytes("UTF-8"), StandardOpenOption.CREATE_NEW);
